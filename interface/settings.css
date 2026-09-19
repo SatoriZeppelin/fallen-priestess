@@ -1,0 +1,1529 @@
+/* 设置 / 资源列表 / 存档 / 历史 */
+/* 设置界面（二级弹窗） */
+    .settings-overlay {
+      position: fixed; /* 改为fixed定位，确保在菜单界面上方 */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 1000px;
+      max-height: 85vh;
+      /* 背景A */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2%E8%83%8C%E6%99%AF.png');
+      background-size: 100% 100%; /* 显示完全图片，允许放大缩小和扭曲 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      border: none; /* 去掉金色包边 */
+      border-radius: 12px;
+      box-shadow: none; /* 去掉所有阴影效果，包括金色边框 */
+      z-index: 10001; /* 高于菜单界面的z-index: 10000 */
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* 资源列表界面（三级弹窗） */
+    #resources-overlay {
+      z-index: 10002; /* 高于设置界面 */
+    }
+
+    .settings-overlay.hidden {
+      display: none;
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end; /* 改为flex-end，让元素对齐到底部 */
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #000; /* 改为黑色分割线 */
+      gap: 20px;
+    }
+
+    .settings-header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .settings-title {
+      color: #fff;
+      font-size: clamp(24px, 4vw, 28px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+      margin-bottom: 10px; /* 标题和分割线之间的距离为20px */
+    }
+
+    .settings-close-btn {
+      width: auto;
+      height: auto;
+      min-width: 32px;
+      min-height: 32px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E5%85%B3%E9%97%AD%E6%8C%89%E9%92%AE.png');
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      display: block;
+      transition: all 0.2s ease;
+      object-fit: contain;
+    }
+
+    .settings-close-btn:hover {
+      transform: scale(1.1);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .settings-content {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+      align-items: flex-start;
+    }
+
+    .settings-resource-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      max-height: 100%;
+    }
+
+    .settings-resource-category {
+      margin-bottom: 15px;
+    }
+
+    .settings-category-title {
+      color: var(--gold-3);
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 3px solid var(--gold-3);
+      border-radius: 4px;
+    }
+
+    .settings-resource-items {
+      flex: 1;
+      min-height: 0;
+      max-height: 400px; /* 默认最大高度，由JavaScript动态调整 */
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      box-sizing: border-box;
+      /* 确保滚动条可见且可拖拽 */
+      scrollbar-width: thin; /* Firefox */
+      scrollbar-color: var(--gold-3) rgba(0, 0, 0, 0.3); /* Firefox */
+      /* 确保可以通过鼠标滚轮滚动 */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .settings-resource-items::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    .settings-resource-items::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+    }
+
+    .settings-resource-items::-webkit-scrollbar-thumb {
+      background: var(--gold-3);
+      border-radius: 6px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      cursor: grab;
+    }
+
+    .settings-resource-items::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-4);
+      border-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .settings-resource-items::-webkit-scrollbar-thumb:active {
+      background: var(--gold-2);
+      cursor: grabbing;
+    }
+
+    .settings-resource-items.dragging {
+      cursor: grabbing !important;
+      user-select: none;
+    }
+
+    .settings-resource-items.grabbable {
+      cursor: grab;
+    }
+
+    .settings-resource-items.grabbable:hover {
+      cursor: grab;
+    }
+
+    /* 确保资源列表项不会干扰拖拽 */
+    .settings-resource-item {
+      pointer-events: auto;
+    }
+
+    .settings-resource-item input[type="checkbox"],
+    .settings-resource-item label {
+      pointer-events: auto;
+    }
+
+    .settings-resource-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 8px;
+      margin-bottom: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      transition: background 0.2s ease;
+      min-height: 40px;
+    }
+
+    .settings-resource-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* 滚动指示器样式 */
+    .scroll-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(212, 175, 55, 0.8);
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 10;
+    }
+
+    .settings-resource-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--gold-3);
+      flex-shrink: 0;
+    }
+
+    .settings-resource-item label {
+      color: #fff;
+      font-size: clamp(13px, 2vw, 15px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      cursor: pointer;
+      flex: 1;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      line-height: 1.4;
+      min-width: 0;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    .settings-stats-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .settings-content {
+        flex-direction: column;
+        align-items: center; /* 小屏幕时内容居中 */
+      }
+
+      .settings-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .settings-header-left {
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+        gap: 10px;
+      }
+
+      .settings-title {
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+
+      .settings-stats-panel {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .settings-stats-info {
+        min-width: auto;
+        max-width: 150px;
+        width: 100%;
+        font-size: clamp(10px, 1.4vw, 12px);
+        padding: 8px 10px;
+      }
+
+      .settings-stats-btn {
+        padding: 6px 12px;
+        font-size: clamp(11px, 1.6vw, 13px);
+        white-space: nowrap;
+      }
+
+      .settings-close-btn {
+        flex-shrink: 0;
+      }
+
+      .settings-resource-list {
+        width: 100%;
+      }
+
+      .settings-menu {
+        align-items: center; /* 确保小屏幕时菜单内容居中 */
+      }
+
+      .settings-main-menu {
+        align-items: center; /* 确保小屏幕时按钮居中 */
+        width: 100%;
+      }
+    }
+
+    .settings-stats-btn {
+      padding: 8px 16px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff;
+      font-size: clamp(12px, 1.8vw, 14px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-stats-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .settings-stats-info {
+      background: transparent; /* 透明背景 */
+      border: 3px solid rgba(139, 90, 43, 0.9); /* 木质边框 */
+      border-radius: 4px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: clamp(11px, 1.6vw, 13px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      line-height: 1.5;
+      min-width: 200px;
+      max-width: 250px;
+      box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.2),
+        inset 0 -1px 2px rgba(101, 67, 33, 0.3);
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    .settings-stats-info.hidden {
+      display: none;
+    }
+
+    .settings-stats-info-item {
+      margin-bottom: 6px;
+    }
+
+    .settings-stats-info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-stats-info-item strong {
+      color: #fff; /* 改为白色文字 */
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    .settings-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px solid #000; /* 改为黑色分割线 */
+      gap: 10px;
+    }
+
+    .settings-action-btn {
+      padding: 12px 24px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff; /* 白色字体 */
+      font-size: clamp(14px, 2vw, 16px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-action-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .settings-action-btn.delete {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+      color: #fff; /* 白色字体 */
+      max-width: 200px;
+    }
+
+    .settings-action-btn.delete:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    /* 设置菜单层级 */
+    .settings-menu {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .settings-menu.hidden {
+      display: none;
+    }
+
+    /* 主菜单（一级） */
+    .settings-main-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px 0;
+      align-items: center; /* 按钮居中 */
+    }
+
+    .settings-main-menu-btn {
+      padding: 15px 25px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff; /* 白色字样 */
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      position: relative;
+      word-break: keep-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    .settings-main-menu-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    /* 确保资源列表和正文格式按钮有通用背景 */
+    #settings-resource-list-btn,
+    #settings-text-format-btn {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+    }
+
+    #settings-resource-list-btn:hover,
+    #settings-text-format-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+    }
+
+    /* 二级菜单（资源分类选择） */
+    .settings-category-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px 0;
+    }
+
+    .settings-category-btn {
+      padding: 15px 25px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff; /* 白色字样 */
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      position: relative;
+      word-break: keep-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    .settings-category-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    /* 三级菜单（资源列表） */
+    .settings-resource-menu {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .settings-resource-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #000; /* 改为黑色分割线 */
+    }
+
+    .settings-resource-menu-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .settings-control-btn {
+      padding: 8px 16px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff; /* 白色字体 */
+      font-size: clamp(12px, 1.8vw, 14px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-control-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .settings-back-btn {
+      padding: 8px 16px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent; /* 删除所有其他背景 */
+      border: none;
+      border-radius: 0; /* 删除圆角 */
+      color: #fff; /* 白色字体 */
+      font-size: clamp(12px, 1.8vw, 14px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-back-btn:hover {
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%8C%89%E9%92%AE%E9%80%9A%E7%94%A8%E8%83%8C%E6%99%AF.png');
+      background-size: auto; /* 保持原始大小，不允许扩大 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      transform: scale(1.02);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .settings-resource-menu-title {
+      color: #fff; /* 白色字体 */
+      font-size: clamp(18px, 3vw, 22px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000; /* 内白外黑描边 */
+    }
+
+    /* 正文格式设置界面样式 */
+    .text-format-content {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 25px 0;
+      max-height: calc(85vh - 120px);
+      overflow-y: auto;
+    }
+
+    .text-format-section {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .text-format-section-title {
+      color: #fff;
+      font-size: clamp(18px, 2.5vw, 20px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000;
+      margin: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .text-format-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .text-format-item-inline {
+      flex-direction: row;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .text-format-label {
+      color: #fff;
+      font-size: clamp(14px, 2vw, 16px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .text-format-control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .text-format-slider {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .text-format-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .text-format-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .text-format-input {
+      width: 60px;
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .text-format-input::-webkit-inner-spin-button,
+    .text-format-input::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+
+    .text-format-unit {
+      color: #fff;
+      font-size: 14px;
+      text-shadow: 1px 1px 0 #000;
+      min-width: 30px;
+    }
+
+    .text-format-color-picker {
+      width: 50px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+    }
+
+    .text-format-color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .text-format-color-picker::-webkit-color-swatch {
+      border: none;
+      border-radius: 2px;
+    }
+
+    .text-format-select {
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 4px;
+      color: #fff;
+      font-size: clamp(14px, 2vw, 16px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .text-format-select option {
+      background: #333;
+      color: #fff;
+    }
+
+    .text-format-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #6495ed;
+    }
+
+    .text-format-conditional {
+      transition: opacity 0.3s ease;
+    }
+
+    .text-format-test-box {
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 60px;
+      text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 0 0 #000, -1px 0 0 #000;
+    }
+
+    .text-format-test-box.typewriter-active {
+      position: relative;
+    }
+
+    .text-format-test-box.typewriter-active::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #fff;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    /* 存档界面 */
+    .save-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 1000px;
+      max-height: 85vh;
+      /* 背景A */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2%E8%83%8C%E6%99%AF.png');
+      background-size: 100% 100%; /* 显示完全图片，允许放大缩小和扭曲 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      border: none;
+      border-radius: 12px;
+      box-shadow: none;
+      z-index: 10003; /* 高于设置界面 */
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .save-overlay.hidden {
+      display: none;
+    }
+
+    .save-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end; /* 改为flex-end，让元素对齐到底部 */
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #000; /* 黑色分割线 */
+      gap: 20px;
+    }
+
+    .save-title-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .save-title {
+      color: #fff;
+      font-size: clamp(24px, 4vw, 28px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      text-shadow: none; /* 无发光效果 */
+      margin-bottom: 0; /* 移除下边距，因为现在在flex容器中 */
+    }
+
+    .save-btn,
+    .load-btn {
+      padding: 6px 12px;
+      background: #8B4513; /* 木质棕色背景 */
+      border: 2px solid #654321; /* 深棕色边框 */
+      border-radius: 6px;
+      color: #F4E8C1; /* 浅色字体 */
+      font-size: clamp(12px, 1.8vw, 14px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .save-btn:hover,
+    .load-btn:hover {
+      background: #A0522D; /* 悬停时稍浅的棕色 */
+      border-color: #8B4513; /* 悬停时稍浅的边框 */
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .save-btn:active,
+    .load-btn:active {
+      background: #6B3410; /* 点击时更深的棕色 */
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 删除按钮 - 木质色彩（深棕色） */
+    .delete-btn {
+      padding: 6px 12px;
+      background: #8B4513; /* 木质棕色背景 */
+      border: 2px solid #654321; /* 深棕色边框 */
+      border-radius: 6px;
+      color: #F4E8C1; /* 浅色字体 */
+      font-size: clamp(12px, 1.8vw, 14px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .delete-btn:hover {
+      background: #A0522D; /* 悬停时稍浅的棕色 */
+      border-color: #8B4513; /* 悬停时稍浅的边框 */
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .delete-btn:active {
+      background: #6B3410; /* 点击时更深的棕色 */
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 数据存储按钮 - 木质风格 */
+    .data-storage-wood-btn {
+      padding: 12px 24px;
+      background: #8B4513; /* 木质棕色背景 */
+      border: 2px solid #654321; /* 深棕色边框 */
+      border-radius: 6px;
+      color: #F4E8C1; /* 浅色字体 */
+      font-size: clamp(14px, 2vw, 18px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      min-width: 100px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .data-storage-wood-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .data-storage-wood-btn:hover {
+      background: #A0522D; /* 悬停时稍浅的棕色 */
+      border-color: #8B4513; /* 悬停时稍浅的边框 */
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .data-storage-wood-btn:active {
+      background: #6B3410; /* 点击时更深的棕色 */
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+      transform: translateY(0);
+    }
+
+    /* 删除按钮特殊样式（稍深的红色调） */
+    .data-storage-delete-btn {
+      background: #8B4513; /* 保持木质棕色 */
+      border-color: #654321;
+    }
+
+    .data-storage-delete-btn:hover {
+      background: #A0522D;
+      border-color: #8B4513;
+    }
+
+    .data-storage-delete-btn:active {
+      background: #6B3410;
+    }
+
+    .save-close-btn {
+      width: auto;
+      height: auto;
+      min-width: 32px;
+      min-height: 32px;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E5%85%B3%E9%97%AD%E6%8C%89%E9%92%AE.png');
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+      display: block;
+      transition: all 0.2s ease;
+      object-fit: contain;
+    }
+
+    .save-close-btn:hover {
+      transform: scale(1.1);
+      filter: none; /* 移除发光效果 */
+    }
+
+    .save-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 20px;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    .save-archive-list {
+      width: 100%;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      min-height: 0;
+    }
+
+    .save-archive-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: #fff;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E5%AD%98%E6%A1%A3%E9%A1%B9%E8%83%8C%E6%99%AF.png');
+      background-size: 100% 100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    .save-archive-item:hover {
+      filter: brightness(1.1);
+    }
+
+    .save-archive-item.active {
+      filter: brightness(1.15);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .save-archive-item .archive-checkbox {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      cursor: pointer;
+      accent-color: #ffd700;
+      flex-shrink: 0;
+    }
+
+    .save-archive-item .archive-checkbox:checked {
+      accent-color: #ffd700;
+    }
+
+    .save-archive-item-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .save-archive-item .archive-name {
+      flex: 1;
+      font-weight: bold;
+      font-size: clamp(14px, 2vw, 16px);
+    }
+
+    .save-archive-item .archive-name.active {
+      color: #ffd700;
+    }
+
+    .save-archive-item .archive-info {
+      font-size: clamp(12px, 1.5vw, 14px);
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+    }
+
+    /* 自动存档样式 */
+    .save-archive-item.autosave {
+      background-color: rgba(100, 150, 255, 0.3);
+      border-left: 4px solid #6495ed;
+    }
+
+    .save-archive-item.autosave:hover {
+      background-color: rgba(100, 150, 255, 0.4);
+    }
+
+    .save-archive-item.autosave.active {
+      background-color: rgba(100, 150, 255, 0.5);
+      box-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+    }
+
+    .save-archive-item.autosave .archive-name {
+      color: #87ceeb;
+    }
+
+    .save-archive-item.autosave .archive-name.active {
+      color: #00bfff;
+    }
+
+
+    .save-archive-empty {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 40px 20px;
+      font-size: clamp(14px, 2vw, 16px);
+    }
+
+
+    /* 错误提示界面 */
+    .error-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      max-width: 90vw;
+      max-height: 70vh;
+      background: rgba(20, 20, 20, 0.95);
+      border: 3px solid var(--gold-3);
+      border-radius: 12px;
+      box-shadow:
+        0 0 30px rgba(212, 175, 55, 0.6),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* 错误弹窗退出按钮 */
+    .error-close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--gold-3);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 101;
+    }
+
+    .error-close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: var(--gold-4);
+      transform: scale(1.1);
+    }
+
+    .error-close-btn::before,
+    .error-close-btn::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 2px;
+      background: var(--gold-3);
+      border-radius: 1px;
+    }
+
+    .error-close-btn::before {
+      transform: rotate(45deg);
+    }
+
+    .error-close-btn::after {
+      transform: rotate(-45deg);
+    }
+
+
+    .error-overlay.hidden {
+      display: none;
+    }
+
+    .error-title {
+      color: #fff;
+      font-size: clamp(18px, 3vw, 22px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      margin-bottom: 15px;
+      margin-top: 10px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      line-height: 1.4;
+      padding: 0 40px;
+    }
+
+    .error-subtitle {
+      color: #ccc;
+      font-size: clamp(14px, 2.5vw, 16px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+      line-height: 1.4;
+      padding: 0 40px;
+    }
+
+    .error-list-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 10px;
+      margin-right: -10px;
+      min-height: 200px;
+    }
+
+    .error-list-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .error-list-container::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+    }
+
+    .error-list-container::-webkit-scrollbar-thumb {
+      background: var(--gold-3);
+      border-radius: 4px;
+    }
+
+    .error-list-container::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-4);
+    }
+
+    .error-resource-item {
+      color: #ff6b6b;
+      font-size: clamp(14px, 2.2vw, 16px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      background: rgba(255, 107, 107, 0.1);
+      border-left: 3px solid #ff6b6b;
+      border-radius: 4px;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 历史消息弹窗 */
+    .history-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.7);
+      pointer-events: auto;
+    }
+
+    .history-overlay.show {
+      display: flex;
+    }
+
+    .history-container {
+      position: relative;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 90vh;
+      background-color: #f4e8c1;
+      border: 3px solid #7a5a12;
+      border-radius: 10px;
+      padding: 30px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #7a5a12;
+    }
+
+    .history-title {
+      font: 700 24px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #2b1e0a;
+    }
+
+    .history-close-btn {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-close-btn:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+
+    .history-layers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .history-layer-item {
+      background-color: #fff;
+      border: 2px solid #d4af37;
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-layer-item:hover {
+      background-color: #fff2b2;
+      border-color: #a67c1b;
+      transform: translateX(5px);
+    }
+
+    .history-layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .history-layer-number {
+      font: 700 18px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #7a5a12;
+    }
+
+    .history-layer-time {
+      font: 400 14px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #666;
+    }
+
+    .history-layer-preview {
+      font: 400 14px/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #2b1e0a;
+      margin-top: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* 历史层详情弹窗 */
+    .history-detail-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.8);
+      pointer-events: auto;
+    }
+
+    .history-detail-overlay.show {
+      display: flex;
+    }
+
+    .history-detail-container {
+      position: relative;
+      width: 90%;
+      max-width: 1000px;
+      max-height: 90vh;
+      background-color: #f4e8c1;
+      border: 3px solid #7a5a12;
+      border-radius: 10px;
+      padding: 30px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .history-detail-section {
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #d4af37;
+    }
+
+    .history-detail-section:last-child {
+      border-bottom: none;
+    }
+
+    .history-detail-section-title {
+      font: 700 18px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #7a5a12;
+      margin-bottom: 10px;
+    }
+
+    .history-detail-content {
+      font: 400 14px/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #2b1e0a;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .history-detail-mvu {
+      font: 400 12px/1.5 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      color: #2b1e0a;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #d4af37;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .hstatus-table-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 20000; /* 位于所有其他元素之上 */
+      background: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+      display: none; /* 默认隐藏 */
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+    }
+
+    .hstatus-table-overlay.show {
+      display: flex;
+    }
+
+    

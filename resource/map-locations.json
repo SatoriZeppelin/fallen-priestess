@@ -1,0 +1,679 @@
+{
+  "stageWidth": 3456,
+  "scaleReferenceMapId": "xicheng",
+  "imageUrl": "https://files.catbox.moe/ngxnpg.png",
+  "imageWidth": 3456,
+  "imageHeight": 4080,
+  "overviewFocus": {
+    "x": 0.5,
+    "y": 0.5,
+    "zoom": 0.72
+  },
+  "focusDurationMs": 1100,
+  "maps": [
+    {
+      "id": "beicheng",
+      "stackOrder": 1,
+      "offsetX": 2303,
+      "offsetY": 185,
+      "alignBottomToTopOf": "xicheng",
+      "imageUrl": "https://files.catbox.moe/i72jy7.png",
+      "imageWidth": 3360,
+      "imageHeight": 2400
+    },
+    {
+      "id": "xicheng",
+      "stackOrder": 0,
+      "imageUrl": "https://files.catbox.moe/ngxnpg.png",
+      "imageWidth": 3456,
+      "imageHeight": 4080
+    },
+    {
+      "id": "dongcheng",
+      "stackOrder": 2,
+      "offsetX": 4127,
+      "offsetY": 0,
+      "alignTopLeftOf": "xicheng",
+      "imageUrl": "https://files.catbox.moe/qazcuj.png",
+      "imageWidth": 4800,
+      "imageHeight": 3360
+    }
+  ],
+  "districts": [
+    {
+      "id": "beicheng",
+      "name": "北城区",
+      "mapId": "beicheng",
+      "defaultExpanded": false,
+      "locationIds": [
+        "restaurant",
+        "church",
+        "adventurer_guild",
+        "mayor_home"
+      ]
+    },
+    {
+      "id": "xicheng",
+      "name": "西城区",
+      "mapId": "xicheng",
+      "defaultExpanded": false,
+      "locationIds": [
+        "home",
+        "edgar_shop",
+        "tavern",
+        "inn",
+        "training",
+        "massage_shop",
+        "restroom",
+        "painter_home"
+      ]
+    },
+    {
+      "id": "dongcheng",
+      "name": "东城区",
+      "mapId": "dongcheng",
+      "defaultExpanded": false,
+      "locationIds": [
+        "brothel",
+        "slum",
+        "dock",
+        "checkpoint",
+        "prison",
+        "dongcheng_tavern",
+        "dongcheng_restroom",
+        "black_market",
+        "casino"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "restaurant",
+      "name": "餐厅",
+      "mapId": "beicheng",
+      "user": {
+        "x": 0.23803925992412053,
+        "y": 0.7773528767523364,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.23803925992412053,
+        "y": 0.7773528767523364
+      },
+      "focus": {
+        "x": 0.23803925992412053,
+        "y": 0.7773528767523364,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.23803925992412053,
+        "y": 0.7773528767523364,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/ev2pgo.png"
+      }
+    },
+    {
+      "id": "church",
+      "name": "教堂",
+      "mapId": "beicheng",
+      "user": {
+        "x": 0.6777861484943304,
+        "y": 0.3570447482592794,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.6777861484943304,
+        "y": 0.3570447482592794
+      },
+      "focus": {
+        "x": 0.6777861484943304,
+        "y": 0.3570447482592794,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.6777861484943304,
+        "y": 0.3570447482592794,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/snn2bh.png"
+      }
+    },
+    {
+      "id": "adventurer_guild",
+      "name": "冒险者工会",
+      "mapId": "beicheng",
+      "user": {
+        "x": 0.9208743895213186,
+        "y": 0.7545617262688323,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.9208743895213186,
+        "y": 0.7545617262688323
+      },
+      "focus": {
+        "x": 0.9208743895213186,
+        "y": 0.7545617262688323,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.9208743895213186,
+        "y": 0.7545617262688323,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/7af79w.png"
+      }
+    },
+    {
+      "id": "mayor_home",
+      "name": "镇长家",
+      "mapId": "beicheng",
+      "user": {
+        "x": 0.2985457139414824,
+        "y": 0.20334186707749471,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.2985457139414824,
+        "y": 0.20334186707749471
+      },
+      "focus": {
+        "x": 0.2985457139414824,
+        "y": 0.20334186707749471,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.2985457139414824,
+        "y": 0.20334186707749471,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/7ndobl.png"
+      }
+    },
+    {
+      "id": "home",
+      "name": "家",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.1537196654907516,
+        "y": 0.07561989532947427,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.1537196654907516,
+        "y": 0.07561989532947427
+      },
+      "focus": {
+        "x": 0.1537196654907516,
+        "y": 0.07561989532947427,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.1537196654907516,
+        "y": 0.07561989532947427,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/lfs8hp.png"
+      }
+    },
+    {
+      "id": "edgar_shop",
+      "name": "埃德加商店",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.6827472681339058,
+        "y": 0.798459451499258,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.6827472681339058,
+        "y": 0.798459451499258
+      },
+      "focus": {
+        "x": 0.6827472681339058,
+        "y": 0.798459451499258,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.6827472681339058,
+        "y": 0.798459451499258,
+        "r": 0.037
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/of0o3d.png"
+      }
+    },
+    {
+      "id": "tavern",
+      "name": "酒馆",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.46533324079003624,
+        "y": 0.7004936166838475,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.46533324079003624,
+        "y": 0.7004936166838475
+      },
+      "focus": {
+        "x": 0.46533324079003624,
+        "y": 0.7004936166838475,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.46533324079003624,
+        "y": 0.7004936166838475,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/jsu4b1.png"
+      }
+    },
+    {
+      "id": "inn",
+      "name": "宿屋",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.45237836066345755,
+        "y": 0.13538607116899776,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.45237836066345755,
+        "y": 0.13538607116899776
+      },
+      "focus": {
+        "x": 0.45237836066345755,
+        "y": 0.13538607116899776,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.45237836066345755,
+        "y": 0.13538607116899776,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/grmrft.png"
+      }
+    },
+    {
+      "id": "training",
+      "name": "训练场",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.10386824963848602,
+        "y": 0.42883439344336577,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.10386824963848602,
+        "y": 0.42883439344336577
+      },
+      "focus": {
+        "x": 0.10386824963848602,
+        "y": 0.42883439344336577,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.10386824963848602,
+        "y": 0.42883439344336577,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/3uene6.png"
+      }
+    },
+    {
+      "id": "massage_shop",
+      "name": "按摩店",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.5621239368588816,
+        "y": 0.13093416885839607,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.5621239368588816,
+        "y": 0.13093416885839607
+      },
+      "focus": {
+        "x": 0.5621239368588816,
+        "y": 0.13093416885839607,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.5621239368588816,
+        "y": 0.13093416885839607,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/uo6ftj.png"
+      }
+    },
+    {
+      "id": "restroom",
+      "name": "厕所",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.583165925906701,
+        "y": 0.33198240434571114,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.583165925906701,
+        "y": 0.33198240434571114
+      },
+      "focus": {
+        "x": 0.583165925906701,
+        "y": 0.33198240434571114,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.583165925906701,
+        "y": 0.33198240434571114,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/dj7z2v.png"
+      }
+    },
+    {
+      "id": "painter_home",
+      "name": "画师家",
+      "mapId": "xicheng",
+      "user": {
+        "x": 0.7289568083535815,
+        "y": 0.40851150793918034,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.7289568083535815,
+        "y": 0.40851150793918034
+      },
+      "focus": {
+        "x": 0.7289568083535815,
+        "y": 0.40851150793918034,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.7289568083535815,
+        "y": 0.40851150793918034,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/qkyk11.png"
+      }
+    },
+    {
+      "id": "brothel",
+      "name": "妓院",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.5834182998390456,
+        "y": 0.18476357537474705,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.5834182998390456,
+        "y": 0.18476357537474705,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/ua24m6.png"
+      },
+      "user": {
+        "x": 0.5834182998390456,
+        "y": 0.18476357537474705,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.5834182998390456,
+        "y": 0.18476357537474705
+      }
+    },
+    {
+      "id": "slum",
+      "name": "贫民窟",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.83531967882257,
+        "y": 0.8202671145340676,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.83531967882257,
+        "y": 0.8202671145340676,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/pof8jc.png"
+      },
+      "user": {
+        "x": 0.83531967882257,
+        "y": 0.8202671145340676,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.83531967882257,
+        "y": 0.8202671145340676
+      }
+    },
+    {
+      "id": "dock",
+      "name": "码头",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.2700504558058536,
+        "y": 0.290212607753439,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.2700504558058536,
+        "y": 0.290212607753439,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/bil0h7.png"
+      },
+      "user": {
+        "x": 0.2700504558058536,
+        "y": 0.290212607753439,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.2700504558058536,
+        "y": 0.290212607753439
+      }
+    },
+    {
+      "id": "checkpoint",
+      "name": "检查站",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.281026562426981,
+        "y": 0.14654320118544428,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.281026562426981,
+        "y": 0.14654320118544428,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/8q3onf.png"
+      },
+      "user": {
+        "x": 0.281026562426981,
+        "y": 0.14654320118544428,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.281026562426981,
+        "y": 0.14654320118544428
+      }
+    },
+    {
+      "id": "prison",
+      "name": "监狱",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.2760871804617972,
+        "y": 0.8759970253815332,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.2760871804617972,
+        "y": 0.8759970253815332,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/w7umil.png"
+      },
+      "user": {
+        "x": 0.2760871804617972,
+        "y": 0.8759970253815332,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.2760871804617972,
+        "y": 0.8759970253815332
+      }
+    },
+    {
+      "id": "dongcheng_tavern",
+      "name": "东城酒馆",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.45510761703635466,
+        "y": 0.813172092587322,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.45510761703635466,
+        "y": 0.813172092587322,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/a2thdr.png"
+      },
+      "user": {
+        "x": 0.45510761703635466,
+        "y": 0.813172092587322,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.45510761703635466,
+        "y": 0.813172092587322
+      }
+    },
+    {
+      "id": "dongcheng_restroom",
+      "name": "东城厕所",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.6258020899715288,
+        "y": 0.7561898304367715,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.6258020899715288,
+        "y": 0.7561898304367715,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/vhdvbd.png"
+      },
+      "user": {
+        "x": 0.6258020899715288,
+        "y": 0.7561898304367715,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.6258020899715288,
+        "y": 0.7561898304367715
+      }
+    },
+    {
+      "id": "black_market",
+      "name": "东城素材黑店",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.9347411417170569,
+        "y": 0.1766327404232052,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.9347411417170569,
+        "y": 0.1766327404232052,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/turq35.png"
+      },
+      "user": {
+        "x": 0.9347411417170569,
+        "y": 0.1766327404232052,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.9347411417170569,
+        "y": 0.1766327404232052
+      }
+    },
+    {
+      "id": "casino",
+      "name": "赌场",
+      "mapId": "dongcheng",
+      "focus": {
+        "x": 0.6620660458540538,
+        "y": 0.3852525048656367,
+        "zoom": 2.4
+      },
+      "hotspot": {
+        "type": "circle",
+        "x": 0.6620660458540538,
+        "y": 0.3852525048656367,
+        "r": 0.04
+      },
+      "overlay": {
+        "url": "https://files.catbox.moe/6vj56h.png"
+      },
+      "user": {
+        "x": 0.6620660458540538,
+        "y": 0.3852525048656367,
+        "zoom": 2.4
+      },
+      "torina": {
+        "x": 0.6620660458540538,
+        "y": 0.3852525048656367
+      }
+    }
+  ]
+}

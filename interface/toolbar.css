@@ -1,0 +1,196 @@
+/* GAL 工具栏 + 正在生成：右对齐独立堆叠，贴文本区上沿 */
+
+#gal-generating {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 10px;
+  border-radius: 999px;
+  background: rgba(42, 30, 14, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff2b2;
+  font: 600 13px/1 "STKaiti", "KaiTi", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+#gal-generating.is-on {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+#gal-generating[hidden] {
+  display: none !important;
+}
+
+#gal-generating .gal-gen-spinner {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(246, 226, 122, 0.28);
+  border-top-color: #f6e27a;
+  box-sizing: border-box;
+  animation: gal-gen-spin 0.72s linear infinite;
+}
+
+@keyframes gal-gen-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#gal-toolbar-dock {
+  --gal-tb-right: 16px;
+  --gal-tb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute;
+  right: var(--gal-tb-right);
+  bottom: 20%;
+  top: auto;
+  z-index: 105;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-height: 0;
+  padding: 0;
+  box-sizing: border-box;
+  pointer-events: none;
+  transform: none;
+}
+
+#gal-toolbar-dock.is-locked > *,
+#gal-toolbar-dock.is-auto-hide {
+  pointer-events: auto;
+}
+
+#gal-toolbar {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+#gal-toolbar.is-anim {
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease,
+    width 0.42s var(--gal-tb-ease),
+    height 0.42s var(--gal-tb-ease);
+}
+
+#gal-toolbar .gal-tb-meta,
+#gal-toolbar .gal-tb-nav {
+  display: contents;
+}
+
+#gal-toolbar-dock.is-auto-hide {
+  padding: 16px 8px 0 20px;
+}
+
+#gal-toolbar-dock.is-auto-hide:not(:hover):not(.is-pinned-hover) #gal-toolbar {
+  transform: translateY(8px);
+  opacity: 0;
+}
+
+#gal-toolbar .gal-tb-btn {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #fff6d2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 0;
+  box-shadow: none;
+  outline: none;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+#gal-toolbar.is-laid-out .gal-tb-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+#gal-toolbar.is-anim .gal-tb-btn {
+  transition:
+    right 0.42s var(--gal-tb-ease),
+    bottom 0.42s var(--gal-tb-ease),
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+#gal-toolbar .gal-tb-btn.gal-tb-text {
+  width: auto;
+  min-width: 48px;
+  padding: 0 6px;
+  font: 700 13px/1 "Segoe UI", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-shadow: none;
+}
+
+#gal-toolbar .gal-tb-btn:hover,
+#gal-toolbar .gal-tb-btn:focus-visible {
+  opacity: 0.78;
+  background: transparent;
+}
+
+#gal-toolbar .gal-tb-btn svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  filter: none;
+}
+
+#gal-toolbar #btn-gal-toolbar-lock svg {
+  width: 28px;
+  height: 28px;
+}
+
+#gal-toolbar #btn-gal-toolbar-auto.is-on {
+  color: #f6e27a;
+}
+
+.parchment.is-cg-hide-toolbar #gal-toolbar-dock {
+  display: none;
+}
+
+.dialogue-quick-btns {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  #gal-toolbar .gal-tb-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  #gal-toolbar .gal-tb-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+}

@@ -1,0 +1,514 @@
+/* 标题 / 开局 / 路线选择 */
+/* 开始界面边角装饰 */
+    .intro-corner-decoration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/Intro%E9%81%AE%E7%BD%A9%E8%83%8C%E6%99%AF.png');
+      background-size: 100% 100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: 51;
+      pointer-events: none;
+      opacity: 0;
+      animation: fadeInIntro 1.2s ease-out 0.3s forwards;
+    }
+
+    @keyframes fadeInVideo {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .intro-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 45%;
+      max-height: 45%;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 52;
+      opacity: 0;
+      animation: fadeInLogo 1s ease-out 0.6s forwards;
+    }
+
+    @keyframes fadeInLogo {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .intro-mask.hidden {
+      display: none;
+    }
+
+    /* 左上角：两行字和链接 */
+    .intro-credits {
+      position: absolute;
+      top: clamp(12px, 3vw, 24px);
+      left: clamp(12px, 3vw, 24px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 53;
+      pointer-events: auto;
+      max-width: 42vw;
+      opacity: 0;
+      animation: fadeInCredits 0.8s ease-out 1.1s forwards;
+    }
+
+    @keyframes fadeInCredits {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .intro-credits a {
+      color: #fff;
+      font-size: clamp(14px, 3vw, 17px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      text-decoration: none;
+      text-shadow:
+        -1px 0 2px #000,
+        1px 0 2px #000,
+        0 -1px 2px #000,
+        0 1px 2px #000,
+        0 0 6px #000;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .intro-credits a:hover {
+      color: #f6e27a;
+    }
+
+    /* 左下角：CC 协议 */
+    .intro-license {
+      position: absolute;
+      bottom: clamp(10px, 2.5vw, 22px);
+      left: clamp(12px, 3vw, 24px);
+      z-index: 53;
+      pointer-events: auto;
+      max-width: calc(100vw - clamp(24px, 6vw, 48px));
+      opacity: 0;
+      animation: fadeInLicense 0.8s ease-out 1.1s forwards;
+    }
+
+    @keyframes fadeInLicense {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .intro-license p {
+      margin: 0;
+      color: #fff;
+      font-size: clamp(10px, 2vw, 13px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      text-shadow:
+        -1px 0 2px #000,
+        1px 0 2px #000,
+        0 -1px 2px #000,
+        0 1px 2px #000,
+        0 0 6px #000;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .intro-license a {
+      color: #fff;
+      text-decoration: none;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .intro-license a:hover {
+      color: #f6e27a;
+    }
+
+    /* 确保CC协议图标在同一行显示 */
+    .intro-license a img {
+      display: inline-block;
+      vertical-align: text-bottom;
+      white-space: nowrap;
+    }
+
+    /* 标题下方三个按钮容器 */
+    .title-buttons {
+      position: absolute;
+      left: 50%;
+      bottom: 12%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 4vw, 28px);
+      max-width: 75vw;
+      padding: 0 clamp(6px, 2vw, 16px);
+      box-sizing: border-box;
+      z-index: 53;
+      pointer-events: auto;
+      opacity: 0;
+      animation: fadeInButtons 1s ease-out 0.9s forwards;
+    }
+
+    @keyframes fadeInButtons {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* 窄屏下按钮改为纵向排列 */
+    @media (max-width: 520px) {
+      .title-buttons {
+        flex-direction: column;
+        gap: clamp(10px, 3vw, 18px);
+        max-width: 90vw;
+        bottom: 10%;
+      }
+      .title-buttons img {
+        height: clamp(70px, 22vw, 116px);
+      }
+    }
+
+    /* 灰色蒙版 */
+    .route-overlay-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 55;
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+      pointer-events: none;
+    }
+
+    .route-overlay-mask.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* 路线选择界面 */
+    .route-selection-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .route-selection-overlay:not(.hidden) {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* 返回按钮 */
+    .route-back-btn {
+      position: absolute;
+      top: clamp(12px, 3vw, 24px);
+      left: clamp(12px, 3vw, 24px);
+      z-index: 61;
+      padding: 10px 20px;
+      background: rgba(212, 175, 55, 0.2);
+      border: 2px solid var(--gold-3);
+      border-radius: 8px;
+      color: var(--gold-4);
+      font-size: clamp(14px, 2.5vw, 18px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    }
+
+    .route-back-btn:hover {
+      background: rgba(212, 175, 55, 0.4);
+      border-color: var(--gold-4);
+      color: var(--gold-5);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    }
+
+    .route-selection-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .route-boxes {
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      flex-wrap: nowrap;
+    }
+
+    .route-box {
+      width: min(25vw, 300px);
+      height: min(25vw, 300px);
+      min-width: 150px;
+      min-height: 150px;
+      flex-shrink: 1;
+      border: 3px solid var(--gold-3);
+      background: transparent;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .route-box:hover {
+      border-color: var(--gold-4);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+      transform: scale(1.05);
+    }
+
+    .route-box-image {
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      background: transparent;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      margin: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .route-box-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .route-description {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease-out;
+    }
+
+    .route-description:not(.hidden) {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .route-title {
+      color: var(--gold-4);
+      font-size: clamp(32px, 5vw, 48px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+    }
+
+    .route-text {
+      color: #fff;
+      font-size: clamp(14px, 2vw, 18px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      line-height: 1.8;
+      text-align: left;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      white-space: pre-line;
+      margin-bottom: 20px;
+    }
+
+    .route-start-btn-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .route-start-btn {
+      padding: 12px 40px;
+      background: linear-gradient(145deg, var(--gold-2), var(--gold-4));
+      border: 2px solid var(--gold-3);
+      border-radius: 8px;
+      color: #000;
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .route-start-btn:hover {
+      background: linear-gradient(145deg, var(--gold-3), var(--gold-5));
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+    }
+
+    .route-start-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 768px) {
+      .route-boxes {
+        flex-direction: row;
+        gap: 20px;
+        padding: 0 10px;
+      }
+
+      .route-box {
+        width: min(calc((100vw - 80px) / 2), 25vw);
+        height: min(calc((100vw - 80px) / 2), 25vw);
+        min-width: 120px;
+        min-height: 120px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .route-boxes {
+        gap: 15px;
+        padding: 0 5px;
+      }
+
+      .route-box {
+        width: min(calc((100vw - 50px) / 2), 22vw);
+        height: min(calc((100vw - 50px) / 2), 22vw);
+        min-width: 100px;
+        min-height: 100px;
+      }
+    }
+
+    .title-buttons img {
+      height: clamp(64px, 12vw, 116px);
+      width: auto;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+      flex: 0 0 auto;
+      transform-origin: center;
+    }
+
+    .title-buttons img:hover {
+      transform: translateY(-2px);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.45));
+    }
+
+    /* 右上角：全屏按钮 */
+    .fullscreen-btn {
+      position: absolute;
+      top: clamp(12px, 3vw, 24px);
+      right: clamp(12px, 3vw, 24px);
+      z-index: 54;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0;
+      animation: fadeInFullscreen 0.8s ease-out 1.1s forwards;
+      min-width: 40px;
+      min-height: 40px;
+      width: clamp(40px, 6vw, 60px);
+      height: auto;
+      object-fit: contain;
+    }
+
+    @keyframes fadeInFullscreen {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .fullscreen-btn:hover {
+      transform: scale(1.05) translateX(0);
+      filter: brightness(1.2);
+    }
+
+
+    /* 自适应屏幕大小 */
+    @media (max-width: 768px) {
+      .frame {
+        --frame-pad: 10px;
+        min-height: 600px;
+      }
+
+      .intro-logo {
+        max-width: 60%;
+        max-height: 60%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .frame {
+        --frame-pad: 8px;
+        min-height: 500px;
+      }
+
+      .intro-logo {
+        max-width: 70%;
+        max-height: 70%;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      .frame {
+        --frame-pad: 30px;
+      }
+    }
+
+    

@@ -1,0 +1,1489 @@
+/* 舞台：立绘、对话、菜单 */
+/* 游戏内容区域（参考天国拯救） */
+    .parchment {
+      width: 100%;
+      min-height: 600px;
+      aspect-ratio: 2 / 3;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #f4e8c1;
+      background-image:
+        radial-gradient(1000px 600px at 20% 10%, rgba(160, 120, 60, 0.15), transparent 60%),
+        radial-gradient(800px 500px at 80% 80%, rgba(120, 90, 40, 0.12), transparent 60%),
+        radial-gradient(400px 300px at 50% 50%, rgba(255, 255, 255, 0.3), transparent 60%),
+        repeating-linear-gradient(0deg, rgba(110, 82, 40, 0.04), rgba(110, 82, 40, 0.04) 2px, rgba(255, 255, 255, 0.04) 2px, rgba(255, 255, 255, 0.04) 4px);
+      box-shadow:
+        inset 0 0 60px rgba(0, 0, 0, 0.18),
+        inset 0 0 8px rgba(110, 82, 40, 0.35),
+        0 1px 0 rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transition: opacity 0.5s ease-in;
+      height: 100%;
+    }
+
+    .parchment.show {
+      opacity: 1;
+    }
+
+    .stage {
+      flex: 0 0 100%;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* 名字区（下边缘在85%位置，左边与显示器左边界对齐） */
+    .dialogue-name-area {
+      position: absolute;
+      bottom: 15%; /* 名字区下边缘在 85% 位置 */
+      left: 0; /* 左边与显示器左边界对齐 */
+      z-index: 100;
+      pointer-events: none;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/Message_name.png');
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      /* 确保背景图片完整显示且不超出屏幕 */
+      width: min(400px, 90vw);
+      height: min(120px, 90vh);
+      min-width: 200px;
+      min-height: 60px;
+      box-sizing: border-box;
+      /* 使用 flex 布局让名牌居中显示在背景图片上 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 名牌（显示在名字区中，与背景图片重叠） */
+    .nameplate {
+      color: #ffffff;
+      font: 700 20px/1.9 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 2px #000;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      /* 确保名牌显示在背景图片上方 */
+      position: relative;
+      z-index: 101;
+      /* 居中显示在背景图片上 */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nameplate .np-top {
+      font-weight: 700;
+      font-size: 22px;
+    }
+
+    .nameplate .np-bottom {
+      font-weight: 700;
+      font-size: 20px;
+      opacity: .98;
+    }
+
+    /* 立绘层 */
+    .sprite {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-repeat: no-repeat;
+      background-position: right bottom;
+      background-size: auto 100%;
+      pointer-events: none;
+      image-rendering: -webkit-optimize-contrast;
+      z-index: 1;
+      /* 支持多层背景图片堆叠 */
+      background-image: none;
+    }
+
+    /* CG层（在立绘层之上，名字区之下） */
+    .cg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    .cg-layer.show {
+      opacity: 1;
+    }
+
+    /* CG图片容器 */
+    .cg-image {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    /* 游戏内容区域右上角全屏按钮 */
+    .parchment .game-fullscreen-btn {
+      position: absolute !important;
+      top: 15px !important;
+      right: 15px !important;
+      z-index: 100;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      min-height: 40px;
+      width: clamp(40px, 6vw, 60px);
+      height: auto;
+      object-fit: contain;
+      opacity: 0;
+      animation: fadeInFullscreen 0.8s ease-out 0.5s forwards;
+    }
+
+    .parchment .game-fullscreen-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    /* 游戏内容区域右下角菜单按钮 */
+    .parchment .game-menu-btn {
+      position: absolute !important;
+      bottom: 15px !important;
+      right: 15px !important;
+      z-index: 3; /* 高于文本区的 z-index: 2 */
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      min-height: 40px;
+      width: clamp(40px, 6vw, 60px);
+      height: auto;
+      object-fit: contain;
+      opacity: 0;
+      animation: fadeInFullscreen 0.8s ease-out 0.5s forwards;
+    }
+
+    .parchment .game-menu-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    /* 时间+天气系统显示区域 */
+    .time-weather-system {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 50;
+      pointer-events: none;
+      width: max(10vw, 60px);
+      height: auto;
+    }
+
+    /* TimeBack背景 */
+    .time-back {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* 时间图片（重叠在TimeBack之上） */
+    .time-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90%;
+      height: auto;
+      display: none;
+      transform-origin: center center;
+    }
+
+    .time-image.show {
+      display: block;
+    }
+
+    .time-image.show {
+      display: block;
+    }
+
+    /* 体力系统：包含 LeftCover 和体力进度条 */
+    /* LeftCover（体力系统的一部分） */
+    .left-cover {
+      position: absolute;
+      z-index: 40; /* 低于天气系统的 z-index: 50 */
+      pointer-events: none;
+      width: max(20vw, 120px);
+      height: auto;
+      /* left 和 top 位置通过 JavaScript 动态计算 */
+    }
+
+    /* 体力进度条容器（体力系统的一部分） */
+    .stamina-bar-container {
+      position: absolute;
+      z-index: 41; /* 高于 LeftCover，低于天气系统 */
+      pointer-events: none;
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 2px;
+      overflow: hidden;
+      /* width、height、left 和 top 位置通过 JavaScript 动态计算 */
+    }
+
+    /* 体力进度条（蓝色，从左边往右边涨） */
+    .stamina-bar {
+      height: 100%;
+      background-color: #4a90e2;
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    /* 体力数值显示（在体力系统左下角） */
+    .stamina-text {
+      position: absolute;
+      z-index: 42; /* 高于体力进度条 */
+      pointer-events: none;
+      color: #fff;
+      font: 700 14px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 2px #000;
+      white-space: nowrap;
+      /* left 和 top 位置通过 JavaScript 动态计算 */
+    }
+
+    /* 时间信息显示（在体力条左上角） */
+    .stamina-time-text {
+      position: absolute;
+      z-index: 42; /* 高于体力进度条 */
+      pointer-events: none;
+      color: #fff;
+      font: 700 14px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 2px #000;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px; /* 文字之间的间距 */
+      min-width: 0; /* 允许收缩 */
+      /* left 和 top 位置通过 JavaScript 动态计算 */
+    }
+
+    .stamina-time-text span {
+      position: relative; /* 改为相对定位，允许flex布局 */
+      flex-shrink: 0; /* 防止文字被压缩 */
+      white-space: nowrap;
+    }
+
+    #stamina-time-weekday {
+      /* 星期几右侧和leftcover右侧对齐，通过margin-left: auto实现 */
+      margin-left: auto;
+    }
+
+    .dialogue {
+      position: absolute;
+      top: 80%;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 20%;
+      z-index: 2;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .dialogue > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .dialogue-box {
+      position: absolute;
+      inset: 0;
+      padding: 14px 18px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 8px;
+      color: #2b1e0a;
+      font: 700 20px/1.9 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      user-select: none;
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/Message_Under.png');
+      background-size: 100% 100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+
+    .dialogue-text {
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-top: 0;
+      padding-top: 0;
+      margin-left: 5%; /* 文本向右偏移5% */
+      position: relative;
+      cursor: pointer;
+      text-align: left;
+      color: #ffffff;
+      text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 2px #000;
+    }
+
+    /* 对话文本打印机效果光标 */
+    .dialogue-text.typewriter-active::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #fff;
+      text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 2px #000;
+    }
+
+    /* 对话点击区域 */
+    .dialogue-click-area {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .dialogue-click-left,
+    .dialogue-click-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .dialogue-click-left {
+      left: 0;
+      width: 30%;
+    }
+
+    .dialogue-click-right {
+      right: 0;
+      width: 70%;
+    }
+
+    /* 对话框右上角快捷按钮容器 */
+    .dialogue-quick-btns {
+      position: absolute;
+      top: 24px;
+      right: 60px;
+      z-index: 20;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    /* 快捷按钮基础样式 */
+    .dialogue-quick-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(139, 69, 19, 0.85);
+      border: 3px solid rgba(244, 232, 193, 0.8);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .dialogue-quick-btn:hover {
+      transform: scale(1.1);
+      background: rgba(139, 69, 19, 1);
+      border-color: rgba(255, 223, 186, 1);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .dialogue-quick-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: #F4E8C1;
+      stroke: #F4E8C1;
+      color: #F4E8C1;
+    }
+
+    .dialogue-quick-btn:hover svg {
+      fill: #fff;
+      stroke: #fff;
+    }
+
+    /* 额外视角切换（仅本层存在 otherpov 时显示） */
+    .otherpov-toggle-container {
+      position: fixed;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 120;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .otherpov-toggle-container.is-available {
+      display: flex;
+    }
+
+    .otherpov-toggle-btn {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      padding: 0;
+      margin: 0;
+      border: 3px solid rgba(244, 232, 193, 0.55);
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(62, 38, 20, 0.92), rgba(110, 62, 32, 0.88));
+      color: #f4e8c1;
+      cursor: not-allowed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      opacity: 0.42;
+    }
+
+    .otherpov-toggle-btn .otherpov-toggle-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+    }
+
+    .otherpov-toggle-btn .otherpov-toggle-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .otherpov-toggle-label {
+      font: 600 11px/1.2 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      color: rgba(244, 232, 193, 0.45);
+      letter-spacing: 0.08em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .otherpov-toggle-container.is-available .otherpov-toggle-btn {
+      opacity: 1;
+      cursor: pointer;
+      border-color: rgba(244, 232, 193, 0.82);
+    }
+
+    .otherpov-toggle-container.is-available .otherpov-toggle-label {
+      color: rgba(244, 232, 193, 0.88);
+    }
+
+    .otherpov-toggle-container:not(.is-available) .otherpov-toggle-btn {
+      opacity: 0;
+    }
+
+    .otherpov-toggle-container.is-available .otherpov-toggle-btn:hover {
+      transform: scale(1.08);
+      border-color: #fff3d0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .otherpov-toggle-container.is-active .otherpov-toggle-btn {
+      border-color: #ffd87a;
+      background: linear-gradient(145deg, rgba(92, 52, 24, 0.96), rgba(140, 78, 36, 0.94));
+      box-shadow: 0 0 0 2px rgba(255, 216, 122, 0.35), 0 4px 16px rgba(255, 180, 60, 0.25);
+    }
+
+    .otherpov-toggle-container.is-active .otherpov-toggle-label {
+      color: #ffd87a;
+    }
+
+    .otherpov-toggle-btn:disabled {
+      pointer-events: none;
+    }
+
+    /* 分支选项区域 */
+    .branches-container {
+      margin-top: 12px;
+      padding-top: 12px;
+      display: none;
+    }
+
+    .branches-container.has-branches {
+      display: block;
+    }
+
+    .branches-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .branch-option {
+      padding: 8px 12px;
+      background: rgba(244, 232, 193, 0.6);
+      border-radius: 4px;
+      color: #2b1e0a;
+      font: 700 16px/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .branch-option:hover {
+      background: rgba(244, 232, 193, 0.8);
+      transform: translateX(4px);
+    }
+
+    /* 快照区域 */
+    .snapshots-container {
+      margin-top: 12px;
+      padding-top: 12px;
+      display: none;
+    }
+
+    .snapshots-container.has-snapshots {
+      display: block;
+    }
+
+    .snapshots-content {
+      color: #2b1e0a;
+      font: 700 14px/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(244, 232, 193, 0.4);
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    /* 变量区域 */
+    .variables-container {
+      margin-top: 12px;
+      padding-top: 12px;
+      display: none;
+    }
+
+    .variables-container.has-variables {
+      display: block;
+    }
+
+    .variables-content {
+      color: #2b1e0a;
+      font: 700 14px/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(244, 232, 193, 0.4);
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    /* ========== 当前对话轮界面 ========== */
+    #current-dialogue-overlay .dialog-content.quest-panel {
+      width: min(92vw, 1180px);
+      max-width: 1180px;
+      max-height: 82vh;
+      padding: 24px 28px 28px;
+      align-items: stretch;
+      text-align: left;
+      justify-content: flex-start;
+      background:
+        linear-gradient(165deg, rgba(58, 38, 20, 0.97) 0%, rgba(34, 22, 12, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 106, 0.38);
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 236, 198, 0.1);
+    }
+
+    .quest-toolbar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .quest-toolbar-left,
+    .quest-toolbar-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .quest-toolbar-right {
+      margin-left: auto;
+    }
+
+    .quest-tab-btn {
+      padding: 8px 18px;
+      font: 600 14px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", serif;
+      color: rgba(244, 232, 193, 0.82);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(212, 175, 106, 0.28);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .quest-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(212, 175, 106, 0.5);
+      color: #fff3d0;
+    }
+
+    .quest-tab-btn.is-active {
+      color: #2b1e0a;
+      background: linear-gradient(180deg, #f4e8c1 0%, #dcc99a 100%);
+      border-color: rgba(212, 175, 106, 0.85);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .quest-title {
+      position: relative;
+      z-index: 2;
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 175, 106, 0.22);
+      color: #f4e8c1;
+      font: 700 18px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      letter-spacing: 0.06em;
+    }
+
+    .current-dialogue-content-container {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(212, 175, 106, 0.55) rgba(0, 0, 0, 0.2);
+    }
+
+    .current-dialogue-content-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .current-dialogue-content-container::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 4px;
+    }
+
+    .current-dialogue-content-container::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 106, 0.5);
+      border-radius: 4px;
+    }
+
+    .quest-empty-msg {
+      color: rgba(244, 232, 193, 0.72);
+      font: 400 15px/1.7 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      text-align: center;
+      padding: 28px 16px;
+    }
+
+    .quest-message-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(244, 232, 193, 0.96) 0%, rgba(228, 210, 168, 0.94) 100%);
+      border: 1px solid rgba(139, 90, 43, 0.22);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .quest-sprite-frame {
+      width: 88px;
+      height: 88px;
+      flex-shrink: 0;
+      background-image: url('https://files.catbox.moe/0o6yij.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quest-sprite-frame-inner {
+      width: 74px;
+      height: 74px;
+      background-size: contain;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      overflow: hidden;
+    }
+
+    .quest-dialogue-text {
+      flex: 1;
+      min-width: 0;
+      color: #2b1e0a;
+      font: 500 15px/1.75 "STKaiti", "KaiTi", "Kaiti SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      word-wrap: break-word;
+      text-align: left;
+    }
+
+    .quest-layer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(244, 232, 193, 0.94) 0%, rgba(228, 210, 168, 0.92) 100%);
+      border: 1px solid rgba(139, 90, 43, 0.2);
+      border-radius: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .quest-layer-num {
+      flex: 0 0 auto;
+      min-width: 48px;
+      text-align: center;
+      color: #6b3f1f;
+      font: 700 18px/1.2 "STKaiti", "KaiTi", serif;
+    }
+
+    .quest-layer-desc {
+      flex: 1;
+      min-width: 0;
+      color: #2b1e0a;
+      font: 400 14px/1.65 "STKaiti", "KaiTi", "Songti SC", serif;
+      word-wrap: break-word;
+    }
+
+    .quest-jump-btn {
+      flex: 0 0 auto;
+      padding: 6px 14px;
+      font: 600 13px/1.4 "STKaiti", "KaiTi", serif;
+      color: #f4e8c1;
+      background: linear-gradient(180deg, #8b5a2b 0%, #6b3f1f 100%);
+      border: 1px solid rgba(212, 175, 106, 0.45);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: filter 0.2s ease, transform 0.15s ease;
+    }
+
+    .quest-jump-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* ========== 行动选项（branch）========== */
+    .branch-action-panel {
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .branch-action-hint {
+      color: rgba(244, 232, 193, 0.55);
+      font: 400 12px/1.5 "STKaiti", "KaiTi", "PingFang SC", sans-serif;
+    }
+
+    .branch-action-section-title {
+      margin-top: 4px;
+      color: rgba(244, 232, 193, 0.78);
+      font: 600 13px/1.4 "STKaiti", "KaiTi", "Songti SC", serif;
+      letter-spacing: 0.12em;
+    }
+
+    .branch-action-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .branch-action-card {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #faf6eb 0%, #f0e8d2 100%);
+      border: 1px solid rgba(139, 90, 43, 0.18);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .branch-action-card:hover {
+      border-color: rgba(139, 90, 43, 0.38);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(180deg, #fffdf7 0%, #f4ebd4 100%);
+    }
+
+    .branch-action-main {
+      color: #3a3028;
+      font: 600 15px/1.65 "STKaiti", "KaiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
+      word-wrap: break-word;
+      text-align: left;
+    }
+
+    .branch-action-meta {
+      margin-top: 6px;
+      color: #8a8278;
+      font: 400 12px/1.55 "STKaiti", "KaiTi", "PingFang SC", sans-serif;
+      word-wrap: break-word;
+      text-align: left;
+    }
+
+    .branch-action-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(212, 175, 106, 0.18);
+    }
+
+    .branch-action-input {
+      flex: 1;
+      min-width: 0;
+      padding: 9px 12px;
+      font: 400 14px/1.5 "STKaiti", "KaiTi", "Songti SC", serif;
+      color: #2b1e0a;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(139, 90, 43, 0.22);
+      border-radius: 8px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .branch-action-input::placeholder {
+      color: rgba(58, 48, 40, 0.45);
+    }
+
+    .branch-action-input:focus {
+      border-color: rgba(139, 90, 43, 0.45);
+    }
+
+    .branch-action-send-btn {
+      flex: 0 0 auto;
+      padding: 8px 18px;
+      font: 600 13px/1.4 "STKaiti", "KaiTi", serif;
+      color: #f4e8c1;
+      background: linear-gradient(180deg, #8b5a2b 0%, #6b3f1f 100%);
+      border: 1px solid rgba(212, 175, 106, 0.4);
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .branch-action-send-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    .branches-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background: rgba(0, 0, 0, 0.72);
+      pointer-events: auto;
+    }
+
+    .branch-action-overlay-wrap {
+      width: min(720px, 100%);
+      max-height: min(86vh, 900px);
+      display: flex;
+      flex-direction: column;
+      background: #f7f1e3;
+      border: 1px solid rgba(139, 90, 43, 0.22);
+      border-radius: 12px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .branch-action-overlay-title {
+      padding: 16px 18px 8px;
+      color: #3a3028;
+      font: 700 18px/1.4 "STKaiti", "KaiTi", "Songti SC", serif;
+      border-bottom: 1px solid rgba(139, 90, 43, 0.12);
+    }
+
+    .branch-action-overlay-body {
+      padding: 8px 18px 18px;
+      overflow-y: auto;
+    }
+
+    .branch-action-overlay-body .branch-action-hint {
+      color: #8a8278;
+    }
+
+    .branch-action-overlay-body .branch-action-section-title {
+      color: #6b5f52;
+    }
+
+    /* 开局画面遮罩 */
+    /* 菜单界面 */
+    .game-menu-overlay {
+      --menu-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw; /* 确保宽度至少是视口宽度，避免裁剪立绘 */
+      min-width: 100vw; /* 最小宽度为视口宽度 */
+      z-index: 10000; /* 高于所有元素 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      background-color: #000; /* 黑色背景，用于显示左右超出的黑边 */
+      overflow: visible; /* 允许内容超出，不裁剪 */
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.48s var(--menu-ease),
+        visibility 0.48s;
+    }
+
+    .game-menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .game-menu-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .game-menu-container {
+      position: relative;
+      width: 100%; /* 默认宽度为100%，由JavaScript动态调整 */
+      min-width: 100vw; /* 确保最小宽度为屏幕宽度，防止立绘被裁剪 */
+      height: 100vh; /* 固定高度为视口高度，上下锁定 */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E8%83%8C%E6%99%AF.png');
+      background-size: auto 100%; /* 高度填满，宽度保持比例，由JavaScript动态调整 */
+      background-position: center center; /* 以中轴线为基准，由JavaScript动态调整 */
+      background-repeat: no-repeat;
+      overflow-y: hidden; /* 禁止垂直滚动 */
+      overflow-x: visible; /* 允许左右超出屏幕 */
+      clip-path: none; /* 确保不裁剪子元素 */
+      opacity: 0;
+      transform: scale(1.045);
+      transition:
+        opacity 0.55s var(--menu-ease),
+        transform 0.55s var(--menu-ease);
+    }
+
+    .game-menu-overlay.show .game-menu-container {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* 菜单界面前景边框（叠加在背景之上，层级高于右侧人物立绘，与背景图片相同的布局逻辑） */
+    .game-menu-container::before {
+      content: '';
+      position: absolute;
+      top: 0; /* 上部锁定贴着设备上边缘 */
+      left: 0;
+      right: 0;
+      bottom: 0; /* 下部锁定贴着设备下边缘 */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E8%8F%9C%E5%8D%95%E7%95%8C%E9%9D%A2%E5%89%8D%E6%99%AF%E8%BE%B9%E6%A1%86.png');
+      background-size: var(--border-bg-size, auto 100%); /* 由JavaScript动态设置，默认auto 100% */
+      background-position: center center; /* 以中轴线为基准 */
+      background-repeat: no-repeat;
+      z-index: 10000; /* 高于右侧人物立绘(9999) */
+      pointer-events: none; /* 不阻挡点击事件 */
+    }
+
+    /* 金币背景框（正中轴线，距离边界20px） */
+    .game-menu-container::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px; /* 设置一个合适的宽度 */
+      height: 100px; /* 设置一个合适的高度 */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E9%87%91%E5%B8%81%E8%83%8C%E6%99%AF%E6%A1%86.png');
+      background-size: contain; /* 保持比例不变，完全显示 */
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: 10001; /* 在前景边框之上 */
+      pointer-events: none; /* 不阻挡点击事件 */
+    }
+
+    /* 堕落值外框容器（绝对定位，与外框相同的定位） */
+    .corruption-status-bar-container {
+      position: absolute;
+      bottom: 25px; /* 默认值，会被JavaScript覆盖 */
+      left: 20px;
+      z-index: 10002;
+      pointer-events: none;
+    }
+
+    /* 堕落值显示条（外框图片，在容器内相对定位，保持原始大小不允许变化） */
+    .corruption-status-bar {
+      position: relative;
+      display: block;
+      width: auto;
+      height: auto;
+      min-width: 0;
+      max-width: none;
+      min-height: 0;
+      max-height: none;
+      object-fit: none; /* 不允许缩放，保持原始尺寸 */
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+      flex-shrink: 0; /* 不允许收缩 */
+      z-index: 1; /* 高于变量条（z-index: 0） */
+    }
+
+    /* 堕落值变量条（位于堕落条外框内，从左上角开始算，W60px H8px为左上角位置，右侧减少100px） */
+    .corruption-value-bar {
+      position: absolute;
+      top: 8px; /* 从外框顶部向下8px */
+      left: 60px; /* 从外框左侧向右60px */
+      width: 328px; /* 变量条的完整宽度（428px - 100px，右侧减少100px） */
+      height: 18px; /* 高度18px（根据实际图片尺寸） */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E5%A0%95%E8%90%BD%E5%80%BC%E5%8F%98%E9%87%8F%E6%9D%A1.png');
+      background-size: 328px 18px; /* 完整尺寸（右侧减少100px） */
+      background-repeat: no-repeat;
+      background-position: left center;
+      overflow: hidden; /* 用于遮罩 */
+      z-index: 0; /* 低于外框（外框z-index: 1） */
+      clip-path: inset(0 0 0 0); /* 默认显示100%，通过修改clip-path来控制显示百分比 */
+    }
+
+    /* 性欲值显示条（外框图片，在容器内相对定位，保持原始大小不允许变化） */
+    .lust-status-bar {
+      position: relative;
+      display: block;
+      width: auto;
+      height: auto;
+      min-width: 0;
+      max-width: none;
+      min-height: 0;
+      max-height: none;
+      object-fit: none; /* 不允许缩放，保持原始尺寸 */
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+      flex-shrink: 0; /* 不允许收缩 */
+      z-index: 1; /* 高于变量条（z-index: 0） */
+    }
+
+    /* 性欲值外框容器（绝对定位，与外框相同的定位） */
+    .lust-status-bar-container {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10002;
+      pointer-events: none;
+    }
+
+    /* 性欲值变量条（位于性欲条外框内，从左上角开始算，W60px H8px为左上角位置，向右下角扩张两倍） */
+    .lust-value-bar {
+      position: absolute;
+      top: 8px; /* 从外框顶部向下8px（左上角位置不变） */
+      left: 60px; /* 从外框左侧向右60px（左上角位置不变） */
+      width: 430px; /* 变量条的完整宽度（200px × 2，向右扩张） */
+      height: 16px; /* 高度16px（8px × 2，向下扩张） */
+      background-image: url('https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/%E7%B3%BB%E7%BB%9F/%E6%80%A7%E6%AC%B2%E5%80%BC%E5%8F%98%E9%87%8F%E6%9D%A1.png');
+      background-size: 430px 16px; /* 完整尺寸（扩大两倍） */
+      background-repeat: no-repeat;
+      background-position: left center;
+      overflow: hidden; /* 用于遮罩 */
+      z-index: 0; /* 低于外框（外框默认z-index更高） */
+      clip-path: inset(0 0 0 0); /* 默认显示100%，通过修改clip-path来控制显示百分比 */
+    }
+
+    /* 托莉娜立绘呼吸动画（周期性上下移动） */
+    @keyframes torinaBreathing {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(15px); /* 向下移动15px */
+      }
+    }
+
+    /* 菜单界面托莉娜立绘（右侧，低于按钮层级） */
+    .game-menu-torina-sprite {
+      position: fixed;
+      top: 0; /* 上边缘贴着设备顶部（头顶天） */
+      right: 0; /* 右边缘贴着设备最右边 */
+      bottom: 0; /* 下边缘贴着设备最下面 */
+      left: auto; /* 左侧自动，允许超出屏幕 */
+      width: 100vw; /* 必须给宽度，否则无内容时计算为 0，背景图不显示 */
+      min-width: 100vw;
+      max-width: none; /* 不限制最大宽度，允许超出 */
+      height: 100vh; /* 高度固定为视口高度的100%（从0%到100%） */
+      background-size: auto 100%; /* 高度填满容器，宽度自适应保持比例 */
+      background-position: right bottom; /* 右对齐，底部对齐 */
+      background-repeat: no-repeat;
+      z-index: 9999; /* 低于前景边框::before(10000)、退出(10001)和按钮(10002)；若被边框挡住可把 .game-menu-container::before 的 z-index 改为 9998 */
+      pointer-events: none; /* 不阻挡点击事件 */
+      overflow: visible; /* 允许左侧超出 */
+      display: block; /* 确保元素可见 */
+      clip-path: none; /* 确保不被裁剪 */
+      clip: auto; /* 确保不被裁剪 */
+      visibility: visible; /* 确保可见 */
+      opacity: 0;
+      animation: torinaBreathing 8s ease-in-out infinite; /* 8秒周期（原速度的25%），缓速，无限循环 */
+      transition: opacity 0.6s var(--menu-ease) 0.06s;
+    }
+
+    .game-menu-overlay.show .game-menu-torina-sprite {
+      opacity: 1;
+    }
+
+    /* 菜单退出按钮 */
+    .game-menu-exit-btn {
+      position: absolute !important; /* 默认使用absolute定位，相对于菜单容器 */
+      top: 15px !important;
+      right: 15px !important;
+      z-index: 10001; /* 高于菜单容器 */
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      min-height: 40px;
+      width: clamp(40px, 6vw, 60px);
+      height: auto;
+      object-fit: contain;
+    }
+
+    .game-menu-exit-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+
+    /* 菜单设置UI */
+    .game-menu-settings-ui {
+      position: relative;
+      z-index: 10002; /* 高于菜单容器和退出按钮 */
+      pointer-events: auto;
+      cursor: pointer;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 当鼠标悬停在设置UI本身时，设置UI有变化 */
+    .game-menu-settings-ui:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .game-menu-settings-ui:active {
+      transform: scale(0.95);
+      filter: brightness(1.1);
+    }
+
+    /* Hstatus表界面（全屏覆盖，Z轴最高） */
+    /* 设置UI容器 */
+    .game-menu-settings-ui-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-30% + 22px));
+      opacity: 0;
+      z-index: 10002;
+      pointer-events: none;
+      transition:
+        opacity 0.5s var(--menu-ease) 0.08s,
+        transform 0.5s var(--menu-ease) 0.08s;
+    }
+
+    .game-menu-overlay.show .game-menu-settings-ui-container {
+      opacity: 1;
+      transform: translate(-50%, -30%);
+    }
+
+    .game-menu-settings-ui-container > * {
+      pointer-events: auto;
+    }
+
+    /* 设定字样 - 统一显示在设置按钮上方 */
+    .settings-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10003; /* 高于设置UI */
+      pointer-events: none;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 60px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 当鼠标悬停在设置UI本身时，设定字样从上方滚动下来 */
+    .game-menu-settings-ui:hover ~ .settings-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* 保存UI */
+    .game-menu-save-ui {
+      position: relative;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10002;
+      pointer-events: auto;
+      cursor: pointer;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 当鼠标悬停在保存UI本身时，保存UI有变化 */
+    .game-menu-save-ui:hover {
+      transform: translateX(-50%) scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .game-menu-save-ui:active {
+      transform: translateX(-50%) scale(0.95);
+      filter: brightness(1.1);
+    }
+
+    /* 保存字样 - 统一显示在设置按钮上方 */
+    .save-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10003; /* 高于设置UI */
+      pointer-events: none;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 60px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 当鼠标悬停在保存UI时，保存字样在设置按钮上方显示 */
+    .game-menu-save-ui:hover ~ .save-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* 历史消息UI - 显示在设置按钮右边，往下移动10% */
+    .game-menu-history-ui {
+      position: absolute;
+      top: -10%; /* 往下移动10% */
+      left: 100%; /* 从设置按钮的右边开始 */
+      margin-left: 20px; /* 与设置按钮的间距 */
+      z-index: 10002;
+      pointer-events: auto;
+      cursor: pointer;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: all 0.3s ease;
+      display: block;
+      padding: 0;
+    }
+
+    .game-menu-history-ui:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .game-menu-history-ui:active {
+      transform: scale(0.95);
+      filter: brightness(1.1);
+    }
+
+    /* 历史消息字样 - 统一显示在设置按钮上方 */
+    .history-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10003; /* 高于设置UI */
+      pointer-events: none;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 60px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 当鼠标悬停在历史消息UI时，历史消息字样在设置按钮上方显示 */
+    .game-menu-history-ui:hover ~ .history-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* Hstatus UI - 显示在设置按钮左边，位置相当于反转的历史消息按钮 */
+    .game-menu-hstatus-ui {
+      position: absolute;
+      top: -10%; /* 与历史消息按钮对称 */
+      right: 100%; /* 从设置按钮的左边开始（反转历史消息按钮） */
+      margin-right: 20px; /* 与设置按钮的间距 */
+      z-index: 10002;
+      pointer-events: auto;
+      cursor: pointer;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: all 0.3s ease;
+      display: block;
+      padding: 0;
+    }
+
+    .game-menu-hstatus-ui:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .game-menu-hstatus-ui:active {
+      transform: scale(0.95);
+      filter: brightness(1.1);
+    }
+
+    /* Hstatus字样 - 统一显示在设置按钮上方 */
+    .hstatus-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10003; /* 高于设置UI */
+      pointer-events: none;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 60px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 当鼠标悬停在Hstatus UI时，Hstatus字样在设置按钮上方显示 */
+    .game-menu-hstatus-ui:hover ~ .hstatus-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    /* 地图 UI - 显示在 Hstatus 按钮下方，略向右偏移 */
+    .game-menu-map-ui {
+      position: absolute;
+      top: calc(20%);
+      right: calc(50%);
+      margin-right: 8px;
+      z-index: 10002;
+      pointer-events: auto;
+      cursor: pointer;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: all 0.3s ease;
+      display: block;
+      padding: 0;
+    }
+
+    .game-menu-map-ui:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    .game-menu-map-ui:active {
+      transform: scale(0.95);
+      filter: brightness(1.1);
+    }
+
+    /* 地图字样 - 与其他菜单标签相同，统一显示在设置按钮上方 */
+    .map-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10003;
+      pointer-events: none;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 60px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .game-menu-map-ui:hover ~ .map-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    

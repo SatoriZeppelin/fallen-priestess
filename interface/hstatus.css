@@ -1,0 +1,788 @@
+/* Hstatus 表界面 */
+/* Hstatus表容器 */
+    .hstatus-table-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hstatus表组（包含三张图片的容器） */
+    .hstatus-table-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw; /* 完全铺满屏幕宽度 */
+      height: 100vh; /* 完全铺满屏幕高度 */
+      z-index: 1; /* 位于退出按钮之下 */
+    }
+
+    /* Hstatus表底图（最底层） */
+    .hstatus-table-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%; /* 铺满容器宽度 */
+      height: 100%; /* 铺满容器高度 */
+      object-fit: cover; /* 保持比例，完全铺满，允许裁剪 */
+      z-index: 1;
+    }
+
+    /* Hstatus表表图（中间层） */
+    .hstatus-table-main {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%; /* 铺满容器宽度 */
+      height: 100%; /* 铺满容器高度 */
+      object-fit: cover; /* 保持比例，完全铺满，允许裁剪 */
+      z-index: 2;
+    }
+
+    /* Hstatus表高光（最上层） */
+    .hstatus-table-highlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%; /* 铺满容器宽度 */
+      height: 100%; /* 铺满容器高度 */
+      object-fit: cover; /* 保持比例，完全铺满，允许裁剪 */
+      z-index: 3;
+    }
+
+    /* 表 Hstatus 图层组 */
+    .hstatus-outer-stack {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 1;
+    }
+
+    /* 里 Hstatus 图层组（Background → Foreground → Highlight，自下而上） */
+    .hstatus-inner-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hstatus-inner-group.show {
+      pointer-events: auto;
+    }
+
+    .hstatus-layer-switching .hstatus-outer-stack,
+    .hstatus-layer-switching .hstatus-inner-group {
+      pointer-events: none;
+    }
+
+    .hstatus-inner-bg,
+    .hstatus-inner-fg,
+    .hstatus-inner-highlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hstatus-inner-bg {
+      z-index: 1;
+    }
+
+    .hstatus-inner-fg {
+      z-index: 2;
+    }
+
+    .hstatus-inner-highlight {
+      z-index: 3;
+    }
+
+    /* Hstatus 边框框体（表/里均叠在立绘与文字之上，低于退出按钮与箭头） */
+    .hstatus-table-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Hstatus表退出按钮（右上角） */
+    .hstatus-table-exit-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 4; /* 高于所有图片 */
+      pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 40px;
+      min-height: 40px;
+      width: clamp(40px, 6vw, 60px);
+      height: auto;
+      object-fit: contain;
+    }
+
+    .hstatus-table-exit-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.2);
+    }
+
+    /* Hstatus文字和立绘淡出动画 */
+    @keyframes hstatusFadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    /* Hstatus指向箭头（下方正中） */
+    .hstatus-cursor-down {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5; /* 高于所有Hstatus元素 */
+      pointer-events: auto; /* 允许点击事件 */
+      cursor: pointer; /* 鼠标指针样式 */
+      width: 2.5vw; /* 屏幕宽度的2.5% */
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .hstatus-cursor-down:hover {
+      opacity: 0.7;
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .hstatus-cursor-down:active {
+      opacity: 0.5;
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    /* Hstatus指向箭头（右侧正中，逆时针旋转90度） */
+    .hstatus-cursor-right {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      z-index: 5; /* 高于所有Hstatus元素 */
+      pointer-events: auto; /* 允许点击事件 */
+      cursor: pointer; /* 鼠标指针样式 */
+      width: 2.5vw; /* 屏幕宽度的2.5% */
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .hstatus-cursor-right:hover {
+      opacity: 0.7;
+      transform: translateY(-50%) rotate(-90deg) scale(1.1);
+    }
+
+    .hstatus-cursor-right:active {
+      opacity: 0.5;
+      transform: translateY(-50%) rotate(-90deg) scale(0.95);
+    }
+
+    /* Hstatus指向箭头（上方正中，向上，旋转180度） */
+    .hstatus-cursor-up {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      z-index: 5; /* 高于所有Hstatus元素 */
+      pointer-events: auto; /* 允许点击事件 */
+      cursor: pointer; /* 鼠标指针样式 */
+      width: 2.5vw; /* 屏幕宽度的2.5% */
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .hstatus-cursor-up:hover {
+      opacity: 0.7;
+      transform: translateX(-50%) rotate(180deg) scale(1.1);
+    }
+
+    .hstatus-cursor-up:active {
+      opacity: 0.5;
+      transform: translateX(-50%) rotate(180deg) scale(0.95);
+    }
+
+    /* Hstatus指向箭头（左侧正中，顺时针旋转90度）— 里界面返回表界面 */
+    .hstatus-cursor-left {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      z-index: 5;
+      pointer-events: auto;
+      cursor: pointer;
+      width: 2.5vw;
+      height: auto;
+      object-fit: contain;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .hstatus-cursor-left:hover {
+      opacity: 0.7;
+      transform: translateY(-50%) rotate(90deg) scale(1.1);
+    }
+
+    .hstatus-cursor-left:active {
+      opacity: 0.5;
+      transform: translateY(-50%) rotate(90deg) scale(0.95);
+    }
+
+    /* Hstatus文字和立绘淡出状态 */
+    .hstatus-fade-out {
+      animation: hstatusFadeOut 0.5s ease-out forwards;
+    }
+
+    /* Hstatus文字淡入动画（反向执行淡出） */
+    @keyframes hstatusFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Hstatus文字淡入状态 */
+    .hstatus-fade-in {
+      animation: hstatusFadeIn 0.5s ease-out forwards;
+    }
+
+    /* Hstatus抖动动画 */
+    @keyframes hstatusShake {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      10% {
+        transform: translate(-5px, -5px);
+      }
+      20% {
+        transform: translate(5px, 5px);
+      }
+      30% {
+        transform: translate(-5px, 5px);
+      }
+      40% {
+        transform: translate(5px, -5px);
+      }
+      50% {
+        transform: translate(-5px, 0);
+      }
+      60% {
+        transform: translate(5px, 0);
+      }
+      70% {
+        transform: translate(0, -5px);
+      }
+      80% {
+        transform: translate(0, 5px);
+      }
+      90% {
+        transform: translate(-5px, -5px);
+      }
+    }
+
+    /* Hstatus文字抖动动画（本质与角色抖动相同，但路径不同，左右文字共享同一个移动模式） */
+    /* 左侧文字面板动画（基础定位：translate(-50%, -50%)） */
+    @keyframes hstatusTextShakeLeft {
+      0%, 100% {
+        transform: translate(-50%, -50%) translate(0, 0);
+      }
+      12.5% {
+        transform: translate(-50%, -50%) translate(5px, -5px);
+      }
+      25% {
+        transform: translate(-50%, -50%) translate(-5px, 5px);
+      }
+      37.5% {
+        transform: translate(-50%, -50%) translate(5px, 5px);
+      }
+      50% {
+        transform: translate(-50%, -50%) translate(0, -5px);
+      }
+      62.5% {
+        transform: translate(-50%, -50%) translate(-5px, 0);
+      }
+      75% {
+        transform: translate(-50%, -50%) translate(0, 5px);
+      }
+      87.5% {
+        transform: translate(-50%, -50%) translate(5px, 0);
+      }
+    }
+    /* 右侧文字面板动画（基础定位：translate(50%, -50%)，移动模式与左侧相同） */
+    @keyframes hstatusTextShakeRight {
+      0%, 100% {
+        transform: translate(50%, -50%) translate(0, 0);
+      }
+      12.5% {
+        transform: translate(50%, -50%) translate(5px, -5px);
+      }
+      25% {
+        transform: translate(50%, -50%) translate(-5px, 5px);
+      }
+      37.5% {
+        transform: translate(50%, -50%) translate(5px, 5px);
+      }
+      50% {
+        transform: translate(50%, -50%) translate(0, -5px);
+      }
+      62.5% {
+        transform: translate(50%, -50%) translate(-5px, 0);
+      }
+      75% {
+        transform: translate(50%, -50%) translate(0, 5px);
+      }
+      87.5% {
+        transform: translate(50%, -50%) translate(5px, 0);
+      }
+    }
+
+    /* 立绘视图切换：时长与缓动（各子界面仅用 .hstatus-sprite-images transform） */
+    .hstatus-table-container {
+      --hstatus-layer-crossfade-ms: 1000ms;
+      --hstatus-sprite-transition-ms: 2000ms;
+      --hstatus-text-reveal-delay-ms: 1500ms;
+      --hstatus-head-scale: 2.142857;
+      --hstatus-head-translate-x: 0vw;
+      --hstatus-head-translate-y: 45vh;
+      --hstatus-head-origin-y: 10vh;
+      --hstatus-head-clothes-mask-ms: 500ms;
+      --hstatus-clothes-mask-anchor-x: 50%;
+      --hstatus-clothes-mask-anchor-y: 35.71%;
+      --hstatus-chest-scale: 2.142857;
+      --hstatus-chest-translate-x: 0;
+      --hstatus-chest-translate-y: 10vh;
+      --hstatus-chest-origin-y: 35.71%;
+      --hstatus-chest-clothes-mask-ms: 1000ms;
+      --hstatus-crotch-scale: 2.5;
+      --hstatus-crotch-translate-x: 10vw;
+      --hstatus-crotch-translate-y: -180vh;
+      --hstatus-crotch-translate-y-inner: -50vh;
+      --hstatus-crotch-origin-y: 35.71%;
+      --hstatus-crotch-clothes-mask-ms: 1000ms;
+      --hstatus-womb-fade-in-ms: 500ms;
+      --hstatus-womb-fade-out-ms: 400ms;
+      --hstatus-womb-fade-in-delay-ms: 350ms;
+    }
+
+    /* Hstatus立绘遮罩容器（外层固定，视图切换只动内层 .hstatus-sprite-images） */
+    .mask-wrapper {
+      position: absolute;
+      top: 0%; /* 立绘顶部在设备从上往下的0% */
+      left: 50%; /* 默认居中，确保第一次点击时过渡平滑 */
+      right: auto; /* 取消right: 0，使用left定位 */
+      bottom: -40vh; /* 底部位于设备从上往下140%（超出屏幕40vh） */
+      z-index: 2; /* 位于表图之上，高光之下 */
+      width: 200vw; /* 足够大的宽度，确保立绘不被裁剪 */
+      height: 140vh; /* 从0%到140%，高度为140vh */
+      overflow: visible;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    /* 立绘专用径向遮罩层（仅包裹 spriteImages，子宫弹窗不在此层内故不受遮罩影响） */
+    .hstatus-sprite-mask-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      mask-image: radial-gradient(
+        circle at var(--hstatus-clothes-mask-anchor-x) var(--hstatus-clothes-mask-anchor-y),
+        white 0%,
+        white 40vh,
+        transparent 50vh
+      );
+      -webkit-mask-image: radial-gradient(
+        circle at var(--hstatus-clothes-mask-anchor-x) var(--hstatus-clothes-mask-anchor-y),
+        white 0%,
+        white 40vh,
+        transparent 50vh
+      );
+      mask-size: 100% 100%;
+      -webkit-mask-size: 100% 100%;
+      mask-position: center;
+      -webkit-mask-position: center;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+    }
+
+    /* 头部 / 胸部 / 阴部：单容器 transform 推镜头（GPU 合成，不改 layout 属性） */
+    .hstatus-sprite-images.head-view {
+      transform: translateX(var(--hstatus-head-translate-x))
+                 translateY(var(--hstatus-head-translate-y))
+                 scale(var(--hstatus-head-scale));
+    }
+
+    .hstatus-sprite-images.chest-view {
+      transform: translateX(var(--hstatus-chest-translate-x))
+                 translateY(var(--hstatus-chest-translate-y))
+                 scale(var(--hstatus-chest-scale));
+    }
+
+    .hstatus-sprite-images.crotch-view {
+      transform: translateX(var(--hstatus-crotch-translate-x))
+                 translateY(var(--hstatus-crotch-translate-y))
+                 scale(var(--hstatus-crotch-scale));
+    }
+
+    /* 正常模式·里界面阴部：垂直偏移与表界面分开 */
+    .hstatus-table-container.hstatus-layer-inner .hstatus-sprite-images.crotch-view {
+      transform: translateX(var(--hstatus-crotch-translate-x))
+                 translateY(var(--hstatus-crotch-translate-y-inner))
+                 scale(var(--hstatus-crotch-scale));
+    }
+
+    /* 服装层遮罩由 JS 逐帧扩散；圆心对齐界面可见区（hstatus-sprite-mask-wrap 锚点），非立绘自身百分比 */
+    .hstatus-sprite-images.head-view .hstatus-sprite-clothes,
+    .hstatus-sprite-images.chest-view .hstatus-sprite-clothes,
+    .hstatus-sprite-images.crotch-view .hstatus-sprite-clothes {
+      mask-image: none;
+      -webkit-mask-image: none;
+      opacity: 1;
+    }
+
+    /* 非子界面时确保无服装遮罩 */
+    .hstatus-sprite-images:not(.head-view):not(.chest-view):not(.crotch-view) .hstatus-sprite-clothes {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    /* Hstatus立绘抖动容器（内层，只应用抖动动画） */
+    .character-shake {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* 从顶部对齐 */
+      /* 只应用抖动动画（增加缓动和加大时长，继续减缓速度） */
+      animation: hstatusShake 20s ease-in-out infinite;
+    }
+
+    /* 镜头切换期间暂停抖动，避免与 transform 动画争抢合成层 */
+    .character-shake.hstatus-sprite-transitioning {
+      animation-play-state: paused;
+    }
+
+    /* Hstatus角色立绘容器（包含body和clothes，用于叠加） */
+    .hstatus-sprite-images {
+      position: relative;
+      width: auto;
+      height: 140vh;
+      transform: translateX(0) translateY(0) scale(1);
+      transform-origin: 50% 35.71%;
+      transition: transform var(--hstatus-sprite-transition-ms) cubic-bezier(0.25, 0.1, 0.25, 1),
+                  transform-origin var(--hstatus-sprite-transition-ms) cubic-bezier(0.25, 0.1, 0.25, 1);
+      will-change: transform;
+    }
+
+    /* Hstatus 人物立绘（Body，最底层） */
+    .hstatus-sprite-body {
+      position: relative;
+      width: auto; /* 宽度根据高度成比例变化，允许超出屏幕两侧 */
+      height: 140vh; /* 从设备0%到140%，高度为140vh */
+      object-fit: contain;
+      z-index: 1; /* 立绘最底，精液图层在上、服装在最上 */
+      display: block;
+    }
+
+    /* Hstatus 精液图层：Z 轴高于人物立绘、低于服装；不参与服装遮罩 */
+    .hstatus-sprite-cum {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: auto;
+      height: 140vh;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hstatus-sprite-cum[src=""],
+    .hstatus-sprite-cum:not([src]) { display: none; }
+
+    /* Hstatus 角色服装（Clothes，最上层） */
+    .hstatus-sprite-clothes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: auto; /* 宽度根据高度成比例变化，允许超出屏幕两侧 */
+      height: 140vh; /* 从设备0%到140%，高度为140vh */
+      object-fit: contain;
+      z-index: 3; /* 服装在精液图层之上 */
+    }
+
+    /* 子宫精液弹窗：淡入晚于服装遮罩开始，淡出早于遮罩逆向收拢 */
+    .hstatus-womb-popup {
+      position: absolute;
+      left: calc(50% + 10vh);
+      top: 0vh;
+      max-width: min(40vw, 400px);
+      max-height: 60vh;
+      object-fit: contain;
+      z-index: 4;
+      pointer-events: none;
+      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--hstatus-womb-fade-out-ms) ease,
+                  visibility 0s linear var(--hstatus-womb-fade-out-ms);
+    }
+
+    .hstatus-womb-popup.hstatus-womb-visible {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity var(--hstatus-womb-fade-in-ms) ease,
+                  visibility 0s;
+    }
+
+    /* Hstatus文字面板容器 */
+    .hstatus-text-panels {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3; /* 位于立绘之上 */
+      pointer-events: none; /* 不阻挡点击事件 */
+    }
+
+    /* Hstatus外层高光层（平行四边形遮罩从左往右移动） */
+    @keyframes hstatusHighlightMove {
+      0% {
+        mask-position: -100% 50%;
+        -webkit-mask-position: -100% 50%;
+      }
+      100% {
+        mask-position: 200% 50%;
+        -webkit-mask-position: 200% 50%;
+      }
+    }
+
+    .hstatus-outer-highlight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw; /* 完全铺满屏幕宽度 */
+      height: 100vh; /* 完全铺满屏幕高度 */
+      z-index: 3.5; /* 位于文字面板之上，退出按钮之下 */
+      pointer-events: none; /* 不阻挡点击事件 */
+      object-fit: cover;
+      /* 使用倾斜的线性渐变创建平行四边形遮罩效果，带柔化边缘 */
+      /* 创建一个倾斜的遮罩带，从左往右移动 */
+      /* 平行四边形角度约15度，宽度为视口宽度的60% */
+      mask-image: linear-gradient(
+        15deg,
+        transparent 0%,
+        transparent 20%,
+        rgba(255, 255, 255, 0.3) 25%,
+        rgba(255, 255, 255, 1) 30%,
+        rgba(255, 255, 255, 1) 70%,
+        rgba(255, 255, 255, 0.3) 75%,
+        transparent 80%,
+        transparent 100%
+      );
+      -webkit-mask-image: linear-gradient(
+        15deg,
+        transparent 0%,
+        transparent 20%,
+        rgba(255, 255, 255, 0.3) 25%,
+        rgba(255, 255, 255, 1) 30%,
+        rgba(255, 255, 255, 1) 70%,
+        rgba(255, 255, 255, 0.3) 75%,
+        transparent 80%,
+        transparent 100%
+      );
+      mask-size: 60% 200%;
+      -webkit-mask-size: 60% 200%;
+      mask-position: -100% 50%;
+      -webkit-mask-position: -100% 50%;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      /* 从左往右移动动画 */
+      animation: hstatusHighlightMove 8s linear infinite;
+    }
+
+    /* Hstatus左侧文字面板（位置由 JS 根据屏幕宽高比设置 --hstatus-text-inset-percent，16:9 为 30%，9:16 为 10%） */
+    .hstatus-text-panel-left {
+      position: absolute;
+      left: var(--hstatus-text-inset-percent, 30%);
+      top: 50%;
+      /* 基础定位和抖动动画都在动画中处理 */
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.2vw, 16px);
+      /* 允许按比例放大 */
+      transform-origin: center center;
+      /* 应用文字抖动动画（与右侧共享同一个移动模式） */
+      animation: hstatusTextShakeLeft 20s ease-in-out infinite;
+    }
+
+    /* Hstatus右侧文字面板（与左侧对称，同一变量） */
+    .hstatus-text-panel-right {
+      position: absolute;
+      right: var(--hstatus-text-inset-percent, 30%);
+      top: 50%;
+      /* 基础定位和抖动动画都在动画中处理 */
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.2vw, 16px);
+      /* 允许按比例放大 */
+      transform-origin: center center;
+      /* 应用文字抖动动画（与左侧共享同一个移动模式） */
+      animation: hstatusTextShakeRight 20s ease-in-out infinite;
+    }
+    /* 阴部界面右侧：整体位置往下 20vh、往右 20%（右缘距视口右侧 20%） */
+    .hstatus-text-panel-right.hstatus-right-crotch-mode {
+      top: calc(50% + 20vh);
+      right: 20%;
+    }
+    /* 阴部界面右侧：内容区相对定位并保证宽度，避免绝对子元素 100% 宽度坍缩导致每字换行 */
+    .hstatus-text-panel-right.hstatus-right-crotch-mode .hstatus-text-content {
+      position: relative;
+      min-height: 80vh;
+      min-width: 12em;
+      width: max-content;
+    }
+    /* 前两行（与你足交次数、被你足部射精次数）整体中轴线放在横中轴上 */
+    .hstatus-crotch-right-center {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+    }
+    .hstatus-crotch-right-below {
+      position: absolute;
+      left: 0;
+      top: 58%;
+      width: 100%;
+    }
+
+    /* Hstatus文字内容 */
+    .hstatus-text-content {
+      color: #ffffff;
+      font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+      font-size: var(--hstatus-text-font-size, clamp(14px, 1.8vw, 20px));
+      line-height: 1.8;
+      text-shadow:
+        0 0 8px rgba(135, 206, 250, 0.9),
+        0 0 15px rgba(135, 206, 250, 0.6),
+        0 0 25px rgba(135, 206, 250, 0.4),
+        0 0 35px rgba(135, 206, 250, 0.2);
+      white-space: pre-line;
+      background: none; /* 无背景 */
+      /* 允许按比例放大 */
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    /* Hstatus文字行（用于缩进） */
+    .hstatus-text-line {
+      display: block;
+      font-size: var(--hstatus-text-font-size, clamp(14px, 1.8vw, 20px));
+      /* 允许按比例放大 */
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    /* 左侧文字圆弧（表/里通用）：圆心水平 40%、垂直 50%；半径 min(50vw,50vh) */
+    .hstatus-text-panel-left.hstatus-left-text-arc-mode {
+      left: 0 !important;
+      top: 0 !important;
+      width: 100%;
+      height: 100%;
+      transform: none !important;
+      animation: none !important;
+      gap: 0;
+      pointer-events: none;
+    }
+
+    .hstatus-text-panel-left.hstatus-left-text-arc-mode .hstatus-text-content.hstatus-left-text-arc {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hstatus-text-panel-left.hstatus-left-text-arc-mode .hstatus-text-line {
+      position: absolute;
+      text-indent: 0 !important;
+      white-space: nowrap;
+      margin: 0;
+      width: max-content;
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+
+    /* 正常模式·表界面：头部文字偏左上 */
+    @keyframes hstatusTextShakeLeftNormalHead {
+      0%, 100% {
+        transform: translate(-50%, 0) translate(0, 0);
+      }
+      12.5% {
+        transform: translate(-50%, 0) translate(5px, -5px);
+      }
+      25% {
+        transform: translate(-50%, 0) translate(-5px, 5px);
+      }
+      37.5% {
+        transform: translate(-50%, 0) translate(5px, 5px);
+      }
+      50% {
+        transform: translate(-50%, 0) translate(0, -5px);
+      }
+      62.5% {
+        transform: translate(-50%, 0) translate(-5px, 0);
+      }
+      75% {
+        transform: translate(-50%, 0) translate(0, 5px);
+      }
+      87.5% {
+        transform: translate(-50%, 0) translate(5px, 0);
+      }
+    }
+
+    .hstatus-text-panel-left.hstatus-normal-outer-head {
+      top: 20%;
+      left: max(10%, calc(var(--hstatus-text-inset-percent, 30%) - 12%));
+      animation-name: hstatusTextShakeLeftNormalHead;
+    }
+
+    /* 正常模式·表界面：胸部/足部文字偏左中（沿用默认垂直居中锚点） */
+    .hstatus-text-panel-left.hstatus-normal-outer-mid {
+      top: 50%;
+      left: max(5%, calc(var(--hstatus-text-inset-percent, 30%) - 10vh));
+      animation-name: hstatusTextShakeLeft;
+    }
+
