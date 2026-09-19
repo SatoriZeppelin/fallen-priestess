@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <script>
+    (function () {
+      if (!/\.github\.io$/i.test(location.hostname)) return;
+      var repo = location.pathname.split('/').filter(Boolean)[0];
+      if (!repo) return;
+      var base = document.createElement('base');
+      base.href = '/' + repo + '/';
+      document.head.appendChild(base);
+    })();
+  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>妹神官</title>
@@ -9,6 +19,7 @@
   <link rel="stylesheet" href="interface/title.css" />
   <link rel="stylesheet" href="interface/stage.css" />
   <link rel="stylesheet" href="interface/settings.css" />
+  <link rel="stylesheet" href="interface/modal.css" />
   <link rel="stylesheet" href="interface/hstatus.css" />
   <link rel="stylesheet" href="interface/map.css" />
   <link rel="stylesheet" href="interface/toolbar.css" />
@@ -710,9 +721,6 @@
   </div>
 
   <div class="frame">
-    <!-- 灰色蒙版 -->
-    <div class="route-overlay-mask" id="route-overlay-mask"></div>
-
     <!-- 开局画面遮罩 -->
     <div class="intro-mask" id="intro-mask">
       <!-- WebM 动图背景 -->
@@ -757,132 +765,82 @@
       </div>
     </div>
 
-    <!-- 设置界面（二级弹窗） -->
+    <!-- 设置界面 -->
     <div class="settings-overlay hidden" id="settings-overlay">
-      <div class="settings-header">
-        <div class="settings-title">设置</div>
-        <button class="settings-close-btn" id="settings-close-btn" title="关闭"></button>
-      </div>
-      <div class="settings-content">
-        <!-- 二级菜单：主菜单 -->
-        <div class="settings-menu" id="settings-main-menu">
-          <div class="settings-main-menu">
-            <button class="settings-main-menu-btn" id="settings-resource-list-btn">资源列表</button>
-            <button class="settings-main-menu-btn" id="settings-text-format-btn">正文格式</button>
-            <button class="settings-main-menu-btn" id="settings-data-storage-btn">数据存储</button>
+      <div class="fp-panel settings-home-panel">
+        <div class="settings-tabs">
+          <div class="settings-tabs-scroll" role="tablist" aria-label="设置一级目录">
+            <button type="button" class="settings-tab active" id="settings-resource-list-btn" data-tab="resources">
+              <span class="tab-inner"><span class="tab-label">资源列表</span></span>
+            </button>
+            <button type="button" class="settings-tab" id="settings-text-format-btn" data-tab="text-format">
+              <span class="tab-inner"><span class="tab-label">正文格式</span></span>
+            </button>
+            <button type="button" class="settings-tab" id="settings-data-storage-btn" data-tab="data-storage">
+              <span class="tab-inner"><span class="tab-label">数据存储</span></span>
+            </button>
+            <button type="button" class="settings-tab" id="settings-system-btn" data-tab="system">
+              <span class="tab-inner"><span class="tab-label">系统设置</span></span>
+            </button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 路线选择界面 -->
-    <div class="route-selection-overlay hidden" id="route-selection-overlay">
-      <button class="route-back-btn" id="route-back-btn" title="返回">← 返回</button>
-      <div class="route-selection-container">
-        <div class="route-boxes">
-          <div class="route-box" id="route-box-love">
-            <div class="route-box-image">
-              <img src="https://files.catbox.moe/wcejcp.jpg" alt="纯爱路线" />
-            </div>
-          </div>
-          <div class="route-box" id="route-box-game">
-            <div class="route-box-image">
-              <img src="https://files.catbox.moe/s0how3.jpg" alt="游戏路线" />
-            </div>
-          </div>
-        </div>
-        <div class="route-description hidden" id="route-description">
-          <div class="route-title" id="route-title"></div>
-          <div class="route-text" id="route-text"></div>
-          <div class="route-start-btn-wrapper" id="route-start-btn-wrapper">
-            <button class="route-start-btn" id="route-start-btn">开始游戏</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 资源列表界面（三级弹窗） -->
-    <div class="settings-overlay hidden" id="resources-overlay">
-      <div class="settings-header">
-        <div class="settings-header-left">
-          <div class="settings-title">游戏资源</div>
-          <div class="settings-stats-panel">
-            <button class="settings-stats-btn" id="settings-stats-btn">查看资源统计</button>
-            <div class="settings-stats-info hidden" id="settings-stats-info">
-              <!-- 统计信息将在这里显示 -->
-            </div>
-          </div>
-        </div>
-        <button class="settings-close-btn" id="resources-close-btn" title="返回"></button>
-      </div>
-      <div class="settings-content">
-        <!-- 三级菜单：资源分类选择 -->
-        <div class="settings-menu" id="settings-category-menu">
-          <div class="settings-category-menu">
-            <button class="settings-category-btn" data-category="立绘">立绘</button>
-            <button class="settings-category-btn" data-category="CG">CG</button>
-            <button class="settings-category-btn" data-category="背景">背景</button>
-            <button class="settings-category-btn" data-category="系统">系统</button>
-          </div>
+          <button type="button" class="settings-close-btn" id="settings-close-btn" title="关闭" aria-label="关闭">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+            </svg>
+          </button>
         </div>
 
-        <!-- 四级菜单：资源列表 -->
-        <div class="settings-menu hidden" id="settings-resource-menu">
-          <div class="settings-resource-menu">
-            <div class="settings-resource-menu-header">
-              <div class="settings-resource-menu-controls">
-                <button class="settings-control-btn" id="settings-select-all-btn">全选</button>
-                <button class="settings-control-btn" id="settings-invert-btn">反转</button>
+        <div class="settings-body">
+          <div class="settings-pane active" id="pane-resources" data-pane="resources">
+            <div class="settings-pane-toolbar">
+              <nav class="settings-subnav" id="settings-category-menu" aria-label="资源分类">
+                <button type="button" class="settings-subtab settings-category-btn active" data-category="立绘">立绘</button>
+                <button type="button" class="settings-subtab settings-category-btn" data-category="CG">CG</button>
+                <button type="button" class="settings-subtab settings-category-btn" data-category="背景">背景</button>
+                <button type="button" class="settings-subtab settings-category-btn" data-category="系统">系统</button>
+              </nav>
+              <div class="settings-stats-panel">
+                <button class="settings-stats-btn" id="settings-stats-btn">查看资源统计</button>
+                <div class="settings-stats-info hidden" id="settings-stats-info"></div>
               </div>
-              <div class="settings-resource-menu-title" id="settings-resource-menu-title">资源列表</div>
-              <button class="settings-back-btn" id="settings-back-to-category-btn">← 返回</button>
             </div>
-            <div class="settings-resource-list" id="settings-resource-list">
-              <!-- 资源列表将在这里动态生成 -->
+            <div class="settings-resource-menu" id="settings-resource-menu">
+              <div class="settings-resource-menu-header">
+                <div class="settings-resource-menu-controls">
+                  <button class="settings-control-btn" id="settings-select-all-btn">全选</button>
+                  <button class="settings-control-btn" id="settings-invert-btn">反转</button>
+                </div>
+                <div class="settings-resource-menu-title" id="settings-resource-menu-title">立绘 资源</div>
+              </div>
+              <div class="settings-resource-list" id="settings-resource-list"></div>
+            </div>
+            <div class="settings-actions" id="settings-actions">
+              <button class="settings-action-btn" id="settings-reload-once-btn">重载一次选中资源</button>
+              <button class="settings-action-btn delete" id="settings-delete-btn">删除选中资源</button>
+              <button class="settings-action-btn" id="settings-reload-until-btn">重载选中直到载入完毕</button>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="settings-actions hidden" id="settings-actions">
-        <button class="settings-action-btn" id="settings-reload-once-btn">重载一次选中资源</button>
-        <button class="settings-action-btn delete" id="settings-delete-btn">删除选中资源</button>
-        <button class="settings-action-btn" id="settings-reload-until-btn">重载选中直到载入完毕</button>
-      </div>
-    </div>
 
-    <!-- 数据存储界面 -->
-    <div class="settings-overlay hidden" id="data-storage-overlay">
-      <div class="settings-header">
-        <div class="settings-title">数据存储</div>
-        <button class="settings-close-btn" id="data-storage-close-btn" title="返回"></button>
-      </div>
-      <div class="settings-content">
-        <div class="settings-menu" id="data-storage-menu">
-          <div class="text-format-content">
-            <div class="text-format-section">
-              <h3 class="text-format-section-title">存档数据</h3>
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 15px 0;">
-                <span style="color: #fff; font-size: 16px; text-shadow: 1px 1px 0 #000;">存档数据</span>
-                <div style="display: flex; gap: 15px;">
-                  <button class="data-storage-wood-btn" id="data-storage-export-btn">导出</button>
-                  <button class="data-storage-wood-btn data-storage-delete-btn" id="data-storage-delete-btn">删除</button>
+          <div class="settings-pane" id="pane-data-storage" data-pane="data-storage">
+            <div class="settings-menu" id="data-storage-menu">
+              <div class="text-format-content">
+                <div class="text-format-section">
+                  <h3 class="text-format-section-title">存档数据</h3>
+                  <div class="text-format-item text-format-item-inline">
+                    <label class="text-format-label">存档数据</label>
+                    <div class="settings-data-actions">
+                      <button type="button" class="settings-control-btn" id="data-storage-export-btn">导出</button>
+                      <button type="button" class="settings-action-btn delete" id="data-storage-delete-btn">删除</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- 正文格式设置界面 -->
-    <div class="settings-overlay hidden" id="text-format-overlay">
-      <div class="settings-header">
-        <div class="settings-title">正文格式</div>
-        <button class="settings-close-btn" id="text-format-close-btn" title="返回"></button>
-      </div>
-      <div class="settings-content">
-        <div class="settings-menu" id="text-format-menu">
-          <div class="text-format-content">
+          <div class="settings-pane" id="pane-text-format" data-pane="text-format">
+            <div class="settings-menu" id="text-format-menu">
+              <div class="text-format-content">
             <!-- 显示设置 -->
             <div class="text-format-section">
               <h3 class="text-format-section-title">显示设置</h3>
@@ -1038,6 +996,115 @@
               </div>
             </div>
           </div>
+            </div>
+          </div>
+
+          <div class="settings-pane" id="pane-system" data-pane="system">
+            <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
+              <button type="button" class="settings-subtab active" data-sub="api"><span class="sub-label">API</span></button>
+              <button type="button" class="settings-subtab" data-sub="preset"><span class="sub-label">预设</span></button>
+              <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
+              <button type="button" class="settings-subtab" data-sub="prompt"><span class="sub-label">提示词</span></button>
+              <button type="button" class="settings-subtab" data-sub="variable"><span class="sub-label">变量</span></button>
+              <button type="button" class="settings-subtab" data-sub="misc"><span class="sub-label">杂项</span></button>
+            </nav>
+            <div class="settings-subcontent" id="settings-system-subcontent">
+              <div class="settings-subpane active" data-subpane="api">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">API 接口</h3>
+                    <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
+                  </div>
+                  <div class="sys-api-profiles" id="api-profiles-list"></div>
+                  <div class="sys-api-routes">
+                    <h3 class="sys-section-title">路由绑定</h3>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">默认接口</h4>
+                      <select class="sys-select" id="cfg-api-default-profile"></select>
+                    </div>
+                    <div class="sys-routes-grid">
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">主线</h4>
+                        <select class="sys-select" id="cfg-api-route-main" data-route="main"></select>
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">World</h4>
+                        <select class="sys-select" id="cfg-api-route-world" data-route="world"></select>
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">Story</h4>
+                        <select class="sys-select" id="cfg-api-route-story" data-route="story"></select>
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">Stats</h4>
+                        <select class="sys-select" id="cfg-api-route-stats" data-route="stats"></select>
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">Meta</h4>
+                        <select class="sys-select" id="cfg-api-route-meta" data-route="meta"></select>
+                      </div>
+                    </div>
+                    <p class="sys-hint">可添加多套接口。多模型协同时，World / Story / Stats / Meta 可绑到不同接口。</p>
+                  </div>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="preset">
+                <section class="sys-l3">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">预设</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-preset-add">新增条目</button>
+                      <button type="button" class="settings-control-btn" id="btn-preset-import">导入预设</button>
+                      <button type="button" class="settings-control-btn" id="btn-preset-export">导出预设</button>
+                    </div>
+                  </div>
+                  <p class="sys-empty">新增或导入预设后，条目将显示在这里</p>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="regex">
+                <section class="sys-l3">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">正则</h3>
+                    <button type="button" class="settings-control-btn" id="btn-regex-add">新增正则</button>
+                  </div>
+                  <p class="sys-empty">导入带正则的预设后，条目将显示在这里</p>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="prompt">
+                <section class="sys-l3">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">提示词</h3>
+                    <button type="button" class="settings-control-btn" id="btn-prompt-add">新增提示词</button>
+                  </div>
+                  <p class="sys-empty">世界书 / 角色提示词将显示在这里</p>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="variable">
+                <section class="sys-l3">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">变量</h3>
+                  </div>
+                  <p class="sys-empty">基础变量树将显示在这里</p>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="misc">
+                <section class="sys-l3">
+                  <h3 class="sys-section-title">杂项</h3>
+                  <label class="sys-check" for="cfg-compat-angle">
+                    <input type="checkbox" id="cfg-compat-angle" />
+                    <span class="sys-check-box" aria-hidden="true"></span>
+                    <span>尖括号兼容模式（&lt; → &lt;兼容，&gt; → 兼容&gt;）</span>
+                  </label>
+                  <p class="sys-hint">开启后，发给模型的标签会写成 <code>&lt;兼容imotoshinkan兼容&gt;</code> 这类形式，收到后再还原。适合会吞掉 <code>&lt;…&gt;</code> 的通道。</p>
+                </section>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1045,18 +1112,76 @@
 
   <!-- 存档界面 -->
   <div class="save-overlay hidden" id="save-overlay">
-    <div class="save-header">
-      <div class="save-title-container">
-        <div class="save-title">存档</div>
-        <button class="save-btn" id="save-btn">存档</button>
-        <button class="load-btn" id="load-btn">读档</button>
-        <button class="delete-btn" id="delete-btn">删除</button>
+    <div class="fp-panel fp-panel-wide save-home-panel">
+      <header class="saves-topbar">
+        <h3 class="saves-title" id="saves-title">DATA</h3>
+        <div class="saves-topbar-actions">
+          <button type="button" class="saves-action-btn" id="load-btn" disabled>读取选中存档</button>
+          <button type="button" class="saves-action-btn is-danger" id="delete-btn" disabled>删除选中存档</button>
+          <button type="button" class="save-close-btn" id="save-close-btn" title="关闭" aria-label="关闭">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <div class="saves-body">
+        <aside class="saves-preview" aria-label="存档预览">
+          <div class="saves-preview-kicker">DATA</div>
+          <div class="saves-preview-thumb" id="saves-preview-thumb">
+            <span class="saves-preview-placeholder">NO IMAGE</span>
+          </div>
+          <div class="saves-preview-fields">
+            <div class="saves-preview-field">
+              <span class="saves-preview-field-k">DATE</span>
+              <span class="saves-preview-field-v" id="saves-preview-date">—</span>
+            </div>
+            <div class="saves-preview-field">
+              <span class="saves-preview-field-k">TYPE</span>
+              <span class="saves-preview-field-v" id="saves-preview-slot">自动保存</span>
+            </div>
+            <div class="saves-preview-field">
+              <span class="saves-preview-field-k">COMMENT</span>
+              <span class="saves-preview-field-v" id="saves-preview-comment">请选择存档，或点 + 新建</span>
+            </div>
+          </div>
+        </aside>
+        <div class="saves-grid-wrap">
+          <div class="saves-grid save-archive-list" id="save-archive-list" role="list"></div>
+        </div>
       </div>
-      <button class="save-close-btn" id="save-close-btn" title="关闭"></button>
+      <button type="button" class="save-btn" id="save-btn" hidden>存档</button>
     </div>
-    <div class="save-content">
-      <div class="save-archive-list" id="save-archive-list">
-        <!-- 存档列表将在这里动态生成 -->
+  </div>
+
+  <div id="opening-panel" aria-hidden="true" inert>
+    <div class="opening-blur" aria-hidden="true"></div>
+    <button type="button" class="opening-close" id="btn-opening-close" aria-label="关闭">×</button>
+    <div class="opening-body" role="dialog" aria-modal="true" aria-labelledby="opening-caption">
+      <div class="opening-stage">
+        <button type="button" class="opening-nav opening-nav--prev" id="btn-opening-prev" aria-label="上一个开局">‹</button>
+        <div class="opening-viewport" id="opening-viewport">
+          <div class="opening-track" id="opening-track" role="listbox" aria-label="开局列表"></div>
+        </div>
+        <button type="button" class="opening-nav opening-nav--next" id="btn-opening-next" aria-label="下一个开局">›</button>
+      </div>
+      <div class="opening-footer">
+        <div class="opening-dots" id="opening-dots" aria-hidden="true"></div>
+        <p class="opening-caption" id="opening-caption"></p>
+        <p class="opening-desc" id="opening-desc"></p>
+        <button type="button" class="opening-confirm" id="btn-opening-confirm">开始开局</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="fp-toast" role="status" aria-live="polite"></div>
+
+  <div id="fp-confirm" aria-hidden="true" inert>
+    <div class="fp-confirm-card" role="dialog" aria-modal="true" aria-labelledby="fp-confirm-msg">
+      <p class="fp-confirm-msg" id="fp-confirm-msg"></p>
+      <div class="fp-confirm-actions">
+        <button type="button" class="fp-confirm-btn is-yes" id="fp-confirm-yes">确定</button>
+        <button type="button" class="fp-confirm-btn is-no" id="fp-confirm-no">取消</button>
       </div>
     </div>
   </div>
@@ -1064,7 +1189,9 @@
   <script src="resource/assetMap.js"></script>
   <script src="resource/assetResolver.js"></script>
   <script src="interface/map.js"></script>
+  <script src="interface/settings-api.js"></script>
   <script src="interface/toolbar.js"></script>
+  <script src="interface/opening-select.js"></script>
   <script src="interface/app.js"></script>
 </body>
 </html>

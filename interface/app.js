@@ -1728,47 +1728,16 @@
       const overlay = document.createElement('div');
       overlay.id = id;
       overlay.className = 'dialog-overlay';
-      overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: ${zIndex};
-        animation: fadeIn 0.3s ease;
-        pointer-events: auto;
-      `;
+      overlay.style.zIndex = String(zIndex);
       return overlay;
     }
 
-    // 创建弹窗dialog
-    function createDialog(width = '600px', minHeight = '300px', maxWidth = null) {
+    function createDialog(width = '600px', minHeight = '220px', maxWidth = null) {
       const dialog = document.createElement('div');
-      dialog.className = 'dialog-content';
-      dialog.style.cssText = `
-        position: relative;
-        width: ${width};
-        ${maxWidth ? `max-width: ${maxWidth};` : ''}
-        min-height: ${minHeight};
-        background-image: url('https://files.catbox.moe/e5v3lc.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border: none;
-        border-radius: 12px;
-        padding: 40px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        animation: slideIn 0.3s ease;
-      `;
+      dialog.className = 'dialog-content fp-panel';
+      dialog.style.width = width;
+      dialog.style.minHeight = minHeight;
+      if (maxWidth) dialog.style.maxWidth = maxWidth;
       return dialog;
     }
 
@@ -1870,162 +1839,57 @@
     // 创建关闭按钮（右上角）
     function createCloseButton() {
       const closeBtn = document.createElement('button');
-      closeBtn.style.cssText = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
-        background-image: url('https://files.catbox.moe/hkgfil.png');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        border: none;
-        background-color: transparent;
-        cursor: pointer;
-        z-index: 3;
-        transition: all 0.2s ease;
-      `;
-      closeBtn.addEventListener('mouseenter', () => {
-        closeBtn.style.transform = 'scale(1.1)';
-        closeBtn.style.filter = 'brightness(1.2)';
-      });
-      closeBtn.addEventListener('mouseleave', () => {
-        closeBtn.style.transform = 'scale(1)';
-        closeBtn.style.filter = 'brightness(1)';
-      });
+      closeBtn.className = 'settings-close-btn';
+      closeBtn.title = '关闭';
+      closeBtn.type = 'button';
       return closeBtn;
     }
 
-    // 创建半透明背景层
-    function createTextBackground(opacity = 0.6) {
+    function createTextBackground() {
       const textBg = document.createElement('div');
-      textBg.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, ${opacity});
-        border-radius: 8px;
-        z-index: 1;
-      `;
+      textBg.className = 'fp-panel-frame';
       return textBg;
     }
 
-    // 创建文字内容容器
-    function createTextContent(text, color = '#fff', fontSize = '24px', textShadow = '') {
+    function createTextContent(text) {
       const textContent = document.createElement('div');
-      textContent.style.cssText = `
-        position: relative;
-        z-index: 2;
-        color: ${color};
-        font: 700 ${fontSize}/1.6 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
-        white-space: pre-line;
-        word-wrap: break-word;
-        max-width: 100%;
-        ${textShadow ? `text-shadow: ${textShadow};` : ''}
-      `;
+      textContent.className = 'fp-dialog-text';
       textContent.textContent = text;
       return textContent;
     }
 
-    // 创建按钮容器
     function createButtonContainer() {
       const buttonContainer = document.createElement('div');
-      buttonContainer.style.cssText = `
-        position: relative;
-        z-index: 2;
-        display: flex;
-        gap: 20px;
-        margin-top: 20px;
-      `;
+      buttonContainer.className = 'fp-dialog-actions';
       return buttonContainer;
     }
 
-    // 创建木质风格按钮
     function createWoodButton(text, onClick) {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.textContent = text;
-      btn.className = 'data-storage-wood-btn';
-      btn.style.cssText = `
-        padding: 12px 24px;
-        background: #8B4513;
-        border: 2px solid #654321;
-        border-radius: 6px;
-        color: #F4E8C1;
-        font-size: 16px;
-        font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        min-width: 120px;
-      `;
-      btn.addEventListener('mouseenter', () => {
-        btn.style.background = '#A0522D';
-        btn.style.borderColor = '#8B4513';
-        btn.style.transform = 'translateY(-1px)';
-        btn.style.boxShadow = '0 3px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.background = '#8B4513';
-        btn.style.borderColor = '#654321';
-        btn.style.transform = 'translateY(0)';
-        btn.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-      });
-      if (onClick) {
-        btn.addEventListener('click', onClick);
-      }
+      btn.className = 'fp-btn data-storage-wood-btn';
+      if (onClick) btn.addEventListener('click', onClick);
       return btn;
     }
 
-    // 创建通用按钮（使用通用按钮背景）
     function createCommonButton(text, onClick, options = {}) {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.textContent = text;
-      const marginTop = options.marginTop || '0';
-      btn.style.cssText = `
-        position: relative;
-        z-index: 2;
-        margin-top: ${marginTop};
-        padding: 12px 40px;
-        background-color: transparent;
-        background-image: url('https://files.catbox.moe/8b71o8.png');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        border: none;
-        color: #fff;
-        font: 700 18px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      `;
-      btn.addEventListener('mouseenter', () => {
-        btn.style.transform = 'scale(1.05)';
-        btn.style.filter = 'brightness(1.1)';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'scale(1)';
-        btn.style.filter = 'brightness(1)';
-      });
-      if (onClick) {
-        btn.addEventListener('click', onClick);
-      }
+      btn.className = 'fp-btn';
+      if (options.marginTop) btn.style.marginTop = options.marginTop;
+      if (onClick) btn.addEventListener('click', onClick);
       return btn;
     }
 
     // 创建关闭弹窗函数
     function createCloseDialogFunction(overlay, dialog) {
       return () => {
-        dialog.style.animation = 'slideOut 0.3s ease';
-        overlay.style.animation = 'fadeOut 0.3s ease';
+        overlay.classList.add('is-leaving');
         setTimeout(() => {
-          if (overlay.parentNode) {
-            overlay.parentNode.removeChild(overlay);
-          }
-        }, 300);
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }, 280);
       };
     }
 
@@ -2047,24 +1911,55 @@
 
     // 显示指定菜单（在资源列表界面内）
     function showResourceMenu(level) {
-      const categoryMenu = document.getElementById('settings-category-menu');
       const resourceMenu = document.getElementById('settings-resource-menu');
       const actions = document.getElementById('settings-actions');
+      currentMenuLevel = level === 'category' ? 'resource' : level;
+      if (resourceMenu) resourceMenu.classList.remove('hidden');
+      if (actions) actions.classList.remove('hidden');
+    }
 
-      // 隐藏所有菜单
-      if (categoryMenu) categoryMenu.classList.add('hidden');
-      if (resourceMenu) resourceMenu.classList.add('hidden');
-      if (actions) actions.classList.add('hidden');
-
-      // 显示指定菜单
-      currentMenuLevel = level;
-      if (level === 'category' && categoryMenu) {
-        categoryMenu.classList.remove('hidden');
-      } else if (level === 'resource' && resourceMenu) {
-        resourceMenu.classList.remove('hidden');
-        if (actions) actions.classList.remove('hidden');
+    function switchSettingsTab(tab) {
+      const nextTab = tab || 'resources';
+      document.querySelectorAll('#settings-overlay .settings-tab').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.tab === nextTab);
+      });
+      document.querySelectorAll('#settings-overlay .settings-pane').forEach((pane) => {
+        pane.classList.toggle('active', pane.dataset.pane === nextTab);
+      });
+      if (nextTab === 'resources') {
+        const activeCat = document.querySelector('#pane-resources .settings-subtab.active')
+          || document.querySelector('#pane-resources .settings-subtab');
+        if (activeCat) {
+          const category = activeCat.getAttribute('data-category');
+          if (category) renderCategoryResourceList(category);
+        }
+        showResourceMenu('resource');
+      }
+      if (nextTab === 'system') {
+        const cur = document.querySelector('#pane-system .settings-subtab.active');
+        switchSystemSub((cur && cur.getAttribute('data-sub')) || 'api');
+        if (window.妹神官_settings_api && typeof window.妹神官_settings_api.init === 'function') {
+          window.妹神官_settings_api.init();
+        }
+      }
+      if (nextTab === 'text-format') {
+        initTextFormatControls();
+        const typewriterEffectCheckbox = document.getElementById('typewriter-effect-checkbox');
+        if (typewriterEffectCheckbox && typewriterEffectCheckbox.checked) {
+          startTypewriterTest();
+        }
       }
     }
+
+    function openSettingsPanel(tab) {
+      const settingsOverlay = document.getElementById('settings-overlay');
+      if (!settingsOverlay) return;
+      settingsOverlay.classList.remove('hidden');
+      const current = document.querySelector('#settings-overlay .settings-tab.active');
+      switchSettingsTab(tab || (current && current.dataset.tab) || 'resources');
+    }
+
+    // 显示指定菜单（在资源列表界面内）
 
     // 渲染指定分类的资源列表
     function renderCategoryResourceList(category) {
@@ -2117,6 +2012,11 @@
 
         item.appendChild(checkbox);
         item.appendChild(label);
+        item.addEventListener('click', (e) => {
+          if (e.target === checkbox || e.target === label) return;
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        });
         itemsContainer.appendChild(item);
       });
 
@@ -2519,88 +2419,68 @@
     if (optionBtn) {
       optionBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const settingsOverlay = document.getElementById('settings-overlay');
-        if (settingsOverlay) {
-          settingsOverlay.classList.remove('hidden');
-        }
+        openSettingsPanel();
       });
     }
 
-    // 资源列表按钮（打开资源列表界面）
+    // 资源列表按钮
     const resourceListBtn = document.getElementById('settings-resource-list-btn');
     if (resourceListBtn) {
       resourceListBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const resourcesOverlay = document.getElementById('resources-overlay');
-        if (settingsOverlay && resourcesOverlay) {
-          settingsOverlay.classList.add('hidden');
-          resourcesOverlay.classList.remove('hidden');
-          showResourceMenu('category');
-        }
+        switchSettingsTab('resources');
       });
     }
 
-    // 资源列表界面关闭按钮（返回设置菜单）
-    const resourcesCloseBtn = document.getElementById('resources-close-btn');
-    if (resourcesCloseBtn) {
-      resourcesCloseBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const resourcesOverlay = document.getElementById('resources-overlay');
-        if (settingsOverlay && resourcesOverlay) {
-          resourcesOverlay.classList.add('hidden');
-          settingsOverlay.classList.remove('hidden');
-        }
-      });
-    }
-
-    // ========== 正文格式设置功能 ==========
-
-    // 正文格式按钮（打开正文格式设置界面）
+    // 正文格式按钮
     const textFormatBtn = document.getElementById('settings-text-format-btn');
     if (textFormatBtn) {
       textFormatBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const textFormatOverlay = document.getElementById('text-format-overlay');
-        if (settingsOverlay && textFormatOverlay) {
-          settingsOverlay.classList.add('hidden');
-          textFormatOverlay.classList.remove('hidden');
-          // 初始化控件并启动测试
-          initTextFormatControls();
-          const typewriterEffectCheckbox = document.getElementById('typewriter-effect-checkbox');
-          if (typewriterEffectCheckbox && typewriterEffectCheckbox.checked) {
-            startTypewriterTest();
-          }
-        }
+        switchSettingsTab('text-format');
       });
     }
 
-    // ========== 数据存储设置功能 ==========
-
-    // 数据存储按钮（打开数据存储界面）
+    // 数据存储按钮
     const dataStorageBtn = document.getElementById('settings-data-storage-btn');
     if (dataStorageBtn) {
       dataStorageBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const dataStorageOverlay = document.getElementById('data-storage-overlay');
-        if (settingsOverlay && dataStorageOverlay) {
-          settingsOverlay.classList.add('hidden');
-          dataStorageOverlay.classList.remove('hidden');
-        }
+        switchSettingsTab('data-storage');
       });
     }
 
-    // 数据存储界面关闭按钮（返回设置菜单）
-    const dataStorageCloseBtn = document.getElementById('data-storage-close-btn');
-    if (dataStorageCloseBtn) {
-      dataStorageCloseBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const dataStorageOverlay = document.getElementById('data-storage-overlay');
-        if (settingsOverlay && dataStorageOverlay) {
-          dataStorageOverlay.classList.add('hidden');
-          settingsOverlay.classList.remove('hidden');
-        }
+    function switchSystemSub(subId) {
+      const pane = document.getElementById('pane-system');
+      if (!pane || !subId) return;
+      pane.querySelectorAll('.settings-subtab').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-sub') === subId);
+      });
+      pane.querySelectorAll('.settings-subpane').forEach((sub) => {
+        sub.classList.toggle('active', sub.getAttribute('data-subpane') === subId);
       });
     }
+
+    const systemTabBtn = document.getElementById('settings-system-btn');
+    if (systemTabBtn) {
+      systemTabBtn.addEventListener('click', () => {
+        switchSettingsTab('system');
+      });
+    }
+
+    const systemSubnav = document.getElementById('settings-system-subnav');
+    if (systemSubnav) {
+      systemSubnav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.settings-subtab');
+        if (!btn) return;
+        switchSystemSub(btn.getAttribute('data-sub'));
+      });
+    }
+
+    ['btn-preset-add', 'btn-preset-import', 'btn-preset-export', 'btn-regex-add', 'btn-prompt-add'].forEach((id) => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        showArchiveNotification('该功能稍后接入', 'info');
+      });
+    });
 
     // 导出所有存档数据
     const dataStorageExportBtn = document.getElementById('data-storage-export-btn');
@@ -2649,42 +2529,60 @@
       });
     }
 
-    // 显示删除所有存档确认对话框
+    let fpConfirmOnYes = null;
+
+    function closeConfirmDialog() {
+      const box = document.getElementById('fp-confirm');
+      if (!box) return;
+      box.classList.remove('open');
+      box.setAttribute('aria-hidden', 'true');
+      box.setAttribute('inert', '');
+      fpConfirmOnYes = null;
+    }
+
+    function showConfirmDialog(message, onYes, options) {
+      const box = document.getElementById('fp-confirm');
+      const msg = document.getElementById('fp-confirm-msg');
+      const yesBtn = document.getElementById('fp-confirm-yes');
+      const noBtn = document.getElementById('fp-confirm-no');
+      if (!box || !msg) {
+        if (window.confirm(message)) onYes && onYes();
+        return;
+      }
+      msg.textContent = message;
+      if (yesBtn) yesBtn.textContent = (options && options.yesText) || '确定';
+      if (noBtn) noBtn.textContent = (options && options.noText) || '取消';
+      fpConfirmOnYes = onYes;
+      box.classList.add('open');
+      box.removeAttribute('inert');
+      box.setAttribute('aria-hidden', 'false');
+    }
+
+    (function bindConfirmDialog() {
+      const box = document.getElementById('fp-confirm');
+      const yesBtn = document.getElementById('fp-confirm-yes');
+      const noBtn = document.getElementById('fp-confirm-no');
+      if (yesBtn) {
+        yesBtn.addEventListener('click', () => {
+          const fn = fpConfirmOnYes;
+          closeConfirmDialog();
+          if (fn) fn();
+        });
+      }
+      if (noBtn) noBtn.addEventListener('click', closeConfirmDialog);
+      if (box) {
+        box.addEventListener('click', (e) => {
+          if (e.target === box) closeConfirmDialog();
+        });
+      }
+    })();
+
     function showDeleteAllArchivesConfirmDialog(archiveCount, onConfirm) {
-      const overlay = createDialogOverlay('delete-all-confirm-overlay', 20001);
-      const dialog = createDialog();
-      const closeBtn = createCloseButton();
-      const textBg = createTextBackground();
-      const textContent = createTextContent(
-        `确定要删除所有 ${archiveCount} 个存档数据吗？\n此操作不可恢复！`,
-        '#ff4444',
-        '24px',
-        '0 0 10px rgba(255, 68, 68, 0.5)'
+      showConfirmDialog(
+        `确定删除全部 ${archiveCount} 个存档？\n此操作不可恢复。`,
+        onConfirm,
+        { yesText: '删除', noText: '取消' }
       );
-      textContent.style.marginBottom = '30px';
-      const buttonContainer = createButtonContainer();
-      const closeDialog = createCloseDialogFunction(overlay, dialog);
-      const confirmBtn = createWoodButton('确认删除', () => {
-        closeDialog();
-        onConfirm();
-      });
-      const cancelBtn = createWoodButton('取消', closeDialog);
-
-      closeBtn.addEventListener('click', closeDialog);
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          closeDialog();
-        }
-      });
-
-      buttonContainer.appendChild(confirmBtn);
-      buttonContainer.appendChild(cancelBtn);
-      dialog.appendChild(closeBtn);
-      dialog.appendChild(textBg);
-      dialog.appendChild(textContent);
-      dialog.appendChild(buttonContainer);
-      overlay.appendChild(dialog);
-      document.body.appendChild(overlay);
     }
 
     // 删除所有存档数据
@@ -2727,19 +2625,6 @@
         } catch (error) {
           errorWithTag('DELETE', '获取存档列表失败', error);
           showArchiveNotification('获取存档列表失败，请查看控制台错误信息。', 'error');
-        }
-      });
-    }
-
-    // 正文格式界面关闭按钮（返回设置菜单）
-    const textFormatCloseBtn = document.getElementById('text-format-close-btn');
-    if (textFormatCloseBtn) {
-      textFormatCloseBtn.addEventListener('click', () => {
-        const settingsOverlay = document.getElementById('settings-overlay');
-        const textFormatOverlay = document.getElementById('text-format-overlay');
-        if (settingsOverlay && textFormatOverlay) {
-          textFormatOverlay.classList.add('hidden');
-          settingsOverlay.classList.remove('hidden');
         }
       });
     }
@@ -3168,18 +3053,11 @@
     categoryBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const category = btn.getAttribute('data-category');
+        categoryBtns.forEach((item) => item.classList.toggle('active', item === btn));
         renderCategoryResourceList(category);
         showResourceMenu('resource');
       });
     });
-
-    // 返回分类菜单按钮
-    const backToCategoryBtn = document.getElementById('settings-back-to-category-btn');
-    if (backToCategoryBtn) {
-      backToCategoryBtn.addEventListener('click', () => {
-        showResourceMenu('category');
-      });
-    }
 
     // 全选按钮
     const selectAllBtn = document.getElementById('settings-select-all-btn');
@@ -3211,39 +3089,56 @@
       });
     }
 
+    function bindOverlayDismiss(overlayId, closeBtnId) {
+      const overlay = document.getElementById(overlayId);
+      const closeBtn = document.getElementById(closeBtnId);
+      if (!overlay) return;
+      overlay.addEventListener('click', (e) => {
+        if (e.target !== overlay) return;
+        if (closeBtn) closeBtn.click();
+        else overlay.classList.add('hidden');
+      });
+    }
+    bindOverlayDismiss('settings-overlay', 'settings-close-btn');
+    bindOverlayDismiss('save-overlay', 'save-close-btn');
+
     // 显示自定义弹窗（存档/读档提示）
     function showArchiveNotification(message, type = 'info') {
-      // 简化消息：只显示"存档成功"或"存档失败"
       let displayMessage = message;
       if (type === 'success' && message.includes('存档成功')) {
-        displayMessage = '存档成功';
+        displayMessage = message.replace(/^[\s\S]*存档成功[！!]?\s*/, '已保存').replace(/\n/g, ' · ') || '已保存';
+        if (displayMessage === '已保存' || displayMessage.startsWith('已保存 ·')) {
+          const nameMatch = message.match(/存档名[:：]\s*(.+)/);
+          displayMessage = nameMatch ? `已保存「${nameMatch[1].split('\n')[0].trim()}」` : '已保存';
+        }
       } else if (type === 'error' && message.includes('存档失败')) {
         displayMessage = '存档失败';
       } else if (type === 'success' && message.includes('读档成功')) {
-        displayMessage = '读档成功';
+        displayMessage = '已读取存档';
       } else if (type === 'error' && message.includes('读档失败')) {
         displayMessage = '读档失败';
+      } else if (type === 'success' && message.includes('成功删除')) {
+        displayMessage = '已删除';
       }
 
-      const overlay = createDialogOverlay('archive-notification-overlay', 20000);
-      const notification = createDialog();
-      const textBg = createTextBackground();
-      const textContent = createTextContent(displayMessage);
-      const closeBtn = createCommonButton('确定', null, { marginTop: '30px' });
-      const closeNotification = createCloseDialogFunction(overlay, notification);
-
-      closeBtn.addEventListener('click', closeNotification);
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          closeNotification();
-        }
-      });
-
-      notification.appendChild(textBg);
-      notification.appendChild(textContent);
-      notification.appendChild(closeBtn);
-      overlay.appendChild(notification);
-      document.body.appendChild(overlay);
+      let toast = document.getElementById('fp-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'fp-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = displayMessage;
+      toast.classList.remove('is-error', 'is-success', 'show');
+      if (type === 'error') toast.classList.add('is-error');
+      if (type === 'success') toast.classList.add('is-success');
+      void toast.offsetWidth;
+      toast.classList.add('show');
+      clearTimeout(showArchiveNotification._timer);
+      showArchiveNotification._timer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, type === 'error' ? 2800 : 2200);
     }
 
     // 从snapshots中提取存档名称信息
@@ -3413,6 +3308,7 @@
             playerInput: layer.playerInput
           })),
           currentDialogueLayer: currentDialogueLayer,
+          currentDialogueIndex: currentDialogueIndex,
           totalLayers: dialogueLayers.length,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -3485,6 +3381,7 @@
             playerInput: layer.playerInput
           })),
           currentDialogueLayer: currentDialogueLayer,
+          currentDialogueIndex: currentDialogueIndex,
           totalLayers: dialogueLayers.length,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -3494,15 +3391,234 @@
         // 保存到IndexedDB
         await storageUtils.archivesDB.saveArchive(archiveName, archiveData);
         logWithTag('SAVE', '存档成功:', archiveName);
-        const lastLayerInfo = getLastDialogueLayer();
-        showArchiveNotification(`存档成功！\n存档名: ${archiveName}\n对话层: ${lastLayerInfo ? lastLayerInfo.layer : 0}`, 'success');
+        showArchiveNotification(`已保存「${archiveName}」`, 'success');
 
-        // 刷新存档列表
+        currentArchiveName = archiveName;
         await renderSaveArchiveList();
       } catch (error) {
         errorWithTag('SAVE', '存档失败', error);
         showArchiveNotification('存档失败，请查看控制台错误信息。', 'error');
       }
+    }
+
+    function getArchiveDialogueLayer(archive) {
+      const data = archive && archive.data ? archive.data : {};
+      const layers = data.dialogueLayers || [];
+      const want = data.currentDialogueLayer;
+      if (want != null) {
+        const found = layers.find((layer) => layer && layer.layer === want && layer.maintext);
+        if (found) return found;
+      }
+      for (let i = layers.length - 1; i >= 0; i--) {
+        const layer = layers[i];
+        if (layer && layer.type !== 'player' && layer.layer % 2 === 1 && layer.maintext) return layer;
+      }
+      return null;
+    }
+
+    function lookupSaveResourceUrl(category, name) {
+      if (!name) return '';
+      const list = (allResources && allResources.length)
+        ? allResources
+        : (typeof buildResourceList === 'function' ? buildResourceList() : []);
+      const exact = list.find((r) => r.category === category && r.name === name);
+      if (exact && exact.url) return exact.url;
+      const loose = list.find((r) => r.category === category && typeof r.name === 'string' && r.name.indexOf(name) !== -1);
+      return loose && loose.url ? loose.url : '';
+    }
+
+    function getArchiveScene(archive) {
+      const layer = getArchiveDialogueLayer(archive);
+      if (!layer) return null;
+      const data = archive.data || {};
+      const layers = data.dialogueLayers || [];
+      const parseFn = typeof parseTolinaDialogues === 'function' ? parseTolinaDialogues : null;
+      const raw = String(layer.maintext || '');
+      const dialogues = parseFn ? parseFn(raw) : [];
+      if (!dialogues.length) {
+        const text = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        return { text, character: '', imageUrl: '', isCg: false };
+      }
+      let idx = typeof data.currentDialogueIndex === 'number' ? data.currentDialogueIndex : dialogues.length - 1;
+      if (idx < 0) idx = 0;
+      if (idx >= dialogues.length) idx = dialogues.length - 1;
+
+      let background = null;
+      let cg = null;
+      if (parseFn) {
+        const prior = layers
+          .filter((item) => item && item.type !== 'player' && item.layer % 2 === 1 && item.maintext && item.layer < layer.layer)
+          .sort((a, b) => a.layer - b.layer);
+        prior.forEach((item) => {
+          const lines = parseFn(String(item.maintext || ''));
+          lines.forEach((line) => {
+            if (line.background) background = line.background;
+            if (line.cg) cg = line.cg.isStop ? null : line.cg;
+          });
+        });
+      }
+      for (let i = 0; i <= idx; i++) {
+        const item = dialogues[i];
+        if (item.background) background = item.background;
+        if (item.cg) cg = item.cg.isStop ? null : item.cg;
+      }
+
+      const current = dialogues[idx] || {};
+      let imageUrl = '';
+      let isCg = false;
+      if (cg) {
+        imageUrl = (typeof getCGUrl === 'function' ? getCGUrl(cg.groupName, cg.cgName) : '') || lookupSaveResourceUrl('CG', `${cg.groupName}-${cg.cgName}`);
+        isCg = !!imageUrl;
+      }
+      if (!imageUrl && background) {
+        imageUrl = (typeof getBackgroundUrl === 'function' ? getBackgroundUrl(background) : '') || lookupSaveResourceUrl('背景', background);
+      }
+      if (imageUrl && typeof resolveAssetUrl === 'function') {
+        imageUrl = resolveAssetUrl(imageUrl);
+      }
+
+      let spriteLayers = null;
+      let spriteAlign = 'right';
+      if (!isCg) {
+        const varsSnapshot = layer.varsSnapshot || layer.mvuData || null;
+        if (current.isOtherSpeaker && typeof getRivalMaleSpriteLayers === 'function') {
+          spriteLayers = getRivalMaleSpriteLayers(current.character, !!current.withShadow);
+          spriteAlign = 'left';
+        } else if (current.character === '托莉娜' && typeof assembleTolinaSpriteLayers === 'function') {
+          const status = getNestedValue(varsSnapshot, '托莉娜.基础.堕落阶段');
+          const outfit = getNestedValue(varsSnapshot, '托莉娜.基础.服装');
+          spriteLayers = assembleTolinaSpriteLayers(current, parseInt(status, 10) || 1, outfit || '常服');
+          spriteAlign = 'right';
+        }
+      }
+
+      return {
+        text: String(current.dialogue || '').replace(/\s+/g, ' ').trim(),
+        character: current.character || '',
+        imageUrl,
+        isCg,
+        spriteLayers,
+        spriteAlign
+      };
+    }
+
+    function applySaveSpriteStack(el, layers, align) {
+      if (!el || !layers) return;
+      const pos = align === 'left' ? 'left bottom' : 'right bottom';
+      const urls = [];
+      if (layers.base || layers.shade) {
+        if (layers.base) urls.push(layers.base);
+        if (layers.shade) urls.push(layers.shade);
+      } else {
+        ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'].forEach((key) => {
+          if (layers[key]) urls.push(layers[key]);
+        });
+      }
+      if (!urls.length) return;
+      const toCss = typeof cssUrl === 'function'
+        ? cssUrl
+        : (url) => `url(${JSON.stringify(typeof resolveAssetUrl === 'function' ? resolveAssetUrl(url) : url)})`;
+      urls.reverse();
+      el.style.backgroundImage = urls.map((url) => toCss(url)).join(', ');
+      el.style.backgroundSize = urls.map(() => 'auto 100%').join(', ');
+      el.style.backgroundPosition = urls.map(() => pos).join(', ');
+      el.style.backgroundRepeat = 'no-repeat';
+    }
+
+    function fillSaveSceneThumb(el, archive, emptyLabel) {
+      if (!el) return;
+      el.innerHTML = '';
+      el.classList.remove('has-scene');
+      const scene = getArchiveScene(archive);
+      const hasSprite = !!(scene && scene.spriteLayers && (scene.spriteLayers.L1 || scene.spriteLayers.base));
+      if (!scene || (!scene.imageUrl && !hasSprite)) {
+        const label = document.createElement('span');
+        label.className = 'saves-preview-placeholder';
+        label.textContent = emptyLabel || 'NO IMAGE';
+        el.appendChild(label);
+        return;
+      }
+      el.classList.add('has-scene');
+      const root = document.createElement('div');
+      root.className = 'saves-scene' + (scene.isCg ? ' is-cg' : '');
+      if (scene.imageUrl) {
+        const pic = document.createElement('div');
+        pic.className = scene.isCg ? 'saves-scene-cg' : 'saves-scene-bg';
+        pic.style.backgroundImage = `url(${JSON.stringify(scene.imageUrl)})`;
+        root.appendChild(pic);
+      }
+      if (!scene.isCg && hasSprite) {
+        const sp = document.createElement('div');
+        sp.className = 'saves-scene-sprite' + (scene.spriteAlign === 'left' ? ' is-left' : ' is-right');
+        applySaveSpriteStack(sp, scene.spriteLayers, scene.spriteAlign || 'right');
+        root.appendChild(sp);
+      }
+      el.appendChild(root);
+    }
+
+    function archiveCommentText(archive) {
+      const scene = getArchiveScene(archive);
+      if (scene && scene.text) return scene.text;
+      const data = archive && archive.data ? archive.data : {};
+      const layers = data.dialogueLayers || [];
+      const last = layers.length ? layers[layers.length - 1] : null;
+      const raw = last && last.maintext ? String(last.maintext) : '';
+      return raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || archive.name || '—';
+    }
+
+    function archiveDateText(archive) {
+      const data = archive && archive.data ? archive.data : {};
+      const createdAt = archive.timestamp || data.createdAt || data.updatedAt || '';
+      return createdAt ? new Date(createdAt).toLocaleString('zh-CN') : '未知时间';
+    }
+
+    function archiveLayerNum(archive) {
+      const data = archive && archive.data ? archive.data : {};
+      return data.currentDialogueLayer || data.totalLayers || (data.dialogueLayers && data.dialogueLayers.length) || 0;
+    }
+
+    function refreshSaveActionButtons() {
+      const loadBtn = document.getElementById('load-btn');
+      const deleteBtn = document.getElementById('delete-btn');
+      const has = !!currentArchiveName;
+      const isAuto = currentArchiveName === '自动存档';
+      if (loadBtn) {
+        loadBtn.disabled = !has;
+        loadBtn.textContent = isAuto ? '读取自动存档' : '读取选中存档';
+      }
+      if (deleteBtn) {
+        deleteBtn.disabled = !has || isAuto;
+        deleteBtn.textContent = isAuto ? '自动存档不可删除' : '删除选中存档';
+      }
+    }
+
+    function updateSavePreview(archive, isAutoSave) {
+      const dateEl = document.getElementById('saves-preview-date');
+      const slotEl = document.getElementById('saves-preview-slot');
+      const commentEl = document.getElementById('saves-preview-comment');
+      const thumbEl = document.getElementById('saves-preview-thumb');
+      if (!archive) {
+        if (dateEl) dateEl.textContent = '—';
+        if (slotEl) slotEl.textContent = '自动保存';
+        if (commentEl) commentEl.textContent = '请选择存档，或点 + 新建';
+        fillSaveSceneThumb(thumbEl, null, 'NO IMAGE');
+        refreshSaveActionButtons();
+        return;
+      }
+      if (dateEl) dateEl.textContent = archiveDateText(archive);
+      if (slotEl) slotEl.textContent = isAutoSave ? '自动保存' : (archive.name || '手动存档');
+      if (commentEl) commentEl.textContent = archiveCommentText(archive);
+      fillSaveSceneThumb(thumbEl, archive, 'NO IMAGE');
+      refreshSaveActionButtons();
+    }
+
+    function selectArchiveItem(item, archive, isAutoSave) {
+      document.querySelectorAll('#save-archive-list .saves-slot').forEach((el) => {
+        el.classList.remove('is-selected', 'active');
+      });
+      if (item) item.classList.add('is-selected', 'active');
+      currentArchiveName = archive ? archive.name : null;
+      updateSavePreview(archive, isAutoSave);
     }
 
     // 渲染存档列表
@@ -3514,142 +3630,112 @@
       }
 
       try {
-        console.log('开始加载存档列表...');
         const archives = await storageUtils.archivesDB.getAllArchives();
-        console.log(`找到 ${archives.length} 个存档`);
-
         archiveList.innerHTML = '';
 
-        // 分离自动存档和普通存档
         const AUTO_SAVE_NAME = '自动存档';
         const autoSaveArchive = archives.find(a => a.name === AUTO_SAVE_NAME);
         const normalArchives = archives.filter(a => a.name !== AUTO_SAVE_NAME);
 
-        // 先渲染自动存档（如果有）
         if (autoSaveArchive) {
-          const item = createArchiveItem(autoSaveArchive, true);
-          archiveList.appendChild(item);
+          archiveList.appendChild(createArchiveItem(autoSaveArchive, true));
         }
 
-        if (normalArchives.length === 0 && !autoSaveArchive) {
-          const emptyMsg = document.createElement('div');
-          emptyMsg.className = 'save-archive-empty';
-          emptyMsg.textContent = '暂无存档';
-          archiveList.appendChild(emptyMsg);
-          console.log('存档列表为空');
-          return;
-        }
-
-        // 按时间倒序排列普通存档（最新的在前）
         normalArchives.sort((a, b) => {
           const timeA = new Date(a.timestamp || a.data?.createdAt || 0);
           const timeB = new Date(b.timestamp || b.data?.createdAt || 0);
           return timeB - timeA;
         });
 
-        console.log('开始渲染存档列表，共', normalArchives.length, '个普通存档');
-
-        normalArchives.forEach((archive, index) => {
-          const item = createArchiveItem(archive, false);
-          archiveList.appendChild(item);
-          logWithTag('SAVE', `已添加存档项 ${index + 1}/${normalArchives.length}: ${archive.name}`);
+        normalArchives.forEach((archive) => {
+          archiveList.appendChild(createArchiveItem(archive, false));
         });
 
-        logWithTag('SAVE', '存档列表渲染完成，共显示', (autoSaveArchive ? 1 : 0) + normalArchives.length, '个存档');
+        const plus = document.createElement('button');
+        plus.type = 'button';
+        plus.className = 'saves-slot saves-slot--plus';
+        plus.title = '新建存档（保存当前对话）';
+        plus.setAttribute('aria-label', '新建存档');
+        plus.innerHTML = '<span class="saves-plus-mark" aria-hidden="true">+</span>';
+        plus.addEventListener('click', () => {
+          const saveBtn = document.getElementById('save-btn');
+          if (saveBtn) saveBtn.click();
+        });
+        archiveList.appendChild(plus);
+
+        const selected = archiveList.querySelector('.saves-slot.is-selected');
+        if (!selected) {
+          if (autoSaveArchive) {
+            currentArchiveName = AUTO_SAVE_NAME;
+            const autoEl = archiveList.querySelector('.saves-slot--auto');
+            if (autoEl) autoEl.classList.add('is-selected', 'active');
+            updateSavePreview(autoSaveArchive, true);
+          } else {
+            currentArchiveName = null;
+            updateSavePreview(null, false);
+          }
+        } else {
+          refreshSaveActionButtons();
+        }
       } catch (error) {
         errorWithTag('SAVE', '加载存档列表失败', error);
         archiveList.innerHTML = '<div class="save-archive-empty">加载存档列表失败: ' + error.message + '</div>';
+        updateSavePreview(null, false);
       }
     }
 
     // 创建存档项元素
     function createArchiveItem(archive, isAutoSave) {
-      const item = document.createElement('div');
-      item.className = 'save-archive-item';
-      if (isAutoSave) {
-        item.classList.add('autosave');
-      }
-      if (archive.name === currentArchiveName) {
-        item.classList.add('active');
-      }
+      const item = document.createElement('article');
+      item.className = 'saves-slot save-archive-item' + (isAutoSave ? ' saves-slot--auto' : ' saves-slot--manual');
+      if (isAutoSave) item.classList.add('autosave');
+      if (archive.name === currentArchiveName) item.classList.add('is-selected', 'active');
       item.dataset.archiveName = archive.name;
       item.dataset.isAutoSave = isAutoSave ? 'true' : 'false';
+      item.setAttribute('role', 'listitem');
+      item.tabIndex = 0;
+      item.title = isAutoSave ? '点击选择 / 读取自动存档' : '点击选择此存档';
 
-      const archiveData = archive.data || {};
-      // 获取对话层数（优先使用 currentDialogueLayer，回退到 totalLayers，最后回退到 0）
-      const dialogueLayerNum = archiveData.currentDialogueLayer || archiveData.totalLayers || 0;
-      const createdAt = archive.timestamp || archiveData.createdAt || '';
-      const dateStr = createdAt ? new Date(createdAt).toLocaleString('zh-CN') : '未知时间';
+      const layerNum = archiveLayerNum(archive);
+      const dateStr = archiveDateText(archive);
 
-      // 创建勾选框
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.className = 'archive-checkbox';
-      checkbox.checked = archive.name === currentArchiveName;
-      checkbox.dataset.archiveName = archive.name;
-      // 自动存档允许选择（用于读档），但不允许删除
+      const head = document.createElement('div');
+      head.className = 'saves-slot-head';
+      head.textContent = isAutoSave ? '自动保存' : (archive.name || '手动存档');
 
-      // 创建内容容器
-      const contentDiv = document.createElement('div');
-      contentDiv.className = 'save-archive-item-content';
-      contentDiv.innerHTML = `
-        <div class="archive-name ${archive.name === currentArchiveName ? 'active' : ''}">${archive.name}</div>
-        <div class="archive-info">${dialogueLayerNum} 层对话 · ${dateStr}</div>
-      `;
+      const thumb = document.createElement('div');
+      thumb.className = 'saves-slot-thumb';
+      fillSaveSceneThumb(thumb, archive, isAutoSave ? 'AUTO' : 'SAVE');
 
-      item.appendChild(checkbox);
-      item.appendChild(contentDiv);
+      const foot = document.createElement('div');
+      foot.className = 'saves-slot-foot';
+      const comment = document.createElement('div');
+      comment.className = 'saves-slot-comment';
+      comment.textContent = archiveCommentText(archive);
+      const meta = document.createElement('div');
+      meta.className = 'saves-slot-meta';
+      const time = document.createElement('div');
+      time.className = 'saves-slot-time';
+      time.textContent = dateStr;
+      const round = document.createElement('div');
+      round.className = 'saves-slot-round';
+      round.textContent = layerNum > 0 ? String(layerNum) : '';
+      round.title = layerNum > 0 ? `${layerNum} 层对话` : '';
+      meta.appendChild(time);
+      meta.appendChild(round);
+      foot.appendChild(comment);
+      foot.appendChild(meta);
 
-      // 勾选框点击事件（阻止事件冒泡）
-      checkbox.addEventListener('click', (e) => {
-        e.stopPropagation();
+      item.appendChild(head);
+      item.appendChild(thumb);
+      item.appendChild(foot);
 
-        // 如果当前勾选框被选中，取消其他所有勾选框
-        if (checkbox.checked) {
-          document.querySelectorAll('.archive-checkbox').forEach(cb => {
-            if (cb !== checkbox) {
-              cb.checked = false;
-            }
-          });
-          // 更新选中状态样式
-          document.querySelectorAll('.save-archive-item').forEach(el => el.classList.remove('active'));
-          item.classList.add('active');
-          currentArchiveName = archive.name;
-        } else {
-          // 如果取消勾选，清除选中状态
-          item.classList.remove('active');
-          if (currentArchiveName === archive.name) {
-            currentArchiveName = null;
-          }
-        }
+      item.addEventListener('click', () => {
+        selectArchiveItem(item, archive, isAutoSave);
       });
-
-      // 点击存档项可以读档
-      item.addEventListener('click', (e) => {
-        // 如果点击的是勾选框，不处理（勾选框有自己的事件处理）
-        if (e.target === checkbox) {
-          return;
-        }
-
-        // 切换勾选框状态
-        checkbox.checked = !checkbox.checked;
-
-        // 如果勾选，取消其他所有勾选框
-        if (checkbox.checked) {
-          document.querySelectorAll('.archive-checkbox').forEach(cb => {
-            if (cb !== checkbox) {
-              cb.checked = false;
-            }
-          });
-          document.querySelectorAll('.save-archive-item').forEach(el => el.classList.remove('active'));
-          item.classList.add('active');
-          currentArchiveName = archive.name;
-        } else {
-          item.classList.remove('active');
-          if (currentArchiveName === archive.name) {
-            currentArchiveName = null;
-          }
-        }
+      item.addEventListener('dblclick', async () => {
+        selectArchiveItem(item, archive, isAutoSave);
+        await loadArchive(archive.name);
       });
 
       return item;
@@ -3808,27 +3894,28 @@
           currentDialogues = [];
           currentDialogueIndex = 0;
 
-          // 设置新的对话
+          // 设置新的对话（恢复到存档当时那一句）
           currentDialogues = dialogues;
-          currentDialogueIndex = 0;
+          let startIdx = typeof archiveData.currentDialogueIndex === 'number' ? archiveData.currentDialogueIndex : 0;
+          if (startIdx < 0) startIdx = 0;
+          if (startIdx >= dialogues.length) startIdx = Math.max(0, dialogues.length - 1);
+          currentDialogueIndex = startIdx;
 
-          console.log('[LOAD] 开始显示第1个对话（索引0）...');
-          // 显示第1个对话
-          await showDialogue(0);
-          console.log('[LOAD] ✅ 已显示第1个对话，当前索引:', currentDialogueIndex);
+          console.log('[LOAD] 开始显示对话，索引:', startIdx);
+          await showDialogue(startIdx);
+          console.log('[LOAD] ✅ 已显示对话，当前索引:', currentDialogueIndex);
           console.log('[LOAD] 当前对话总数:', currentDialogues.length);
 
           // 延迟多次检查，确保显示不被覆盖
           const checkAndRestoreDialogue = async () => {
             if (window._isLoadingArchiveDialogue && currentDialogues.length > 0) {
-              // 检查对话内容是否被改变
               const dialogueText = document.querySelector('.dialogue-text');
-              const expectedText = currentDialogues[0].dialogue;
+              const expected = currentDialogues[currentDialogueIndex] || currentDialogues[0];
+              const expectedText = expected && expected.dialogue;
 
-              if (dialogueText && dialogueText.textContent !== expectedText) {
-                console.log('[LOAD] ⚠️ 检测到对话内容被改变，恢复最后一轮对话');
-                currentDialogueIndex = 0;
-                await showDialogue(0);
+              if (dialogueText && expectedText && dialogueText.textContent !== expectedText) {
+                console.log('[LOAD] ⚠️ 检测到对话内容被改变，恢复存档对话');
+                await showDialogue(currentDialogueIndex);
               }
             }
           };
@@ -3967,40 +4054,11 @@
 
     // 显示确认删除弹窗
     function showDeleteConfirmDialog(archiveName, onConfirm) {
-      const overlay = createDialogOverlay('delete-confirm-overlay', 20001);
-      const dialog = createDialog();
-      const closeBtn = createCloseButton();
-      const textBg = createTextBackground();
-      const textContent = createTextContent(
-        `确定要删除存档 "${archiveName}" 吗？\n此操作不可恢复！`,
-        '#ff4444',
-        '24px',
-        '0 0 10px rgba(255, 68, 68, 0.5)'
+      showConfirmDialog(
+        `确定删除「${archiveName}」？\n此操作不可恢复。`,
+        onConfirm,
+        { yesText: '删除', noText: '取消' }
       );
-      textContent.style.marginBottom = '30px';
-      const buttonContainer = createButtonContainer();
-      const closeDialog = createCloseDialogFunction(overlay, dialog);
-      const confirmBtn = createCommonButton('确认', () => {
-        closeDialog();
-        if (onConfirm) {
-          onConfirm();
-        }
-      });
-
-      closeBtn.addEventListener('click', closeDialog);
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          closeDialog();
-        }
-      });
-
-      buttonContainer.appendChild(confirmBtn);
-      dialog.appendChild(closeBtn);
-      dialog.appendChild(textBg);
-      dialog.appendChild(textContent);
-      dialog.appendChild(buttonContainer);
-      overlay.appendChild(dialog);
-      document.body.appendChild(overlay);
     }
 
     // 渲染立绘到指定容器（用于画框内显示，使用canvas裁剪）
@@ -4140,53 +4198,43 @@
         }
 
         const overlay = createDialogOverlay('current-dialogue-overlay', 20000);
-        const dialog = createDialog('90%', 'auto', '1400px');
+        overlay.classList.add('quest-overlay');
+        const dialog = createDialog();
+        dialog.classList.remove('fp-panel');
         dialog.classList.add('quest-panel');
-        dialog.style.maxHeight = '82vh';
+        const isBranchesMode = defaultView === 'branches';
+        dialog.classList.add(isBranchesMode ? 'quest-panel-branches' : 'quest-panel-log');
         dialog.style.width = '';
         dialog.style.maxWidth = '';
-        const textBg = createTextBackground(0.5);
+        dialog.style.minHeight = '';
 
-        // 创建按钮容器
         const buttonContainer = document.createElement('div');
         buttonContainer.className = 'quest-toolbar';
 
-        // 创建左侧按钮组（当前对话层、历史对话层）
         const leftButtonGroup = document.createElement('div');
         leftButtonGroup.className = 'quest-toolbar-left';
 
-        // 创建右侧按钮组（当前对话轮选项）
-        const rightButtonGroup = document.createElement('div');
-        rightButtonGroup.className = 'quest-toolbar-right';
-
-        // 创建"当前对话层"按钮
         const currentBtn = document.createElement('button');
         currentBtn.id = 'quest-current-btn';
         currentBtn.className = 'quest-tab-btn';
-        currentBtn.textContent = '当前对话层';
+        currentBtn.type = 'button';
+        currentBtn.textContent = '对话';
 
-        // 创建"历史对话层"按钮
         const historyBtn = document.createElement('button');
         historyBtn.id = 'quest-history-btn';
         historyBtn.className = 'quest-tab-btn';
-        historyBtn.textContent = '历史对话层';
+        historyBtn.type = 'button';
+        historyBtn.textContent = '历史';
 
         const updateButtonStyle = (activeBtn, ...inactiveBtns) => {
           activeBtn.classList.add('is-active');
           inactiveBtns.forEach(btn => btn.classList.remove('is-active'));
         };
 
-        // 创建"当前对话轮选项"按钮
-        const branchesBtn = document.createElement('button');
-        branchesBtn.id = 'quest-branches-btn';
-        branchesBtn.className = 'quest-tab-btn';
-        branchesBtn.textContent = '行动选项';
-
         // 渲染分支选项内容
         const renderBranches = () => {
           contentContainer.innerHTML = '';
-          title.textContent = '行动选项';
-          updateButtonStyle(branchesBtn, currentBtn, historyBtn);
+          title.textContent = '此刻可以做的事';
 
           const sendChoiceToAI = async (choiceText) => {
             try {
@@ -4261,17 +4309,6 @@
           mountBranchActionUI(contentContainer, branchesText, sendChoiceToAI);
         };
 
-        // 点击显示当前对话轮选项
-        branchesBtn.addEventListener('click', () => {
-          renderBranches();
-        });
-
-        leftButtonGroup.appendChild(currentBtn);
-        leftButtonGroup.appendChild(historyBtn);
-        rightButtonGroup.appendChild(branchesBtn);
-        buttonContainer.appendChild(leftButtonGroup);
-        buttonContainer.appendChild(rightButtonGroup);
-
         // 创建标题（左上角显示"当前对话轮消息"）
         const title = document.createElement('div');
         title.id = 'quest-title';
@@ -4283,17 +4320,14 @@
         contentContainer.id = 'quest-content-container';
         contentContainer.className = 'current-dialogue-content-container';
 
-        // 渲染当前对话层内容
-        const renderCurrentLayer = () => {
-          contentContainer.innerHTML = '';
-          title.textContent = '当前对话轮消息';
-          updateButtonStyle(currentBtn, historyBtn, branchesBtn);
+        const fillCurrentLayer = (target) => {
+          target.innerHTML = '';
 
           if (!lastLayer) {
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'quest-empty-msg';
             emptyMessage.textContent = '暂无当前对话记录';
-            contentContainer.appendChild(emptyMessage);
+            target.appendChild(emptyMessage);
             return;
           }
 
@@ -4301,11 +4335,10 @@
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'quest-empty-msg';
             emptyMessage.textContent = '当前对话层没有内容';
-            contentContainer.appendChild(emptyMessage);
+            target.appendChild(emptyMessage);
             return;
           }
 
-          // 解析当前对话层的所有对话
           const dialogues = parseTolinaDialogues(lastLayer.maintext);
           console.log('[QUEST] 解析到的对话数量:', dialogues.length);
           console.log('[QUEST] 对话内容:', dialogues);
@@ -4318,9 +4351,9 @@
             dialogueText.className = 'quest-dialogue-text';
             dialogueText.textContent = lastLayer.maintext;
             rawTextEntry.appendChild(dialogueText);
-            contentContainer.appendChild(rawTextEntry);
+            target.appendChild(rawTextEntry);
           } else {
-            dialogues.forEach((dialogue, i) => {
+            dialogues.forEach((dialogue) => {
               const messageEntry = document.createElement('div');
               messageEntry.className = 'quest-message-entry';
 
@@ -4342,28 +4375,25 @@
 
               messageEntry.appendChild(frameContainer);
               messageEntry.appendChild(dialogueText);
-              contentContainer.appendChild(messageEntry);
+              target.appendChild(messageEntry);
             });
             console.log('[QUEST] 已快速显示', dialogues.length, '条对话，立绘正在异步加载');
           }
         };
 
-        // 渲染历史对话层内容
-        const renderHistoryLayers = () => {
-          contentContainer.innerHTML = '';
-          title.textContent = '历史对话层';
-          updateButtonStyle(historyBtn, currentBtn, branchesBtn);
+        const fillHistoryLayers = (target) => {
+          target.innerHTML = '';
 
           // 获取所有奇数层（AI回复层）
           const oddLayers = dialogueLayers
             .filter(layer => layer.type !== 'player' && layer.layer % 2 === 1)
             .sort((a, b) => b.layer - a.layer); // 从新到旧排序
 
-          if (oddLayers.length === 0) {
+            if (oddLayers.length === 0) {
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'quest-empty-msg';
             emptyMessage.textContent = '暂无历史对话记录';
-            contentContainer.appendChild(emptyMessage);
+            target.appendChild(emptyMessage);
             return;
           }
 
@@ -4542,20 +4572,9 @@
             layerContainer.appendChild(descriptionText);
             layerContainer.appendChild(jumpBtn);
 
-            contentContainer.appendChild(layerContainer);
+            target.appendChild(layerContainer);
           });
         };
-
-        // 绑定按钮事件
-        currentBtn.addEventListener('click', renderCurrentLayer);
-        historyBtn.addEventListener('click', renderHistoryLayers);
-
-        // 根据defaultView参数决定初始显示
-        if (defaultView === 'branches') {
-          renderBranches();
-        } else {
-          renderCurrentLayer();
-        }
 
         const closeBtn = createCloseButton();
         const closeDialog = createCloseDialogFunction(overlay, dialog);
@@ -4567,12 +4586,60 @@
           }
         });
 
-        // 组装元素
         dialog.appendChild(closeBtn);
-        dialog.appendChild(textBg);
-        dialog.appendChild(buttonContainer);
-        dialog.appendChild(title);
-        dialog.appendChild(contentContainer);
+
+        if (isBranchesMode) {
+          title.textContent = '此刻可以做的事';
+          renderBranches();
+          dialog.appendChild(title);
+          dialog.appendChild(contentContainer);
+        } else {
+          leftButtonGroup.appendChild(currentBtn);
+          leftButtonGroup.appendChild(historyBtn);
+          buttonContainer.appendChild(leftButtonGroup);
+
+          const stack = document.createElement('div');
+          stack.className = 'quest-log-stack';
+
+          const dialoguePane = document.createElement('div');
+          dialoguePane.className = 'quest-log-pane is-active';
+
+          const historyPane = document.createElement('div');
+          historyPane.className = 'quest-log-pane';
+          historyPane.inert = true;
+          historyPane.setAttribute('aria-hidden', 'true');
+
+          fillCurrentLayer(dialoguePane);
+          fillHistoryLayers(historyPane);
+          stack.append(dialoguePane, historyPane);
+
+          const showLogTab = (which) => {
+            const showDialogue = which === 'dialogue';
+            title.textContent = showDialogue ? '此刻的对话' : '往日的篇章';
+            updateButtonStyle(showDialogue ? currentBtn : historyBtn, showDialogue ? historyBtn : currentBtn);
+            dialoguePane.classList.toggle('is-active', showDialogue);
+            historyPane.classList.toggle('is-active', !showDialogue);
+            dialoguePane.inert = !showDialogue;
+            historyPane.inert = showDialogue;
+            if (showDialogue) {
+              dialoguePane.removeAttribute('aria-hidden');
+              historyPane.setAttribute('aria-hidden', 'true');
+            } else {
+              historyPane.removeAttribute('aria-hidden');
+              dialoguePane.setAttribute('aria-hidden', 'true');
+            }
+            stack.scrollTop = 0;
+          };
+
+          currentBtn.addEventListener('click', () => showLogTab('dialogue'));
+          historyBtn.addEventListener('click', () => showLogTab('history'));
+          showLogTab(defaultView === 'history' ? 'history' : 'dialogue');
+
+          dialog.appendChild(buttonContainer);
+          dialog.appendChild(title);
+          dialog.appendChild(stack);
+        }
+
         overlay.appendChild(dialog);
 
         // 添加到页面
@@ -7887,24 +7954,17 @@ _.set('stat_data.系统.模式', '${mode}')
       }
 
       // 隐藏路线选择界面
-      const routeSelectionOverlay = document.getElementById('route-selection-overlay');
-      if (routeSelectionOverlay) {
-        routeSelectionOverlay.style.display = 'none';
-      }
-
-      // 隐藏灰色蒙版
-      const routeOverlayMask = document.getElementById('route-overlay-mask');
-      if (routeOverlayMask) {
-        routeOverlayMask.style.display = 'none';
+      const openingPanel = document.getElementById('opening-panel');
+      if (openingPanel) {
+        openingPanel.classList.remove('open');
+        openingPanel.style.display = 'none';
       }
 
       // 隐藏错误和设置界面（如果显示）
       const errorOverlay = document.getElementById('error-overlay');
       const settingsOverlay = document.getElementById('settings-overlay');
-      const resourcesOverlay = document.getElementById('resources-overlay');
       if (errorOverlay) errorOverlay.classList.add('hidden');
       if (settingsOverlay) settingsOverlay.classList.add('hidden');
-      if (resourcesOverlay) resourcesOverlay.classList.add('hidden');
 
       // 显示游戏内容区域
       const frame = document.querySelector('.frame');
@@ -8095,10 +8155,7 @@ _.set('stat_data.系统.模式', '${mode}')
           // 设置UI点击事件：打开设置界面（和开始界面一样）
           gameMenuSettingsUI.addEventListener('click', (e) => {
             e.stopPropagation();
-            const settingsOverlay = document.getElementById('settings-overlay');
-            if (settingsOverlay) {
-              settingsOverlay.classList.remove('hidden');
-            }
+            openSettingsPanel();
           });
 
           // 历史消息UI点击事件：打开当前对话轮消息弹窗
@@ -8591,8 +8648,11 @@ _.set('stat_data.系统.模式', '${mode}')
       document.getElementById('loading-screen')?.classList.add('hidden');
       const introMask = document.getElementById('intro-mask');
       if (introMask) introMask.style.display = 'none';
-      const routeOverlayMask = document.getElementById('route-overlay-mask');
-      if (routeOverlayMask) routeOverlayMask.style.display = 'none';
+      const openingPanel = document.getElementById('opening-panel');
+      if (openingPanel) {
+        openingPanel.classList.remove('open');
+        openingPanel.style.display = 'none';
+      }
     }
 
     // 页面加载完成后：先显示加载界面并加载资源，加载完成后再进入开始界面（新游戏/继续/选项）
@@ -8715,217 +8775,60 @@ _.set('stat_data.系统.模式', '${mode}')
       });
     }
 
-    // NEW GAME按钮点击事件
+    // NEW GAME：打开 Larimar 式开局选择
     document.getElementById('btn-newgame')?.addEventListener('click', (e) => {
       e.stopPropagation();
-
-      const routeSelectionOverlay = document.getElementById('route-selection-overlay');
-      const routeOverlayMask = document.getElementById('route-overlay-mask');
-      const routeBoxes = document.querySelector('.route-boxes');
-      const routeDescription = document.getElementById('route-description');
-
-      // 第一步：淡出所有装饰元素（除了背景视频、边框和边角）
-      // 注意：设置按钮已删除，功能转移到option按钮
       fadeOutDecorativeElements();
-
-      // 第二步：淡出完成后显示灰色蒙版
       setTimeout(() => {
-        if (routeOverlayMask) {
-          routeOverlayMask.classList.add('active');
-        }
-
-        // 第三步：蒙版显示后显示路线选择界面
-        setTimeout(() => {
-          if (routeSelectionOverlay) {
-            routeSelectionOverlay.classList.remove('hidden');
-          }
-          // 重置框的位置和描述
-          if (routeBoxes) {
-            routeBoxes.style.transform = 'translateY(0)';
-          }
-          if (routeDescription) {
-            routeDescription.classList.add('hidden');
-          }
-        }, 500);
-      }, 500);
+        if (window.妹神官_opening_select) window.妹神官_opening_select.open();
+      }, 220);
     });
 
-    // 返回按钮点击事件
-    const routeBackBtn = document.getElementById('route-back-btn');
-    if (routeBackBtn) {
-      routeBackBtn.addEventListener('click', () => {
-        const routeSelectionOverlay = document.getElementById('route-selection-overlay');
-        const routeOverlayMask = document.getElementById('route-overlay-mask');
-        const routeDescription = document.getElementById('route-description');
-
-        // 第一步：隐藏路线选择界面
-        if (routeSelectionOverlay) {
-          routeSelectionOverlay.classList.add('hidden');
-        }
-
-        // 第二步：隐藏描述（如果显示）
-        if (routeDescription) {
-          routeDescription.classList.add('hidden');
-        }
-
-        // 第三步：隐藏灰色蒙版
-        setTimeout(() => {
-          if (routeOverlayMask) {
-            routeOverlayMask.classList.remove('active');
-          }
-
-          // 第四步：淡入所有装饰元素
-          setTimeout(() => {
-            fadeInDecorativeElements();
-          }, 500);
-        }, 500);
-      });
-    }
-
-    // 路线选择功能
-    const routeBoxLove = document.getElementById('route-box-love');
-    const routeBoxGame = document.getElementById('route-box-game');
-    const routeDescription = document.getElementById('route-description');
-    const routeTitle = document.getElementById('route-title');
-    const routeText = document.getElementById('route-text');
-
-    const routeData = {
-      love: {
-        title: '纯爱路线',
-        text: '托莉娜，{{user}}的妹妹，尽管没有任何血缘关系，却是{{user}}最重要而且唯一剩下的亲人。\n久别两年，从寄宿学校归来的她成为了见习神官，让人松一口气地温驯且献身的性格依旧不变，她还是那个{{user}}熟悉的可爱妹妹。\n本以为能与可爱的妹妹回归日常，二人却一同发现了她身体中流淌着魅魔血脉一事——\n根据ASMR改编，本开局将完全禁用所有NTR机制，享受和妹妹生活吧'
-      },
-      game: {
-        title: '游戏路线',
-        text: '托莉娜的疾病刻不容缓，二人踏上了斩杀魔王的旅途。\n托莉娜的魅魔化会随时间加深，她的『魔力需求』——对男性精气的需求也会愈加强烈\n{{user}}有限的『体力』是要用来满足妹妹的需求，还是用於攻略地城，尽快拯救妹妹？\n无论哥哥作出何样的选择，善解人意的托莉娜也肯定会表示理解的\n在旅途的最后，两人还能恢复以往的兄妹关系吗，亦或者……？一切的结局，都取决于你的一念之间。\n根据游戏改编，本开局将启用所有NTR机制，保护好她吧'
-      }
+    window.妹神官_onOpeningClosed = function () {
+      fadeInDecorativeElements();
     };
 
-    // 调整框的位置以避免文字超出边界
-    function adjustBoxPosition() {
-      const routeBoxes = document.querySelector('.route-boxes');
-      const routeDescription = document.getElementById('route-description');
-      if (!routeBoxes || !routeDescription || routeDescription.classList.contains('hidden')) {
-        return;
+    window.妹神官_onOpeningPicked = async function (routeKey) {
+      const isLoveRoute = routeKey === 'love';
+      isLoveRouteStart = isLoveRoute;
+      await setGameMode(isLoveRoute ? GAME_MODE_PURE_LOVE : GAME_MODE_NORMAL);
+
+      try {
+        await setvar('stat_data.系统.时间.小时', 8);
+        await setvar('stat_data.系统.时间.分钟', 0);
+        await setvar('stat_data.托莉娜.基础.服装', '常服');
+        await setvar('stat_data.托莉娜.基础.堕落阶段', 1);
+        logWithTag('GAME', '开局：已设置时间为 08:00，服装为常服，堕落阶段为1');
+      } catch (err) {
+        errorWithTag('GAME', '设置开局变量失败', err);
       }
 
-      const viewportHeight = window.innerHeight;
-      const descriptionRect = routeDescription.getBoundingClientRect();
+      logWithTag('GAME', '开始游戏', isLoveRoute ? '(纯爱路线)' : '(游戏路线)');
 
-      // 计算描述区域底部位置
-      const descriptionBottom = descriptionRect.bottom;
-      const padding = 40; // 底部留白
+      const introMask = document.getElementById('intro-mask');
+      const openingPanel = document.getElementById('opening-panel');
 
-      // 重置transform，避免累积
-      routeBoxes.style.transform = 'translateY(0)';
-
-      // 如果描述区域会超出视口，向上移动框
-      if (descriptionBottom + padding > viewportHeight) {
-        const overflow = descriptionBottom + padding - viewportHeight;
-        routeBoxes.style.transform = `translateY(-${overflow}px)`;
-        routeBoxes.style.transition = 'transform 0.5s ease-out';
+      if (introMask) {
+        introMask.style.transition = 'opacity 0.5s ease-out';
+        introMask.style.opacity = '0';
+        setTimeout(() => {
+          if (introMask.parentNode) introMask.parentNode.removeChild(introMask);
+        }, 500);
       }
-    }
 
-    const routeStartBtn = document.getElementById('route-start-btn');
-
-    function selectRoute(routeKey) {
-      if (!routeTitle || !routeText || !routeDescription) return;
-      const routeBoxes = document.querySelector('.route-boxes');
-      if (routeBoxes) routeBoxes.style.transform = 'translateY(0)';
-
-      routeTitle.textContent = routeData[routeKey].title;
-      routeText.textContent = routeData[routeKey].text;
-      routeDescription.classList.remove('hidden');
-
-      setTimeout(() => adjustBoxPosition(), 100);
-    }
-
-    if (routeBoxLove) {
-      routeBoxLove.addEventListener('click', () => selectRoute('love'));
-    }
-
-    if (routeBoxGame) {
-      routeBoxGame.addEventListener('click', () => selectRoute('game'));
-    }
-
-    // 窗口大小改变时重新调整位置
-    window.addEventListener('resize', () => {
-      if (routeDescription && !routeDescription.classList.contains('hidden')) {
-        adjustBoxPosition();
+      if (openingPanel) {
+        openingPanel.classList.remove('open');
+        openingPanel.style.transition = 'opacity 0.5s ease-out';
+        openingPanel.style.opacity = '0';
+        setTimeout(() => {
+          openingPanel.style.display = 'none';
+        }, 500);
       }
-    });
 
-    // 开始游戏按钮
-    if (routeStartBtn) {
-      routeStartBtn.addEventListener('click', async (e) => {
-        const routeDescriptionEl = document.getElementById('route-description');
-        const routeTitleEl = document.getElementById('route-title');
-        if (!routeDescriptionEl || routeDescriptionEl.classList.contains('hidden')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-
-        const isLoveRoute = routeTitleEl && routeTitleEl.textContent === '纯爱路线';
-
-        // 记录路线（用于存档标注与 setGameMode）
-        isLoveRouteStart = isLoveRoute;
-        await setGameMode(isLoveRoute ? GAME_MODE_PURE_LOVE : GAME_MODE_NORMAL);
-
-        // 两条路线共用开局变量（具体数值由预设对话变量块再次写入）
-        try {
-          await setvar('stat_data.系统.时间.小时', 8);
-          await setvar('stat_data.系统.时间.分钟', 0);
-          await setvar('stat_data.托莉娜.基础.服装', '常服');
-          await setvar('stat_data.托莉娜.基础.堕落阶段', 1);
-          logWithTag('GAME', '开局：已设置时间为 08:00，服装为常服，堕落阶段为1');
-        } catch (err) {
-          errorWithTag('GAME', '设置开局变量失败', err);
-        }
-
-        logWithTag('GAME', '开始游戏', isLoveRoute ? '(纯爱路线)' : '(游戏路线)');
-
-        // 淡出并移除开始界面和路线选择界面
-        const introMask = document.getElementById('intro-mask');
-        const routeSelectionOverlay = document.getElementById('route-selection-overlay');
-        const routeOverlayMask = document.getElementById('route-overlay-mask');
-
-        if (introMask) {
-          introMask.style.transition = 'opacity 0.5s ease-out';
-          introMask.style.opacity = '0';
-          setTimeout(() => {
-            if (introMask.parentNode) {
-              introMask.parentNode.removeChild(introMask);
-            }
-          }, 500);
-        }
-
-        if (routeSelectionOverlay) {
-          routeSelectionOverlay.style.transition = 'opacity 0.5s ease-out';
-          routeSelectionOverlay.style.opacity = '0';
-          setTimeout(() => {
-            if (routeSelectionOverlay.parentNode) {
-              routeSelectionOverlay.parentNode.removeChild(routeSelectionOverlay);
-            }
-          }, 500);
-        }
-
-        if (routeOverlayMask) {
-          routeOverlayMask.style.transition = 'opacity 0.5s ease-out';
-          routeOverlayMask.style.opacity = '0';
-          setTimeout(() => {
-            if (routeOverlayMask.parentNode) {
-              routeOverlayMask.parentNode.removeChild(routeOverlayMask);
-            }
-          }, 500);
-        }
-
-        // 等待淡出动画完成后，调用 initGameInterface 进入gal界面
-        setTimeout(async () => {
-          await initGameInterface();
-        }, 600);
-      });
-    }
+      setTimeout(async () => {
+        await initGameInterface();
+      }, 600);
+    };
 
     // 继续按钮：打开存档界面
     document.getElementById('btn-continue')?.addEventListener('click', async (e) => {
@@ -9328,18 +9231,26 @@ _.set('stat_data.系统.模式', '${mode}')
 
     /** @param {BranchOption} option @param {() => void} onSelect @param {HTMLInputElement|null} inputBox */
     function createBranchActionCard(option, onSelect, inputBox) {
-      const card = document.createElement('div');
+      const card = document.createElement('button');
+      card.type = 'button';
       card.className = 'branch-action-card';
+      const mark = document.createElement('span');
+      mark.className = 'branch-action-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      const body = document.createElement('div');
+      body.className = 'branch-action-body';
       const main = document.createElement('div');
       main.className = 'branch-action-main';
       main.textContent = option.text;
-      card.appendChild(main);
+      body.appendChild(main);
       if (option.tags.length > 0) {
         const meta = document.createElement('div');
         meta.className = 'branch-action-meta';
-        meta.textContent = option.tags.map(t => `${t.key}:${t.value}`).join(' | ');
-        card.appendChild(meta);
+        meta.textContent = option.tags.map(t => `${t.key}:${t.value}`).join(' · ');
+        body.appendChild(meta);
       }
+      card.appendChild(mark);
+      card.appendChild(body);
       card.addEventListener('click', e => {
         e.stopPropagation();
         onSelect();
@@ -9364,7 +9275,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
       const hint = document.createElement('div');
       hint.className = 'branch-action-hint';
-      hint.textContent = '点击直接发送 · 右键或长按填入输入框可编辑';
+      hint.textContent = '点选即行 · 右键或长按可改写后再落笔';
 
       const list = document.createElement('div');
       list.className = 'branch-action-list';
@@ -9375,23 +9286,26 @@ _.set('stat_data.系统.模式', '${mode}')
       inputBox.type = 'text';
       inputBox.className = 'branch-action-input';
       inputBox.id = 'quest-custom-input';
-      inputBox.placeholder = '或输入自定义行动…';
+      inputBox.placeholder = '写下此刻的决定…';
       const sendBtn = document.createElement('button');
       sendBtn.type = 'button';
       sendBtn.className = 'branch-action-send-btn';
-      sendBtn.textContent = '发送';
+      sendBtn.textContent = '落笔';
 
       const grouped = groupBranchOptionsByCategory(options);
       BRANCH_CATEGORIES.forEach(category => {
         const items = grouped.get(category);
         if (!items || items.length === 0) return;
-        const sectionTitle = document.createElement('div');
+        const section = document.createElement('section');
+        section.className = 'branch-action-section';
+        const sectionTitle = document.createElement('h3');
         sectionTitle.className = 'branch-action-section-title';
         sectionTitle.textContent = category;
-        list.appendChild(sectionTitle);
+        section.appendChild(sectionTitle);
         items.forEach(option => {
-          list.appendChild(createBranchActionCard(option, () => onSelect(option.text), inputBox));
+          section.appendChild(createBranchActionCard(option, () => onSelect(option.text), inputBox));
         });
+        list.appendChild(section);
       });
 
       sendBtn.addEventListener('click', () => {
@@ -10985,14 +10899,13 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       return keys.length > 0 ? obj[keys[0]] : null;
     }
 
-    async function buildTolinaSpriteLayers(parsedTag) {
+    function assembleTolinaSpriteLayers(parsedTag, statusNum, outfitValue) {
       if (!parsedTag || parsedTag.character !== '托莉娜') {
         return null;
       }
 
-      // 获取角色状态（堕落阶段）
-      const status = await getvar('stat_data.托莉娜.基础.堕落阶段');
-      const statusNum = parseInt(status, 10) || 1;
+      statusNum = parseInt(statusNum, 10) || 1;
+      outfitValue = outfitValue || '常服';
 
       const layers = {
         L1: null,  // 底图
@@ -11006,11 +10919,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       // 判断阶段
       const isStage12 = (statusNum === 1 || statusNum === 2);
       const isStage34 = (statusNum === 3 || statusNum === 4);
-
-      // L1: 底图（根据服装变量和传入的值）
-      // 先获取服装变量
-      const outfit = await getvar('stat_data.托莉娜.基础.服装');
-      const outfitValue = outfit || '常服';
 
       if (parsedTag.baseKey) {
         // 如果服装是女仆装，且底图不是女仆装相关的，需要特殊处理
@@ -11184,6 +11092,15 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       }
 
       return layers;
+    }
+
+    async function buildTolinaSpriteLayers(parsedTag) {
+      if (!parsedTag || parsedTag.character !== '托莉娜') {
+        return null;
+      }
+      const status = await getvar('stat_data.托莉娜.基础.堕落阶段');
+      const outfit = await getvar('stat_data.托莉娜.基础.服装');
+      return assembleTolinaSpriteLayers(parsedTag, parseInt(status, 10) || 1, outfit || '常服');
     }
 
     function getRivalMaleSpriteLayers(characterName, withShadow = false) {
@@ -11833,12 +11750,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     }
 
     function openGalSettings() {
-      const settingsOverlay = document.getElementById('settings-overlay');
-      if (!settingsOverlay) {
-        galToast('设置界面未就绪');
-        return;
-      }
-      settingsOverlay.classList.remove('hidden');
+      openSettingsPanel();
     }
 
     window.妹神官_gal = {
@@ -11925,7 +11837,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
       const titleRow = document.createElement('div');
       titleRow.className = 'branch-action-overlay-title';
-      titleRow.textContent = '行动选项';
+      titleRow.textContent = '此刻可以做的事';
 
       const body = document.createElement('div');
       body.className = 'branch-action-overlay-body';

@@ -2,12 +2,16 @@
 /* 游戏内容区域（参考天国拯救） */
     .parchment {
       width: 100%;
-      min-height: 600px;
-      aspect-ratio: 2 / 3;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      min-height: 0;
+      aspect-ratio: auto;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
       background-color: #f4e8c1;
       background-image:
         radial-gradient(1000px 600px at 20% 10%, rgba(160, 120, 60, 0.15), transparent 60%),
@@ -20,7 +24,6 @@
         0 1px 0 rgba(255, 255, 255, 0.2);
       opacity: 0;
       transition: opacity 0.5s ease-in;
-      height: 100%;
     }
 
     .parchment.show {
@@ -28,8 +31,10 @@
     }
 
     .stage {
-      flex: 0 0 100%;
-      position: relative;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       z-index: 1;
       overflow: hidden;
     }
@@ -613,148 +618,217 @@
       border-radius: 4px;
     }
 
-    /* ========== 当前对话轮界面 ========== */
-    #current-dialogue-overlay .dialog-content.quest-panel {
-      width: min(92vw, 1180px);
-      max-width: 1180px;
-      max-height: 82vh;
-      padding: 24px 28px 28px;
+    /* ========== 对话 / 行动 弹窗 ========== */
+    #current-dialogue-overlay.quest-overlay,
+    #current-dialogue-overlay.dialog-overlay {
+      padding: 6vh 4vw;
+      background:
+        radial-gradient(900px 520px at 50% 42%, rgba(90, 58, 22, 0.22), transparent 62%),
+        rgba(6, 4, 3, 0.72);
+    }
+
+    #current-dialogue-overlay .dialog-content.quest-panel,
+    #current-dialogue-overlay .quest-panel.fp-panel {
+      width: min(520px, 100%);
+      max-width: 520px;
+      max-height: min(84vh, 820px);
+      padding: 28px 28px 22px;
       align-items: stretch;
       text-align: left;
       justify-content: flex-start;
+      color: #f6edd4;
       background:
-        linear-gradient(165deg, rgba(58, 38, 20, 0.97) 0%, rgba(34, 22, 12, 0.98) 100%);
-      border: 1px solid rgba(212, 175, 106, 0.38);
+        linear-gradient(180deg, rgba(32, 22, 14, 0.97) 0%, rgba(18, 12, 8, 0.98) 100%);
+      background-image: none;
+      border: 1px solid rgba(212, 175, 106, 0.28);
       box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.55),
-        inset 0 1px 0 rgba(255, 236, 198, 0.1);
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 236, 198, 0.08),
+        inset 0 0 0 8px rgba(90, 58, 22, 0.35);
+      animation: fp-panel-in 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #current-dialogue-overlay .quest-panel > .settings-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 4;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      min-height: 32px;
+      filter: brightness(1.15);
     }
 
     .quest-toolbar {
       position: relative;
       z-index: 2;
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 0;
+      margin: 2px 24px 8px 0;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .quest-toolbar-left,
-    .quest-toolbar-right {
+    .quest-toolbar-left {
       display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .quest-toolbar-right {
-      margin-left: auto;
+      gap: 28px;
+      align-items: baseline;
+      justify-content: center;
     }
 
     .quest-tab-btn {
-      padding: 8px 18px;
-      font: 600 14px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", "Noto Serif SC", serif;
-      color: rgba(244, 232, 193, 0.82);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(212, 175, 106, 0.28);
-      border-radius: 999px;
+      padding: 0 0 6px;
+      font: 600 15px/1.2 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      letter-spacing: 0.28em;
+      color: rgba(244, 232, 193, 0.42);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      border-radius: 0;
       cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
     .quest-tab-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(212, 175, 106, 0.5);
-      color: #fff3d0;
+      color: rgba(244, 232, 193, 0.82);
+      background: transparent;
     }
 
     .quest-tab-btn.is-active {
-      color: #2b1e0a;
-      background: linear-gradient(180deg, #f4e8c1 0%, #dcc99a 100%);
-      border-color: rgba(212, 175, 106, 0.85);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      color: #f3e2b0;
+      background: transparent;
+      border-bottom-color: rgba(212, 175, 106, 0.7);
+      box-shadow: none;
     }
 
     .quest-title {
       position: relative;
       z-index: 2;
-      margin: 0 0 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(212, 175, 106, 0.22);
-      color: #f4e8c1;
-      font: 700 18px/1.4 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
-      letter-spacing: 0.06em;
+      margin: 0 0 18px;
+      padding: 0 0 14px;
+      border-bottom: none;
+      color: #f3e2b0;
+      font: 700 20px/1.3 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      letter-spacing: 0.22em;
+      text-align: center;
     }
 
+    .quest-title::before,
+    .quest-title::after {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      margin: 0 12px;
+      vertical-align: middle;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 106, 0.7), transparent);
+    }
+
+    .quest-log-stack,
     .current-dialogue-content-container {
       position: relative;
       z-index: 2;
       flex: 1;
       overflow-y: auto;
-      padding-right: 6px;
+      padding: 0 4px 4px 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       width: 100%;
       box-sizing: border-box;
       scrollbar-width: thin;
-      scrollbar-color: rgba(212, 175, 106, 0.55) rgba(0, 0, 0, 0.2);
+      scrollbar-color: rgba(212, 175, 106, 0.4) transparent;
+    }
+
+    .quest-log-stack {
+      display: grid;
+      grid-template-areas: "pane";
+      align-items: start;
+      gap: 0;
+    }
+
+    .quest-log-pane {
+      grid-area: pane;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .quest-log-pane.is-active {
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .current-dialogue-content-container::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
 
     .current-dialogue-content-container::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.18);
-      border-radius: 4px;
+      background: transparent;
     }
 
     .current-dialogue-content-container::-webkit-scrollbar-thumb {
-      background: rgba(212, 175, 106, 0.5);
-      border-radius: 4px;
+      background: rgba(212, 175, 106, 0.35);
     }
 
     .quest-empty-msg {
-      color: rgba(244, 232, 193, 0.72);
-      font: 400 15px/1.7 "STKaiti", "KaiTi", "Kaiti SC", "Songti SC", serif;
+      color: rgba(244, 232, 193, 0.5);
+      font: 400 15px/1.8 "STKaiti", "KaiTi", serif;
       text-align: center;
-      padding: 28px 16px;
+      padding: 36px 12px;
     }
 
     .quest-message-entry {
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      padding: 12px 14px;
-      background: linear-gradient(180deg, rgba(244, 232, 193, 0.96) 0%, rgba(228, 210, 168, 0.94) 100%);
-      border: 1px solid rgba(139, 90, 43, 0.22);
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      padding: 0 0 14px;
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(212, 175, 106, 0.12);
+      border-radius: 0;
+      box-shadow: none;
       width: 100%;
       box-sizing: border-box;
     }
 
     .quest-sprite-frame {
-      width: 88px;
-      height: 88px;
+      position: relative;
+      width: 78px;
+      height: 78px;
       flex-shrink: 0;
-      background-image: url('https://files.catbox.moe/0o6yij.png');
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
+      margin-top: 2px;
+      padding: 5px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #0d0906;
+      background-image: none;
+      border: 1px solid rgba(214, 176, 104, 0.58);
+      box-shadow:
+        0 0 0 1px rgba(18, 12, 8, 0.95),
+        inset 0 0 0 1px rgba(214, 176, 104, 0.22);
+    }
+
+    .quest-sprite-frame::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(214, 176, 104, 0.28);
+      pointer-events: none;
+      z-index: 2;
     }
 
     .quest-sprite-frame-inner {
-      width: 74px;
-      height: 74px;
-      background-size: contain;
-      background-position: center bottom;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center 12%;
       background-repeat: no-repeat;
       overflow: hidden;
     }
@@ -762,8 +836,8 @@
     .quest-dialogue-text {
       flex: 1;
       min-width: 0;
-      color: #2b1e0a;
-      font: 500 15px/1.75 "STKaiti", "KaiTi", "Kaiti SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #f6edd4;
+      font: 500 15px/1.85 "STKaiti", "KaiTi", "Kaiti SC", serif;
       word-wrap: break-word;
       text-align: left;
     }
@@ -771,198 +845,195 @@
     .quest-layer-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      background: linear-gradient(180deg, rgba(244, 232, 193, 0.94) 0%, rgba(228, 210, 168, 0.92) 100%);
-      border: 1px solid rgba(139, 90, 43, 0.2);
-      border-radius: 10px;
+      gap: 14px;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(212, 175, 106, 0.12);
+      border-radius: 0;
       width: 100%;
       box-sizing: border-box;
     }
 
     .quest-layer-num {
       flex: 0 0 auto;
-      min-width: 48px;
-      text-align: center;
-      color: #6b3f1f;
-      font: 700 18px/1.2 "STKaiti", "KaiTi", serif;
+      min-width: 2em;
+      text-align: left;
+      color: #d4af6a;
+      font: 700 16px/1.2 "STKaiti", "KaiTi", serif;
     }
 
     .quest-layer-desc {
       flex: 1;
       min-width: 0;
-      color: #2b1e0a;
-      font: 400 14px/1.65 "STKaiti", "KaiTi", "Songti SC", serif;
+      color: rgba(246, 237, 212, 0.86);
+      font: 400 14px/1.7 "STKaiti", "KaiTi", serif;
       word-wrap: break-word;
     }
 
     .quest-jump-btn {
       flex: 0 0 auto;
-      padding: 6px 14px;
+      padding: 0;
       font: 600 13px/1.4 "STKaiti", "KaiTi", serif;
-      color: #f4e8c1;
-      background: linear-gradient(180deg, #8b5a2b 0%, #6b3f1f 100%);
-      border: 1px solid rgba(212, 175, 106, 0.45);
-      border-radius: 999px;
+      letter-spacing: 0.16em;
+      color: #d4af6a;
+      background: none;
+      border: none;
+      border-radius: 0;
       cursor: pointer;
-      transition: filter 0.2s ease, transform 0.15s ease;
     }
 
     .quest-jump-btn:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
+      color: #f6e27a;
+      filter: none;
+      transform: none;
     }
 
-    /* ========== 行动选项（branch）========== */
     .branch-action-panel {
       width: 100%;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 18px;
     }
 
     .branch-action-hint {
-      color: rgba(244, 232, 193, 0.55);
-      font: 400 12px/1.5 "STKaiti", "KaiTi", "PingFang SC", sans-serif;
-    }
-
-    .branch-action-section-title {
-      margin-top: 4px;
-      color: rgba(244, 232, 193, 0.78);
-      font: 600 13px/1.4 "STKaiti", "KaiTi", "Songti SC", serif;
-      letter-spacing: 0.12em;
+      color: rgba(244, 232, 193, 0.38);
+      font: 400 12px/1.6 "STKaiti", "KaiTi", serif;
+      letter-spacing: 0.08em;
+      text-align: center;
     }
 
     .branch-action-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 18px;
       width: 100%;
+    }
+
+    .branch-action-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .branch-action-section-title {
+      margin: 0 0 6px;
+      color: #d4af6a;
+      font: 600 12px/1.4 "STKaiti", "KaiTi", serif;
+      letter-spacing: 0.36em;
+      text-align: left;
     }
 
     .branch-action-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
       width: 100%;
+      margin: 0;
+      padding: 9px 4px 9px 2px;
       box-sizing: border-box;
-      padding: 12px 14px;
-      background: linear-gradient(180deg, #faf6eb 0%, #f0e8d2 100%);
-      border: 1px solid rgba(139, 90, 43, 0.18);
-      border-radius: 8px;
+      color: inherit;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      border-left: 2px solid transparent;
       cursor: pointer;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      transition: border-color 0.18s ease, background 0.18s ease, padding-left 0.18s ease;
     }
 
     .branch-action-card:hover {
-      border-color: rgba(139, 90, 43, 0.38);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      background: linear-gradient(180deg, #fffdf7 0%, #f4ebd4 100%);
+      border-left-color: #d4af6a;
+      background: rgba(212, 175, 106, 0.06);
+      padding-left: 8px;
+      box-shadow: none;
+    }
+
+    .branch-action-mark {
+      flex: 0 0 auto;
+      width: 10px;
+      margin-top: 0.55em;
+      color: #d4af6a;
+      font-size: 8px;
+      line-height: 1;
+    }
+
+    .branch-action-mark::before {
+      content: '◆';
+    }
+
+    .branch-action-body {
+      flex: 1;
+      min-width: 0;
     }
 
     .branch-action-main {
-      color: #3a3028;
-      font: 600 15px/1.65 "STKaiti", "KaiTi", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #f6edd4;
+      font: 600 16px/1.75 "STKaiti", "KaiTi", "Kaiti SC", serif;
       word-wrap: break-word;
       text-align: left;
     }
 
+    .branch-action-card:hover .branch-action-main {
+      color: #fff6d2;
+    }
+
     .branch-action-meta {
-      margin-top: 6px;
-      color: #8a8278;
-      font: 400 12px/1.55 "STKaiti", "KaiTi", "PingFang SC", sans-serif;
-      word-wrap: break-word;
-      text-align: left;
+      margin-top: 3px;
+      color: rgba(212, 175, 106, 0.55);
+      font: 400 12px/1.5 "STKaiti", "KaiTi", serif;
     }
 
     .branch-action-input-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
       box-sizing: border-box;
-      margin-top: 8px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(212, 175, 106, 0.18);
+      margin-top: 4px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(212, 175, 106, 0.16);
     }
 
     .branch-action-input {
       flex: 1;
       min-width: 0;
-      padding: 9px 12px;
-      font: 400 14px/1.5 "STKaiti", "KaiTi", "Songti SC", serif;
-      color: #2b1e0a;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(139, 90, 43, 0.22);
-      border-radius: 8px;
+      padding: 8px 0;
+      font: 400 14px/1.5 "STKaiti", "KaiTi", serif;
+      color: #f6edd4;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(212, 175, 106, 0.28);
+      border-radius: 0;
       outline: none;
       box-sizing: border-box;
     }
 
     .branch-action-input::placeholder {
-      color: rgba(58, 48, 40, 0.45);
+      color: rgba(244, 232, 193, 0.32);
     }
 
     .branch-action-input:focus {
-      border-color: rgba(139, 90, 43, 0.45);
+      border-bottom-color: rgba(212, 175, 106, 0.7);
     }
 
     .branch-action-send-btn {
       flex: 0 0 auto;
-      padding: 8px 18px;
-      font: 600 13px/1.4 "STKaiti", "KaiTi", serif;
-      color: #f4e8c1;
-      background: linear-gradient(180deg, #8b5a2b 0%, #6b3f1f 100%);
-      border: 1px solid rgba(212, 175, 106, 0.4);
-      border-radius: 999px;
+      padding: 0;
+      font: 600 14px/1.4 "STKaiti", "KaiTi", serif;
+      letter-spacing: 0.2em;
+      color: #d4af6a;
+      background: none;
+      border: none;
+      border-radius: 0;
       cursor: pointer;
       white-space: nowrap;
     }
 
     .branch-action-send-btn:hover {
-      filter: brightness(1.06);
-    }
-
-    .branches-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-      background: rgba(0, 0, 0, 0.72);
-      pointer-events: auto;
-    }
-
-    .branch-action-overlay-wrap {
-      width: min(720px, 100%);
-      max-height: min(86vh, 900px);
-      display: flex;
-      flex-direction: column;
-      background: #f7f1e3;
-      border: 1px solid rgba(139, 90, 43, 0.22);
-      border-radius: 12px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-      overflow: hidden;
-    }
-
-    .branch-action-overlay-title {
-      padding: 16px 18px 8px;
-      color: #3a3028;
-      font: 700 18px/1.4 "STKaiti", "KaiTi", "Songti SC", serif;
-      border-bottom: 1px solid rgba(139, 90, 43, 0.12);
-    }
-
-    .branch-action-overlay-body {
-      padding: 8px 18px 18px;
-      overflow-y: auto;
-    }
-
-    .branch-action-overlay-body .branch-action-hint {
-      color: #8a8278;
-    }
-
-    .branch-action-overlay-body .branch-action-section-title {
-      color: #6b5f52;
+      color: #f6e27a;
+      filter: none;
     }
 
     /* 开局画面遮罩 */

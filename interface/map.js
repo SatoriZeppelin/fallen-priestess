@@ -64,6 +64,12 @@
   let expandedDistrictIds = new Set();
   /** @type {{ stageWidth:number, stageHeight:number, stageOriginY:number, maps:Record<string, MapSheetLayout> }} */
   let stageLayout = { stageWidth: 0, stageHeight: 0, stageOriginY: 0, maps: {} };
+  /** @type {Set<string>} */
+  let loadedSheetIds = new Set();
+  /** @type {number|null} */
+  let neighborPreloadTimer = null;
+  /** @type {ResizeObserver|null} */
+  let viewportResizeObserver = null;
 
   function lockPageScroll(lock) {
     const html = document.documentElement;
@@ -448,6 +454,52 @@
   }
 
   /**
+   * @param {string|null|undefined} mapId
+   */
+  function loadSheetImage(mapId) {
+    if (!mapId || loadedSheetIds.has(mapId)) return;
+    const sheet = overlay?._worldMapParts?.mapStack?.querySelector(`.world-map-sheet[data-map-id="${mapId}"]`);
+    const img = sheet?.querySelector('.world-map-image');
+    if (!(img instanceof HTMLImageElement) || !img.dataset.src) return;
+    loadedSheetIds.add(mapId);
+    img.src = img.dataset.src;
+  }
+
+  /**
+   * @param {MapLocation|null|undefined} loc
+   */
+  function loadLocationOverlay(loc) {
+    if (!loc?.overlay?.url || !overlay) return;
+    const img = overlay.querySelector(`.world-map-location-overlay[data-location-id="${loc.id}"]`);
+    if (!(img instanceof HTMLImageElement) || img.dataset.loaded === '1') return;
+    img.dataset.loaded = '1';
+    img.src = img.dataset.src || loc.overlay.url;
+  }
+
+  /**
+   * @param {string} currentMapId
+   */
+  function scheduleNeighborSheetPreload(currentMapId) {
+    if (neighborPreloadTimer != null) {
+      clearTimeout(neighborPreloadTimer);
+      neighborPreloadTimer = null;
+    }
+    if (!config?.maps?.length) return;
+    neighborPreloadTimer = window.setTimeout(() => {
+      neighborPreloadTimer = null;
+      for (const mapDef of config?.maps || []) {
+        if (mapDef.id !== currentMapId) loadSheetImage(mapDef.id);
+      }
+    }, 400);
+  }
+
+  function cancelNeighborSheetPreload() {
+    if (neighborPreloadTimer == null) return;
+    clearTimeout(neighborPreloadTimer);
+    neighborPreloadTimer = null;
+  }
+
+  /**
    * @param {MapLocation} loc
    * @param {boolean} animate
    * @returns {Promise<void>}
@@ -455,6 +507,8 @@
   async function setActiveLocationView(loc, animate) {
     activeId = loc.id;
     setSidebarActive(loc.id);
+    loadSheetImage(getLocMapId(loc));
+    loadLocationOverlay(loc);
     if (loc.overlay?.url) {
       hideMarker();
       updateLocationOverlay(loc);
@@ -820,6 +874,7 @@
   async function previewLocation(loc) {
     if (busy) return;
     selectedId = loc.id;
+    loadSheetImage(getLocMapId(loc));
     await setActiveLocationView(loc, true);
     updateTravelButton();
   }
@@ -836,20 +891,16 @@
       return;
     }
     busy = true;
-    setSidebarDisabled(true);
     selectedId = loc.id;
-    await setActiveLocationView(loc, true);
+    close(false);
 
     try {
       await deps.onTravel(loc);
       await refreshPlayerLocationId();
-      await updateActorMarkers();
     } catch (err) {
       console.error('[world-map] 前往地点失败:', err);
     } finally {
       busy = false;
-      setSidebarDisabled(false);
-      updateTravelButton();
     }
   }
 
@@ -889,21 +940,22 @@
     }
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      void travelToLocation(loc);
+      void previewLocation(loc);
     });
     return btn;
   }
 
   function bindViewportResize() {
     if (!viewport) return;
-    const ro = new ResizeObserver(() => {
+    viewportResizeObserver?.disconnect();
+    viewportResizeObserver = new ResizeObserver(() => {
       updateFitScale();
       const loc = activeId ? config?.locations.find(l => l.id === activeId) : null;
       if (loc) applyFocusForLocation(loc, false);
       else if (config?.overviewFocus) applyFocusOverview(config.overviewFocus, false);
       void updateActorMarkers();
     });
-    ro.observe(viewport);
+    viewportResizeObserver.observe(viewport);
   }
 
   function buildOverlay() {
@@ -1027,6 +1079,7 @@
     if (!parts?.mapStack) return;
 
     buildStageLayout(cfg);
+    loadedSheetIds = new Set();
     parts.sidebar.replaceChildren();
     parts.mapStack.replaceChildren();
 
@@ -1048,7 +1101,9 @@
 
       const img = document.createElement('img');
       img.className = 'world-map-image';
-      img.src = mapDef.imageUrl;
+      img.alt = '';
+      img.decoding = 'async';
+      img.dataset.src = mapDef.imageUrl;
       img.width = mapDef.imageWidth;
       img.height = mapDef.imageHeight;
       img.draggable = false;
@@ -1076,9 +1131,10 @@
         const oimg = document.createElement('img');
         oimg.className = 'world-map-location-overlay';
         oimg.dataset.locationId = loc.id;
-        oimg.src = loc.overlay.url;
+        oimg.dataset.src = loc.overlay.url;
         oimg.alt = loc.name;
         oimg.draggable = false;
+        oimg.decoding = 'async';
         locationOverlays.appendChild(oimg);
       }
     }
@@ -1201,6 +1257,9 @@
       const initialLoc = await resolveInitialLocation(cfg);
       buildOverlay();
       renderLocations(cfg);
+      loadSheetImage(getLocMapId(initialLoc));
+      loadLocationOverlay(initialLoc);
+      scheduleNeighborSheetPreload(getLocMapId(initialLoc));
       await refreshPlayerLocationId();
       selectedId = initialLoc.id;
       setSidebarDisabled(false);
@@ -1228,6 +1287,7 @@
    * @param {boolean} restoreMenu
    */
   function close(restoreMenu) {
+    cancelNeighborSheetPreload();
     if (focusAnimRafId != null) {
       cancelAnimationFrame(focusAnimRafId);
       focusAnimRafId = null;
