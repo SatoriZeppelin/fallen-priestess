@@ -193,7 +193,7 @@
           document.body.scrollHeight,
           app.scrollHeight
         ));
-        iframe.style.setProperty('height', h + 'px', 'important');
+        iframe.style.setProperty('height', (h + 16) + 'px', 'important');
         iframe.style.setProperty('max-height', 'none', 'important');
         iframe.style.setProperty('overflow', 'visible', 'important');
       }
@@ -318,9 +318,6 @@
           ].join('');
           doc.head.appendChild(style);
         }
-        if (iframe.parentNode !== doc.body) {
-          doc.body.appendChild(iframe);
-        }
 
         var applying = false;
         function apply() {
@@ -358,12 +355,14 @@
         return true;
       }
 
+      var starting = false;
       function startGame() {
+        if (starting) return;
+        starting = true;
         var btn = document.getElementById('btn-start');
         var msg = document.getElementById('start-msg');
         btn.disabled = true;
         msg.classList.remove('is-bad');
-        pinTavernFrame();
         msg.textContent = '正在载入游戏…';
 
         var sources = [];
@@ -384,10 +383,12 @@
 
         return next.then(function (html) {
           if (!html || html.indexOf('妹神官') === -1) throw new Error('页面内容异常');
+          pinTavernFrame();
           document.open();
           document.write(injectBase(html));
           document.close();
         }).catch(function (err) {
+          starting = false;
           btn.disabled = false;
           msg.classList.add('is-bad');
           msg.textContent = '载入失败：' + (err && err.message ? err.message : err) + '。可直接打开 ' + GAME_BASE;
