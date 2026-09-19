@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -174,6 +175,7 @@
       var app = document.getElementById('app');
       fallback.hidden = true;
       app.hidden = false;
+      pinTavernFrame();
 
       function readGlobal(name, test) {
         var scopes = [window];
@@ -287,7 +289,11 @@
         if (!doc.getElementById(styleId)) {
           var style = doc.createElement('style');
           style.id = styleId;
-          style.textContent = '#sheld{left:0!important;right:0!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;}#chat{max-width:none!important;width:100%!important;}';
+          style.textContent = [
+            '#top-bar,#form_sheld{display:none!important;}',
+            '#sheld{top:0!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;max-width:none!important;margin:0!important;}',
+            '#chat{max-width:none!important;width:100%!important;height:100%!important;}'
+          ].join('');
           doc.head.appendChild(style);
         }
         if (iframe.parentNode !== doc.body) {
@@ -297,20 +303,14 @@
         var applying = false;
         function apply() {
           if (applying) return;
-          var topBar = doc.getElementById('top-bar');
-          var form = doc.getElementById('form_sheld');
-          var sheld = doc.getElementById('sheld');
-          var top = topBar ? topBar.getBoundingClientRect().bottom : (sheld ? sheld.getBoundingClientRect().top : 0);
-          var bottom = form ? form.getBoundingClientRect().top : parentWin.innerHeight;
-          var height = Math.max(0, bottom - top);
-          if (height < 2) return;
           applying = true;
           iframe.style.setProperty('position', 'fixed', 'important');
-          iframe.style.setProperty('top', top + 'px', 'important');
-          iframe.style.setProperty('left', '0px', 'important');
-          iframe.style.setProperty('right', '0px', 'important');
-          iframe.style.setProperty('width', parentWin.innerWidth + 'px', 'important');
-          iframe.style.setProperty('height', height + 'px', 'important');
+          iframe.style.setProperty('top', '0', 'important');
+          iframe.style.setProperty('left', '0', 'important');
+          iframe.style.setProperty('right', '0', 'important');
+          iframe.style.setProperty('bottom', '0', 'important');
+          iframe.style.setProperty('width', '100vw', 'important');
+          iframe.style.setProperty('height', '100vh', 'important');
           iframe.style.setProperty('max-width', 'none', 'important');
           iframe.style.setProperty('max-height', 'none', 'important');
           iframe.style.setProperty('min-width', '0', 'important');
@@ -318,7 +318,7 @@
           iframe.style.setProperty('border', '0', 'important');
           iframe.style.setProperty('margin', '0', 'important');
           iframe.style.setProperty('padding', '0', 'important');
-          iframe.style.setProperty('z-index', '50', 'important');
+          iframe.style.setProperty('z-index', '2147483646', 'important');
           iframe.style.setProperty('background', '#000', 'important');
           iframe.style.setProperty('display', 'block', 'important');
           applying = false;
@@ -331,10 +331,7 @@
         doc.addEventListener('scroll', apply, true);
         if (parentWin.ResizeObserver) {
           var ro = new parentWin.ResizeObserver(apply);
-          ['sheld', 'top-bar', 'form_sheld'].forEach(function (id) {
-            var el = doc.getElementById(id);
-            if (el) ro.observe(el);
-          });
+          if (doc.documentElement) ro.observe(doc.documentElement);
         }
         return true;
       }
@@ -393,3 +390,4 @@
   </script>
 </body>
 </html>
+```
