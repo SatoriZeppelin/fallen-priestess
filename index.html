@@ -3,12 +3,64 @@
 <head>
   <script>
     (function () {
-      if (!/\.github\.io$/i.test(location.hostname)) return;
-      var repo = location.pathname.split('/').filter(Boolean)[0];
-      if (!repo) return;
-      var base = document.createElement('base');
-      base.href = '/' + repo + '/';
-      document.head.appendChild(base);
+      if (/\.github\.io$/i.test(location.hostname)) {
+        var repo = location.pathname.split('/').filter(Boolean)[0];
+        if (repo) {
+          var base = document.createElement('base');
+          base.href = '/' + repo + '/';
+          document.head.appendChild(base);
+        }
+      }
+
+      var iframe = window.frameElement;
+      if (!iframe) return;
+      var parentWin;
+      var doc;
+      try {
+        parentWin = window.parent;
+        doc = parentWin.document;
+      } catch (e) {
+        return;
+      }
+      if (!doc) return;
+
+      var applying = false;
+      function host() {
+        return doc.getElementById('sheld') || doc.getElementById('chat');
+      }
+      function apply() {
+        if (applying) return;
+        var el = host();
+        if (!el) return;
+        var r = el.getBoundingClientRect();
+        if (r.width < 2 || r.height < 2) return;
+        applying = true;
+        iframe.style.setProperty('position', 'fixed', 'important');
+        iframe.style.setProperty('top', r.top + 'px', 'important');
+        iframe.style.setProperty('left', r.left + 'px', 'important');
+        iframe.style.setProperty('width', r.width + 'px', 'important');
+        iframe.style.setProperty('height', r.height + 'px', 'important');
+        iframe.style.setProperty('max-width', 'none', 'important');
+        iframe.style.setProperty('max-height', 'none', 'important');
+        iframe.style.setProperty('min-width', '0', 'important');
+        iframe.style.setProperty('min-height', '0', 'important');
+        iframe.style.setProperty('border', '0', 'important');
+        iframe.style.setProperty('margin', '0', 'important');
+        iframe.style.setProperty('padding', '0', 'important');
+        iframe.style.setProperty('z-index', '50', 'important');
+        iframe.style.setProperty('background', '#000', 'important');
+        iframe.style.setProperty('display', 'block', 'important');
+        applying = false;
+      }
+
+      apply();
+      parentWin.addEventListener('resize', apply);
+      doc.addEventListener('scroll', apply, true);
+      if (parentWin.ResizeObserver) {
+        var ro = new parentWin.ResizeObserver(apply);
+        var el = host();
+        if (el) ro.observe(el);
+      }
     })();
   </script>
   <meta charset="utf-8" />

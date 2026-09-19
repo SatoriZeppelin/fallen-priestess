@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>妹神官 · 启动检查</title>
+  <style>
+    :root {
+      --frame: #d6b068;
+      --body-bg: #1a120c;
+      --gold: #f0d78a;
+      --text: #f3ead4;
+      --muted: rgba(243, 234, 212, 0.62);
+      --ok: #8fd18f;
+      --bad: #ff8a7a;
+      --wait: #e8c47a;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      height: 100%;
+      background: radial-gradient(1200px 800px at 50% 0%, #14120d, #0b0a08 60%, #060605);
+      color: var(--text);
+      font: 16px/1.6 "Noto Serif SC", "Songti SC", "SimSun", serif;
+    }
+    #fallback {
+      max-width: 42rem;
+      margin: 12vh auto 0;
+      padding: 0 1.4rem;
+    }
+    #fallback h1 {
+      margin: 0 0 0.7em;
+      color: #ff2a2a;
+      font-size: clamp(1.15rem, 3.2vw, 1.65rem);
+      letter-spacing: 0.04em;
+    }
+    #fallback p { color: #ff8a7a; margin: 0.35em 0; }
+    #app {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    #app[hidden] { display: none !important; }
+    .panel {
+      width: min(520px, 100%);
+      padding: 22px 22px 18px;
+      border: 2px solid var(--frame);
+      border-radius: 10px;
+      background: var(--body-bg);
+    }
+    .kicker {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+    h2 {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-size: 22px;
+      letter-spacing: 0.12em;
+    }
+    .checks { display: flex; flex-direction: column; gap: 10px; }
+    .check {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 12px;
+      padding: 10px 12px;
+      border: 1.5px solid rgba(214, 176, 104, 0.35);
+      border-radius: 8px;
+      background: rgba(20, 14, 9, 0.45);
+    }
+    .check-name { color: var(--gold); font-weight: 700; letter-spacing: 0.08em; }
+    .check-state {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--wait);
+    }
+    .check.is-ok .check-state { color: var(--ok); }
+    .check.is-bad .check-state { color: var(--bad); }
+    .check-detail {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .check-detail a { color: var(--gold); }
+    .actions {
+      display: none;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(214, 176, 104, 0.22);
+    }
+    .actions.is-ready { display: block; }
+    .start-btn {
+      appearance: none;
+      width: 100%;
+      padding: 0.7em 1em;
+      border: 2px solid var(--frame);
+      border-radius: 8px;
+      background: rgba(214, 176, 104, 0.78);
+      color: #1a1208;
+      font: 700 16px/1 "Noto Serif SC", "Songti SC", serif;
+      letter-spacing: 0.14em;
+      cursor: pointer;
+    }
+    .start-btn:hover { background: #f0d78a; }
+    .start-btn:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+    .start-msg {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 1.4em;
+    }
+    .start-msg.is-bad { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <div id="fallback">
+    <h1>如果你看到了这段文字，说明你没有安装酒馆助手</h1>
+    <p>请安装并启用「酒馆助手」，打开 HTML 渲染后再刷新本对话。</p>
+    <p>扩展地址：https://github.com/N0VI028/JS-Slash-Runner</p>
+  </div>
+  <noscript>
+    <div id="fallback">
+      <h1>如果你看到了这段文字，说明你没有安装酒馆助手</h1>
+    </div>
+  </noscript>
+
+  <div id="app" hidden>
+    <div class="panel">
+      <p class="kicker">FALLEN PRIESTESS</p>
+      <h2>启动检查</h2>
+      <div class="checks">
+        <div class="check" id="chk-th">
+          <span class="check-name">酒馆助手</span>
+          <span class="check-state">检查中…</span>
+          <div class="check-detail" hidden></div>
+        </div>
+        <div class="check" id="chk-prompt">
+          <span class="check-name">提示词助手</span>
+          <span class="check-state">检查中…</span>
+          <div class="check-detail" hidden></div>
+        </div>
+        <div class="check" id="chk-hf">
+          <span class="check-name">Hugging Face</span>
+          <span class="check-state">检查中…</span>
+          <div class="check-detail" hidden></div>
+        </div>
+      </div>
+      <div class="actions" id="actions">
+        <button type="button" class="start-btn" id="btn-start">启动游戏</button>
+        <p class="start-msg" id="start-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var GAME_BASE = 'https://satorizeppelin.github.io/fallen-priestess/';
+      var GAME_INDEX = GAME_BASE + 'index.html';
+      var GAME_INDEX_CDN = 'https://cdn.jsdelivr.net/gh/SatoriZeppelin/fallen-priestess@main/index.html';
+      var HF_API = 'https://huggingface.co/api/models/think-denim-frisk/FallenPriestess';
+      var HF_FILE = 'https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/.gitattributes';
+
+      var fallback = document.getElementById('fallback');
+      var app = document.getElementById('app');
+      fallback.hidden = true;
+      app.hidden = false;
+
+      function readGlobal(name, test) {
+        var scopes = [window];
+        try { if (window.parent && window.parent !== window) scopes.push(window.parent); } catch (e) {}
+        try { if (window.top && window.top !== window) scopes.push(window.top); } catch (e) {}
+        for (var i = 0; i < scopes.length; i++) {
+          try {
+            var value = scopes[i][name];
+            if (value && (!test || test(value))) return value;
+          } catch (e) {}
+        }
+        return null;
+      }
+
+      function setCheck(id, ok, state, detail) {
+        var el = document.getElementById(id);
+        el.classList.toggle('is-ok', !!ok);
+        el.classList.toggle('is-bad', !ok);
+        el.querySelector('.check-state').textContent = state;
+        var detailEl = el.querySelector('.check-detail');
+        detailEl.innerHTML = detail || '';
+        detailEl.hidden = !detail;
+      }
+
+      function checkTavernHelper() {
+        var th = readGlobal('TavernHelper', function (api) {
+          return typeof api.generate === 'function';
+        });
+        if (th) {
+          setCheck('chk-th', true, '已安装', '');
+          return true;
+        }
+        setCheck(
+          'chk-th',
+          false,
+          '未安装',
+          '未找到酒馆助手。请安装 <a href="https://github.com/N0VI028/JS-Slash-Runner" target="_blank" rel="noopener">JS-Slash-Runner</a> 并勾选启用。'
+        );
+        return false;
+      }
+
+      function checkPromptHelper() {
+        var ejs = readGlobal('EjsTemplate', function (api) {
+          return typeof api.evalTemplate === 'function' || typeof api.prepareContext === 'function';
+        });
+        if (ejs) {
+          setCheck('chk-prompt', true, '已安装', '');
+          return true;
+        }
+        setCheck(
+          'chk-prompt',
+          false,
+          '未安装',
+          '未找到提示词助手。请安装 <a href="https://github.com/zonde306/ST-Prompt-Template" target="_blank" rel="noopener">ST-Prompt-Template</a> 并启用 Prompt Template。'
+        );
+        return false;
+      }
+
+      function fetchWithTimeout(url, ms) {
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, ms);
+        return fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: ctrl.signal })
+          .finally(function () { clearTimeout(timer); });
+      }
+
+      function checkHuggingFace() {
+        var started = Date.now();
+        return fetchWithTimeout(HF_API, 8000)
+          .catch(function () { return fetchWithTimeout(HF_FILE, 8000); })
+          .then(function (res) {
+            var ms = Date.now() - started;
+            if (!res || !res.ok) throw new Error(res ? String(res.status) : '网络失败');
+            var quality = ms < 1500 ? '良好' : ms < 4000 ? '一般' : '较慢';
+            setCheck('chk-hf', true, '合格 · ' + quality, '');
+            return true;
+          })
+          .catch(function (err) {
+            setCheck(
+              'chk-hf',
+              false,
+              '不合格',
+              '连不上 Hugging Face' + (err && err.name === 'AbortError' ? '（超时）' : '') + '。请检查网络或梯子后再试。'
+            );
+            return false;
+          });
+      }
+
+      function injectBase(html) {
+        if (/<base\s/i.test(html)) {
+          return html.replace(/<base\b[^>]*>/i, '<base href="' + GAME_BASE + '">');
+        }
+        return html.replace(/<head[^>]*>/i, function (open) {
+          return open + '\n  <base href="' + GAME_BASE + '">';
+        });
+      }
+
+      function pinTavernFrame() {
+        var iframe = window.frameElement;
+        if (!iframe) return false;
+        var parentWin;
+        var doc;
+        try {
+          parentWin = window.parent;
+          doc = parentWin.document;
+        } catch (e) {
+          return false;
+        }
+        if (!doc) return false;
+
+        var applying = false;
+        function host() {
+          return doc.getElementById('sheld') || doc.getElementById('chat');
+        }
+        function apply() {
+          if (applying) return;
+          var el = host();
+          if (!el) return;
+          var r = el.getBoundingClientRect();
+          if (r.width < 2 || r.height < 2) return;
+          applying = true;
+          iframe.style.setProperty('position', 'fixed', 'important');
+          iframe.style.setProperty('top', r.top + 'px', 'important');
+          iframe.style.setProperty('left', r.left + 'px', 'important');
+          iframe.style.setProperty('width', r.width + 'px', 'important');
+          iframe.style.setProperty('height', r.height + 'px', 'important');
+          iframe.style.setProperty('max-width', 'none', 'important');
+          iframe.style.setProperty('max-height', 'none', 'important');
+          iframe.style.setProperty('min-width', '0', 'important');
+          iframe.style.setProperty('min-height', '0', 'important');
+          iframe.style.setProperty('border', '0', 'important');
+          iframe.style.setProperty('margin', '0', 'important');
+          iframe.style.setProperty('padding', '0', 'important');
+          iframe.style.setProperty('z-index', '50', 'important');
+          iframe.style.setProperty('background', '#000', 'important');
+          iframe.style.setProperty('display', 'block', 'important');
+          applying = false;
+        }
+
+        apply();
+        if (iframe.getAttribute('data-fp-pinned') === '1') return true;
+        iframe.setAttribute('data-fp-pinned', '1');
+        parentWin.addEventListener('resize', apply);
+        doc.addEventListener('scroll', apply, true);
+        if (parentWin.ResizeObserver) {
+          var ro = new parentWin.ResizeObserver(apply);
+          var el = host();
+          if (el) ro.observe(el);
+        }
+        return true;
+      }
+
+      function startGame() {
+        var btn = document.getElementById('btn-start');
+        var msg = document.getElementById('start-msg');
+        btn.disabled = true;
+        msg.classList.remove('is-bad');
+        pinTavernFrame();
+        msg.textContent = '正在载入游戏…';
+
+        var sources = [];
+        try {
+          sources.push(new URL('index.html', location.href).href);
+        } catch (e) {}
+        sources.push(GAME_INDEX, GAME_INDEX_CDN);
+
+        var next = Promise.reject();
+        sources.forEach(function (url) {
+          next = next.catch(function () {
+            return fetchWithTimeout(url, 12000).then(function (res) {
+              if (!res.ok) throw new Error(String(res.status));
+              return res.text();
+            });
+          });
+        });
+
+        return next.then(function (html) {
+          if (!html || html.indexOf('妹神官') === -1) throw new Error('页面内容异常');
+          document.open();
+          document.write(injectBase(html));
+          document.close();
+        }).catch(function (err) {
+          btn.disabled = false;
+          msg.classList.add('is-bad');
+          msg.textContent = '载入失败：' + (err && err.message ? err.message : err) + '。可直接打开 ' + GAME_BASE;
+        });
+      }
+
+      Promise.resolve()
+        .then(function () {
+          var th = checkTavernHelper();
+          var prompt = checkPromptHelper();
+          return checkHuggingFace().then(function (hf) {
+            return th && prompt && hf;
+          });
+        })
+        .then(function (ready) {
+          var actions = document.getElementById('actions');
+          if (!ready) return;
+          actions.classList.add('is-ready');
+          document.getElementById('btn-start').addEventListener('click', startGame);
+        });
+    })();
+  </script>
+</body>
+</html>
