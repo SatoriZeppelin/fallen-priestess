@@ -215,22 +215,16 @@
       display: block;
       padding: 0;
       background: transparent;
-      opacity: 0;
       visibility: hidden;
       pointer-events: none;
       overflow: hidden;
-      transition:
-        opacity 0s linear,
-        visibility 0s linear var(--opening-mask-dur);
+      transition: visibility 0s linear var(--opening-mask-dur);
     }
 
     #opening-panel.open {
-      opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition:
-        opacity 0s linear,
-        visibility 0s linear 0s;
+      transition: visibility 0s linear 0s;
     }
 
     #opening-panel .opening-blur {
@@ -576,22 +570,17 @@
       filter: drop-shadow(0 6px 14px rgba(0,0,0,0.45));
     }
 
-    /* 右上角：全屏按钮 */
-    .fullscreen-btn {
+    .intro-top-right {
       position: absolute;
       top: clamp(12px, 3vw, 24px);
       right: clamp(12px, 3vw, 24px);
       z-index: 54;
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1.4vw, 14px);
       pointer-events: auto;
-      cursor: pointer;
-      transition: all 0.2s ease;
       opacity: 0;
       animation: fadeInFullscreen 0.8s ease-out 1.1s forwards;
-      min-width: 40px;
-      min-height: 40px;
-      width: clamp(40px, 6vw, 60px);
-      height: auto;
-      object-fit: contain;
     }
 
     @keyframes fadeInFullscreen {
@@ -605,9 +594,49 @@
       }
     }
 
-    .fullscreen-btn:hover {
-      transform: scale(1.05) translateX(0);
+    .intro-corner-btn {
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      width: clamp(40px, 6vw, 60px);
+      height: clamp(40px, 6vw, 60px);
+      min-width: 40px;
+      min-height: 40px;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      color: #cbb892;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      object-fit: contain;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+    }
+
+    .intro-corner-btn:hover {
+      transform: scale(1.05);
       filter: brightness(1.2);
+    }
+
+    .intro-bgm-btn.is-off {
+      opacity: 0.42;
+    }
+
+    .intro-corner-ico {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .intro-bgm-btn:not(.is-off) .intro-bgm-ico--on,
+    .intro-bgm-btn.is-off .intro-bgm-ico--off,
+    .fullscreen-btn:not(.is-fs) .fullscreen-ico--enter,
+    .fullscreen-btn.is-fs .fullscreen-ico--exit {
+      display: block;
     }
 
 

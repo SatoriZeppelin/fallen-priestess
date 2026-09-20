@@ -1,5 +1,4 @@
 /* 加载界面 */
-/* 加载界面 */
     .loading-screen {
       position: fixed;
       top: 0;
@@ -7,13 +6,9 @@
       width: 100%;
       height: 100%;
       background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       z-index: 1000;
+      overflow: hidden;
       transition: opacity 1s ease-out, visibility 1s ease-out, transform 1s ease-out, filter 1s ease-out;
-      gap: 30px;
       opacity: 1;
       transform: scale(1);
       filter: blur(0);
@@ -27,29 +22,113 @@
       filter: blur(10px);
     }
 
-    /* Logo */
+    .loading-bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+      animation: loadingBgDrift 18s ease-in-out infinite alternate;
+    }
+
+    .loading-bg-dim {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: rgba(6, 4, 2, 0.18);
+    }
+
+    .loading-fg {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      padding-bottom: 52px;
+    }
+
+    .loading-track {
+      position: relative;
+      margin: 0 28px 14px;
+    }
+
+    .loading-logo-wrap {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 6px);
+      z-index: 3;
+      pointer-events: none;
+      transition: left 0.28s ease;
+    }
+
+    .loading-logo-bob {
+      animation: loadingBob 0.7s ease-in-out infinite;
+    }
+
     .loading-logo {
-      max-width: 40%;
-      max-height: 200px;
+      display: block;
+      height: clamp(72px, 12vw, 128px);
+      width: auto;
+      max-width: none;
+      max-height: none;
       object-fit: contain;
+      transform: scaleX(-1);
     }
 
-    /* 托莉娜搬砖中文字 */
-    .loading-subtitle {
+    .loading-panel {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 28px 18px;
+      background: none;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .loading-stats {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex: none;
+      min-width: 0;
+    }
+
+    .loading-pct {
+      flex: none;
       color: #fff;
-      font-size: clamp(20px, 4vw, 28px);
-      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      margin-top: -10px;
+      font: 800 clamp(28px, 5vw, 42px)/1 "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 12px rgba(0, 0, 0, 0.55);
+      min-width: 3.2em;
     }
 
-    /* 加载条容器 */
+    .loading-size {
+      flex: none;
+      color: #fff;
+      font-size: clamp(14px, 2.2vw, 18px);
+      line-height: 1.4;
+      font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.75);
+      white-space: nowrap;
+      opacity: 0.92;
+    }
+
     .loading-progress {
-      width: 500px;
-      max-width: 80%;
+      width: 100%;
+      max-width: none;
       height: 8px;
       position: relative;
-      margin: 20px 0;
+      margin: 0;
       padding: 2px;
       background: linear-gradient(145deg, var(--gold-1), var(--gold-3) 22%, var(--gold-5) 40%, var(--gold-2) 62%, var(--gold-4) 80%, var(--gold-1));
       clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
@@ -117,13 +196,27 @@
 
     /* 当前加载资源名称 */
     .loading-resource-name {
+      flex: 1;
+      min-width: 0;
       color: #fff;
       font-size: clamp(14px, 2.5vw, 18px);
+      line-height: 1.4;
       font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-      margin-top: 10px;
-      text-align: center;
-      min-height: 24px;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.75);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @keyframes loadingBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes loadingBgDrift {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.08) translate(-1.2%, -0.8%); }
     }
     .intro-mask {
       position: absolute;

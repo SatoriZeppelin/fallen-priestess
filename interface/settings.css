@@ -30,7 +30,7 @@
     }
 
     .settings-overlay.hidden {
-      display: none;
+      display: flex;
     }
 
     .settings-header {

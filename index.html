@@ -72,6 +72,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>妹神官</title>
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="shortcut icon" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
   <link rel="stylesheet" href="interface/base.css" />
   <link rel="stylesheet" href="interface/loading.css" />
   <link rel="stylesheet" href="interface/title.css" />
@@ -763,19 +766,39 @@
 </head>
 <body>
 
+  <audio id="intro-bgm" loop preload="auto">
+    <source src="https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/audio/bgm/Title-yuuguredoki-Nor3.ogg" type="audio/ogg">
+    <source src="https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/audio/bgm/Title-yuuguredoki-Nor3.mp3" type="audio/mpeg">
+  </audio>
+
   <!-- 加载界面 -->
   <div class="loading-screen" id="loading-screen">
-    <img class="loading-logo" src="https://files.catbox.moe/j17ccs.png" alt="标志" />
-    <div class="loading-subtitle">托莉娜搬砖中...</div>
-    <div class="loading-progress">
-      <div class="loading-progress-groove"></div>
-      <div class="loading-progress-bg">
-        <div class="loading-progress-mask" id="loading-progress-mask">
-          <div class="loading-progress-bar" id="loading-progress-bar"></div>
+    <video class="loading-bg-video" src="https://files.catbox.moe/2d1g4v.webm" autoplay muted loop playsinline></video>
+    <div class="loading-bg-dim" aria-hidden="true"></div>
+    <div class="loading-fg">
+      <div class="loading-track" id="loading-track">
+        <div class="loading-logo-wrap" id="loading-logo-wrap">
+          <div class="loading-logo-bob">
+            <img class="loading-logo" src="https://files.catbox.moe/j17ccs.png" alt="" />
+          </div>
+        </div>
+        <div class="loading-progress">
+          <div class="loading-progress-groove"></div>
+          <div class="loading-progress-bg">
+            <div class="loading-progress-mask" id="loading-progress-mask">
+              <div class="loading-progress-bar" id="loading-progress-bar"></div>
+            </div>
+          </div>
         </div>
       </div>
+      <div class="loading-panel">
+        <div class="loading-stats">
+          <div class="loading-pct" id="loading-pct">0%</div>
+          <div class="loading-size" id="loading-size">0 B / --</div>
+        </div>
+        <div class="loading-resource-name" id="loading-resource-name"></div>
+      </div>
     </div>
-    <div class="loading-resource-name" id="loading-resource-name">正在加载：初始化...</div>
   </div>
 
   <div class="frame">
@@ -801,8 +824,24 @@
         <p xmlns:cc="http://creativecommons.org/ns#">This work by <span property="cc:attributionName">SovietZeppelin</span> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;white-space:nowrap;">CC BY-NC-SA 4.0<img style="height:clamp(18px, 2.2vw, 22px)!important;margin-left:3px;vertical-align:text-bottom;display:inline-block;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:clamp(18px, 2.2vw, 22px)!important;margin-left:3px;vertical-align:text-bottom;display:inline-block;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:clamp(18px, 2.2vw, 22px)!important;margin-left:3px;vertical-align:text-bottom;display:inline-block;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""><img style="height:clamp(18px, 2.2vw, 22px)!important;margin-left:3px;vertical-align:text-bottom;display:inline-block;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
       </div>
 
-      <!-- 右上角：全屏按钮 -->
-      <img class="fullscreen-btn" id="fullscreen-btn" src="https://files.catbox.moe/wj2c68.png" alt="全屏" title="全屏" />
+      <div class="intro-top-right">
+        <button type="button" class="intro-corner-btn intro-bgm-btn" id="intro-bgm-btn" title="BGM" aria-label="BGM" aria-pressed="true">
+          <svg class="intro-corner-ico intro-bgm-ico--on" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4zm11.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+          <svg class="intro-corner-ico intro-bgm-ico--off" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M4.27 3 3 4.27 7.73 9H4v6h4l5 4v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM14 3.23v2.06c2.89.86 5 3.54 5 6.71 0 .81-.16 1.58-.45 2.3l1.52 1.52c.73-1.14 1.16-2.48 1.16-3.82 0-4.28-2.99-7.86-7-8.77zM13 8.15V4.96L9.83 7.52 13 8.15z"/>
+          </svg>
+        </button>
+        <button type="button" class="intro-corner-btn fullscreen-btn" id="fullscreen-btn" title="全屏" aria-label="全屏">
+          <svg class="intro-corner-ico fullscreen-ico--enter" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M5 5h5v2.2H7.2V10H5V5zm9 0h5v5h-2.2V7.2H14V5zM5 14h2.2v2.8H10V19H5v-5zm11.8 0H19v5h-5v-2.2h2.8V14z"/>
+          </svg>
+          <svg class="intro-corner-ico fullscreen-ico--exit" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M9.2 5v4.2H5V12h7V5H9.2zM12 12v7h2.8v-4.2H19V12h-7z"/>
+          </svg>
+        </button>
+      </div>
 
 
       <!-- 标题下方三个按钮 -->
@@ -839,6 +878,9 @@
             </button>
             <button type="button" class="settings-tab" id="settings-system-btn" data-tab="system">
               <span class="tab-inner"><span class="tab-label">系统设置</span></span>
+            </button>
+            <button type="button" class="settings-tab" id="settings-routes-btn" data-tab="routes">
+              <span class="tab-inner"><span class="tab-label">路由设置</span></span>
             </button>
           </div>
           <button type="button" class="settings-close-btn" id="settings-close-btn" title="关闭" aria-label="关闭">
@@ -1057,7 +1099,7 @@
             </div>
           </div>
 
-          <div class="settings-pane" id="pane-system" data-pane="system">
+          <div class="settings-pane settings-l2-shell" id="pane-system" data-pane="system">
             <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
               <button type="button" class="settings-subtab active" data-sub="api"><span class="sub-label">API</span></button>
               <button type="button" class="settings-subtab" data-sub="preset"><span class="sub-label">预设</span></button>
@@ -1074,50 +1116,21 @@
                     <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
                   </div>
                   <div class="sys-api-profiles" id="api-profiles-list"></div>
-                  <div class="sys-api-routes">
-                    <h3 class="sys-section-title">路由绑定</h3>
-                    <div class="sys-l4">
-                      <h4 class="sys-l4-title">默认接口</h4>
-                      <select class="sys-select" id="cfg-api-default-profile"></select>
-                    </div>
-                    <div class="sys-routes-grid">
-                      <div class="sys-l4">
-                        <h4 class="sys-l4-title">主线</h4>
-                        <select class="sys-select" id="cfg-api-route-main" data-route="main"></select>
-                      </div>
-                      <div class="sys-l4">
-                        <h4 class="sys-l4-title">World</h4>
-                        <select class="sys-select" id="cfg-api-route-world" data-route="world"></select>
-                      </div>
-                      <div class="sys-l4">
-                        <h4 class="sys-l4-title">Story</h4>
-                        <select class="sys-select" id="cfg-api-route-story" data-route="story"></select>
-                      </div>
-                      <div class="sys-l4">
-                        <h4 class="sys-l4-title">Stats</h4>
-                        <select class="sys-select" id="cfg-api-route-stats" data-route="stats"></select>
-                      </div>
-                      <div class="sys-l4">
-                        <h4 class="sys-l4-title">Meta</h4>
-                        <select class="sys-select" id="cfg-api-route-meta" data-route="meta"></select>
-                      </div>
-                    </div>
-                    <p class="sys-hint">可添加多套接口。多模型协同时，World / Story / Stats / Meta 可绑到不同接口。</p>
-                  </div>
                 </section>
               </div>
 
               <div class="settings-subpane" data-subpane="preset">
-                <section class="sys-l3">
+                <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">预设</h3>
                     <div class="sys-toolbar-actions">
-                      <button type="button" class="settings-control-btn" id="btn-preset-add">新增条目</button>
                       <button type="button" class="settings-control-btn" id="btn-preset-import">导入预设</button>
                       <button type="button" class="settings-control-btn" id="btn-preset-export">导出预设</button>
                     </div>
                   </div>
-                  <p class="sys-empty">新增或导入预设后，条目将显示在这里</p>
+                  <input type="file" id="cfg-preset-file" accept=".json,application/json" hidden />
+                  <div class="sys-api-profiles" id="preset-profiles-list"></div>
+                  <p class="sys-empty" id="preset-empty" hidden>暂无预设</p>
                 </section>
               </div>
 
@@ -1132,21 +1145,84 @@
               </div>
 
               <div class="settings-subpane" data-subpane="prompt">
-                <section class="sys-l3">
+                <section class="sys-l3 sys-wb">
                   <div class="sys-toolbar">
-                    <h3 class="sys-section-title">提示词</h3>
-                    <button type="button" class="settings-control-btn" id="btn-prompt-add">新增提示词</button>
+                    <h3 class="sys-section-title">世界书</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-wb-add">新增条目</button>
+                      <button type="button" class="settings-control-btn" id="btn-wb-import">导入</button>
+                      <button type="button" class="settings-control-btn" id="btn-wb-export">导出</button>
+                    </div>
                   </div>
-                  <p class="sys-empty">世界书 / 角色提示词将显示在这里</p>
+                  <input type="file" id="cfg-wb-file" accept=".json,application/json" hidden />
+                  <div class="sys-wb-globals" id="wb-scan-settings">
+                    <div class="sys-route-binds">
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">扫描深度</h4>
+                        <input type="number" class="sys-input" id="cfg-wb-scan-depth" min="0" step="1" />
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">最小激活数</h4>
+                        <input type="number" class="sys-input" id="cfg-wb-min-act" min="0" step="1" />
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">最小激活最大深度</h4>
+                        <input type="number" class="sys-input" id="cfg-wb-min-act-depth" min="0" step="1" />
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">最大递归步数</h4>
+                        <input type="number" class="sys-input" id="cfg-wb-max-rec" min="0" step="1" />
+                      </div>
+                      <div class="sys-l4">
+                        <h4 class="sys-l4-title">字符预算</h4>
+                        <input type="number" class="sys-input" id="cfg-wb-budget" min="0" step="1" />
+                      </div>
+                    </div>
+                    <div class="sys-wb-checks">
+                      <label class="sys-check" for="cfg-wb-recursive">
+                        <input type="checkbox" id="cfg-wb-recursive" />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>递归扫描</span>
+                      </label>
+                      <label class="sys-check" for="cfg-wb-case">
+                        <input type="checkbox" id="cfg-wb-case" />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>区分大小写</span>
+                      </label>
+                      <label class="sys-check" for="cfg-wb-whole">
+                        <input type="checkbox" id="cfg-wb-whole" />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>完整单词</span>
+                      </label>
+                      <label class="sys-check" for="cfg-wb-names">
+                        <input type="checkbox" id="cfg-wb-names" />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>包含名称</span>
+                      </label>
+                      <label class="sys-check" for="cfg-wb-group-score">
+                        <input type="checkbox" id="cfg-wb-group-score" />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>组评分</span>
+                      </label>
+                    </div>
+                  </div>
+                  <nav class="sys-foldernav" id="wb-foldernav" aria-label="世界书文件夹"></nav>
+                  <div class="sys-api-profiles" id="wb-entry-list"></div>
+                  <p class="sys-empty" id="wb-empty" hidden>暂无条目</p>
                 </section>
               </div>
 
               <div class="settings-subpane" data-subpane="variable">
-                <section class="sys-l3">
+                <section class="sys-l3 sys-var">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">变量</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="sys-foldertab active" id="btn-var-view-tree">变量树</button>
+                      <button type="button" class="sys-foldertab" id="btn-var-view-json">JSON</button>
+                    </div>
                   </div>
-                  <p class="sys-empty">基础变量树将显示在这里</p>
+                  <div class="sys-var-tree" id="var-tree"></div>
+                  <textarea class="sys-textarea sys-var-json" id="cfg-var-json" hidden spellcheck="false" autocomplete="off"></textarea>
                 </section>
               </div>
 
@@ -1159,6 +1235,193 @@
                     <span>尖括号兼容模式（&lt; → &lt;兼容，&gt; → 兼容&gt;）</span>
                   </label>
                   <p class="sys-hint">开启后，发给模型的标签会写成 <code>&lt;兼容imotoshinkan兼容&gt;</code> 这类形式，收到后再还原。适合会吞掉 <code>&lt;…&gt;</code> 的通道。</p>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-pane settings-l2-shell" id="pane-routes" data-pane="routes">
+            <nav class="settings-subnav" id="settings-routes-subnav" aria-label="路由设置二级目录">
+              <button type="button" class="settings-subtab active" data-sub="default"><span class="sub-label">默认接口</span></button>
+              <button type="button" class="settings-subtab" data-sub="story"><span class="sub-label">主输出</span></button>
+              <button type="button" class="settings-subtab" data-sub="otherpov"><span class="sub-label">额外视角</span></button>
+              <button type="button" class="settings-subtab" data-sub="stats"><span class="sub-label">数据变化</span></button>
+              <button type="button" class="settings-subtab" data-sub="world"><span class="sub-label">地点变化</span></button>
+              <button type="button" class="settings-subtab" data-sub="snapshot"><span class="sub-label">总结</span></button>
+              <button type="button" class="settings-subtab" data-sub="branches"><span class="sub-label">选项</span></button>
+            </nav>
+            <div class="settings-subcontent" id="settings-routes-subcontent">
+              <div class="settings-subpane active" data-subpane="default">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">默认接口</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">默认接口</h4>
+                      <select class="sys-select" id="cfg-api-default-profile"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">默认预设</h4>
+                      <select class="sys-select" id="cfg-preset-default"></select>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="story">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">主输出</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-story" data-route="story"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-story" data-preset-route="story"></select>
+                    </div>
+                  </div>
+                  <div class="sys-sampler" id="story-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-p="maxTokens" min="16" max="8192" step="16" value="3500" />
+                        <input type="text" class="sys-sampler-val" data-p-num="maxTokens" inputmode="numeric" value="3500" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">上下文长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-p="contextLength" min="1024" max="2000000" step="1024" value="8192" />
+                        <input type="text" class="sys-sampler-val" data-p-num="contextLength" inputmode="numeric" value="8192" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-3">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-p="temperature" min="0" max="2" step="0.01" value="1" />
+                        <input type="text" class="sys-sampler-val" data-p-num="temperature" inputmode="decimal" value="1.00" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-p="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-p-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-p="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-p-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-1">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">RPM</span>
+                        <input type="range" class="sys-sampler-range" data-p="rpm" min="0" max="1000" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-p-num="rpm" inputmode="numeric" value="0" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">多少条正文以上使用总结消息</span>
+                        <input type="range" class="sys-sampler-range" data-p="summaryAfter" min="1" max="100" step="1" value="3" />
+                        <input type="text" class="sys-sampler-val" data-p-num="summaryAfter" inputmode="numeric" value="3" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">正文目标字数</span>
+                        <input type="range" class="sys-sampler-range" data-p="targetChars" min="100" max="5000" step="50" value="5000" />
+                        <input type="text" class="sys-sampler-val" data-p-num="targetChars" inputmode="numeric" value="5000" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">正文提示词</h4>
+                      <textarea class="sys-textarea" data-p="prompt" spellcheck="false" autocomplete="off"></textarea>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="otherpov">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">额外视角</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-otherpov" data-route="otherpov"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-otherpov" data-preset-route="otherpov"></select>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="stats">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">数据变化</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-stats" data-route="stats"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-stats" data-preset-route="stats"></select>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="world">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">地点变化</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-world" data-route="world"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-world" data-preset-route="world"></select>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="snapshot">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">总结</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-snapshot" data-route="snapshot"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-snapshot" data-preset-route="snapshot"></select>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="settings-subpane" data-subpane="branches">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">选项</h3>
+                  </div>
+                  <div class="sys-route-binds">
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">接口</h4>
+                      <select class="sys-select" id="cfg-api-route-branches" data-route="branches"></select>
+                    </div>
+                    <div class="sys-l4">
+                      <h4 class="sys-l4-title">预设</h4>
+                      <select class="sys-select" id="cfg-preset-route-branches" data-preset-route="branches"></select>
+                    </div>
+                  </div>
                 </section>
               </div>
             </div>
@@ -1246,8 +1509,14 @@
 
   <script src="resource/assetMap.js"></script>
   <script src="resource/assetResolver.js"></script>
+  <script src="resource/default-worldbook.js"></script>
+  <script src="resource/default-variables.js"></script>
   <script src="interface/map.js"></script>
+  <script src="interface/llm-client.js"></script>
   <script src="interface/settings-api.js"></script>
+  <script src="interface/settings-preset.js"></script>
+  <script src="interface/settings-worldbook.js"></script>
+  <script src="interface/settings-variable.js"></script>
   <script src="interface/toolbar.js"></script>
   <script src="interface/opening-select.js"></script>
   <script src="interface/app.js"></script>

@@ -485,191 +485,15 @@
       },
 
       // 默认变量（开局时使用，未定义的均初始化为 0）
-      defaultVars: {
-        系统: {
-          时间: {
-            已经过天数: 0,
-            当前时间: "早",
-            小时: 8,
-            分钟: 0,
-            星期: "星期一"
-          },
-          体力: {
-            当前体力值: 100,
-            当前体力值上限: 100
-          },
-          天气: "晴",
-          地点: {
-            当前地点: "家",
-            托莉娜地点: "家"
-          },
-          模式: '正常', // 纯爱 | 正常（开局选定，AI 不可改）
-          请求: {
-            晚安亲亲天数: -1,
-            回家请求天数: -1,
-            越过性欲50: false,
-            越过性欲80: false
-          }
-        },
-        地点: {
-          当前地点: "家",
-          托莉娜地点: "家"
-        },
-        托莉娜: {
-          基础: {
-            堕落值: 0,
-            堕落阶段: 1,
-            性欲值: 0,
-            服装: '常服'  // 可选值：'常服'(P1), '暴露常服'(P2), '魅魔常服'(P3), '魔王服'(P4), '女仆装', '浴巾'(Bath)
-          },
-          行程: {
-            同行状态: '同行'  // 同行 | 分开 | 待定
-          },
-          Hstate纯爱: {
-            表: {
-              总表: {
-                现时魔力: 100,
-                现时魔力需求: 0,
-                "从你吸取魔力次数": 0,
-                "从你吸取魔力总量": 0,
-                "与你高潮的次数": 0,
-                "因为其他原因被你玩弄至高潮": 0,
-                "因为其他原因吸取你魔力": 0,
-                "因为其他原因吸取你魔力次数": 0
-              },
-              头部: {
-                "与你口交次数": 0,
-                "与你接吻获得的魔力量": 0,
-                "与你接吻次数": 0,
-                "被你深喉次数": 0,
-                "被你颜射次数": 0,
-                "口中你精液量": 0,
-                "吞下的你精液量": 0
-              },
-              胸部: {
-                "与你乳交次数": 0,
-                "胸部被你爱抚次数": 0,
-                "因为你胸部高潮次数": 0,
-                "为你乳夹口交次数": 0,
-                "乳交吸取你魔力总量": 0
-              },
-              阴部: {
-                "与你性交次数": 0,
-                "小穴被你爱抚次数": 0,
-                "因你小穴高潮次数": 0,
-                "小穴吸取你的魔力总量": 0,
-                "与你肛交次数": 0,
-                "屁穴被你爱抚次数": 0,
-                "因你屁穴高潮次数": 0,
-                "屁穴吸取你的魔力总量": 0,
-                "被你外射次数": 0,
-                "被你内射次数": 0,
-                "被你射入精液总量": 0,
-                "子宫内你的精液量": 0,
-                "直肠内你的精液量": 0
-              },
-              足部: {
-                "与你足交次数": 0,
-                "被你足部射精次数": 0,
-                "足部现时你的精液量": 0,
-                "总足部被你射精量": 0
-              },
-              精液状态: {
-                "当前胸部精液量": 0,
-                "当前腹部精液量": 0,
-                "当前腿部精液量": 0
-              }
-            }
-          },
-          Hstate正常: {
-            表: {
-              总表: {
-                现时魔力: 100,
-                现时魔力需求: 0,
-                总吸取魔力次数: 0,
-                总吸取魔力量: 0,
-                与你高潮次数: 0
-              },
-              头部: {
-                与你亲吻次数: 0,
-                与你口交次数: 0
-              },
-              胸部: {
-                与你乳交次数: 0
-              },
-              足部: {
-                与你足交次数: 0
-              }
-            },
-            里: {
-              总表: {
-                露出次数: 0,
-                卖春次数: 0,
-                献出初夜的对象: '暂无',
-                与你之外口交次数: 0,
-                与你之外乳交次数: 0,
-                与你之外性交次数: 0,
-                与你之外肛交次数: 0,
-                与你之外足交次数: 0,
-                与你之外高潮次数: 0,
-                高潮最多次是和: '暂无',
-                吸取玛蒂亚斯魔力总量: 0,
-                吸取埃德加魔力总量: 0,
-                吸取哈罗德魔力总量: 0,
-                吸取约书亚魔力总量: 0,
-                吸取黎克魔力总量: 0,
-                吸取镇民魔力总量: 0
-              },
-              头部: {
-                亲吻次数最多对象: '暂无',
-                最喜欢的接吻对象是: '暂无',
-                与你之外接吻次数: 0,
-                被强吻次数: 0,
-                接吻吸取魔力总量: 0,
-                口交次数最多对象: '暂无',
-                最喜欢的口交对象是: '暂无',
-                与你之外口交次数: 0,
-                被迫口交次数: 0,
-                被深喉次数: 0,
-                被颜射次数: 0,
-                口交吸取魔力总量: 0,
-                口中精液量: 0,
-                吞下的精液量: 0
-              },
-              胸部: {
-                乳交次数最多对象: '暂无',
-                最喜欢的乳交对象是: '暂无',
-                胸部被爱抚次数: 0,
-                胸部高潮次数: 0,
-                与你之外乳交次数: 0,
-                乳夹口交次数: 0,
-                乳交吸取魔力总量: 0
-              },
-              阴部: {
-                性交次数最多对象: '暂无',
-                最喜欢的性交对象是: '暂无',
-                与你之外性交次数: 0,
-                小穴被爱抚次数: 0,
-                小穴高潮次数: 0,
-                小穴吸取魔力总量: 0,
-                肛交次数最多对象: '暂无',
-                最喜欢的肛交对象是: '暂无',
-                与你之外肛交次数: 0,
-                屁穴被爱抚次数: 0,
-                屁穴高潮次数: 0,
-                屁穴吸取魔力总量: 0,
-                群交经验次数: 0,
-                被双穴插入次数: 0,
-                被外射次数: 0,
-                被内射次数: 0,
-                被射入精液总量: 0,
-                子宫内精液量: 0,
-                直肠内精液量: 0
-              }
-            }
-          }
+      defaultVars: (function () {
+        const src = window.妹神官_default_variables;
+        if (src && src.data) {
+          try {
+            return JSON.parse(JSON.stringify(src.data));
+          } catch (e) {}
         }
-      },
+        return {};
+      })(),
 
       // 初始化 ERA 事件监听
       init() {
@@ -853,10 +677,21 @@
       ERA.init();
 
       try {
-        // 使用 ERA 的非破坏性插入
+        if (window.妹神官_settings_variable) {
+          if (typeof window.妹神官_settings_variable.init === 'function') {
+            window.妹神官_settings_variable.init();
+          }
+          if (typeof window.妹神官_settings_variable.getData === 'function') {
+            const packed = window.妹神官_settings_variable.getData();
+            if (packed && typeof packed === 'object' && Object.keys(packed).length) {
+              ERA.defaultVars = packed;
+            }
+          }
+        }
         ERA.insertByObject(ERA.defaultVars);
-        // 更新缓存
         ERA.cache.vars = JSON.parse(JSON.stringify(ERA.defaultVars));
+        stripSystemRequest(ERA.cache.vars);
+        requestFlags = emptyRequestFlags();
         ERA.cache.timestamp = Date.now();
         ERA.currentVars = ERA.cache.vars;
         const openingMode = isLoveRouteStart ? GAME_MODE_PURE_LOVE : GAME_MODE_NORMAL;
@@ -1489,6 +1324,38 @@
         const progressMask = document.getElementById('loading-progress-mask');
         const progressBar = document.getElementById('loading-progress-bar');
         const resourceName = document.getElementById('loading-resource-name');
+        const loadingPct = document.getElementById('loading-pct');
+        const loadingSize = document.getElementById('loading-size');
+        const loadingLogoWrap = document.getElementById('loading-logo-wrap');
+        const loadingTrack = document.getElementById('loading-track');
+
+        const placeLoadingMascot = (percent) => {
+          if (!loadingLogoWrap || !loadingTrack) return;
+          const max = Math.max(0, loadingTrack.clientWidth - loadingLogoWrap.offsetWidth);
+          loadingLogoWrap.style.left = `${Math.round(Math.max(0, Math.min(1, percent)) * max)}px`;
+        };
+
+        const formatBytes = (n) => {
+          if (!Number.isFinite(n) || n < 0) return '--';
+          const units = ['B', 'KB', 'MB', 'GB'];
+          let i = 0;
+          let v = n;
+          while (v >= 1024 && i < units.length - 1) {
+            v /= 1024;
+            i += 1;
+          }
+          const digits = i === 0 ? 0 : (v >= 10 ? 1 : 2);
+          return `${v.toFixed(digits)} ${units[i]}`;
+        };
+
+        const dataUrlBytes = (s) => {
+          if (typeof s !== 'string' || !s.startsWith('data:')) return 0;
+          const comma = s.indexOf(',');
+          if (comma < 0) return 0;
+          const payload = s.slice(comma + 1);
+          const pad = payload.endsWith('==') ? 2 : (payload.endsWith('=') ? 1 : 0);
+          return Math.max(0, Math.floor(payload.length * 3 / 4) - pad);
+        };
 
         // 使用统一的资源列表构建函数
         const allAssets = buildResourceList();
@@ -1511,6 +1378,83 @@
         let loaded = 0;
         const total = assets.length;
         const failedAssets = []; // 记录加载失败的资源
+        let downloadedBytes = 0;
+        const sizeByUrl = new Map();
+        const logoImg = loadingLogoWrap && loadingLogoWrap.querySelector('.loading-logo');
+        if (logoImg) {
+          logoImg.addEventListener('load', () => placeLoadingMascot(loaded / Math.max(1, total)));
+        }
+        window.addEventListener('resize', () => placeLoadingMascot(loaded / Math.max(1, total)));
+
+        const estimatedTotalBytes = () => {
+          let known = 0;
+          sizeByUrl.forEach((v) => { known += v; });
+          const counted = sizeByUrl.size;
+          if (counted >= total) return known;
+          if (counted === 0) return 0;
+          return known + (known / counted) * (total - counted);
+        };
+
+        const renderSize = () => {
+          if (!loadingSize) return;
+          const totalEst = estimatedTotalBytes();
+          loadingSize.textContent = `${formatBytes(downloadedBytes)} / ${totalEst > 0 ? formatBytes(totalEst) : '--'}`;
+        };
+
+        const creditDownload = (url, measured) => {
+          const bytes = sizeByUrl.get(url) || measured || 0;
+          if (bytes > 0 && !sizeByUrl.has(url)) sizeByUrl.set(url, bytes);
+          downloadedBytes += bytes;
+        };
+
+        const probeContentLength = async (url) => {
+          if (!url) return 0;
+          const fetchFn = (init) => (
+            typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
+              ? fetchAsset(url, init)
+              : fetch(url, init)
+          );
+          try {
+            const head = await fetchFn({ method: 'HEAD', mode: 'cors' });
+            const headLen = parseInt(head.headers.get('content-length') || '', 10);
+            if (head.ok && Number.isFinite(headLen) && headLen > 0) return headLen;
+          } catch (_) { /* HEAD 不可用时改试 Range */ }
+          const controller = new AbortController();
+          try {
+            const ranged = await fetchFn({
+              method: 'GET',
+              mode: 'cors',
+              headers: { Range: 'bytes=0-0' },
+              signal: controller.signal
+            });
+            const cr = ranged.headers.get('content-range');
+            const m = cr && /\/(\d+)\s*$/.exec(cr);
+            if (m) return parseInt(m[1], 10);
+            const len = parseInt(ranged.headers.get('content-length') || '', 10);
+            if (Number.isFinite(len) && len > 0) return len;
+          } catch (_) { /* 探测失败则交给实际下载体积 */ }
+          finally {
+            controller.abort();
+          }
+          return 0;
+        };
+
+        (async () => {
+          const queue = assets.slice();
+          const workers = Array.from({ length: Math.min(8, queue.length) }, async () => {
+            while (queue.length) {
+              const asset = queue.shift();
+              if (!asset || sizeByUrl.has(asset.url)) continue;
+              const n = await probeContentLength(asset.url);
+              if (n > 0 && !sizeByUrl.has(asset.url)) {
+                sizeByUrl.set(asset.url, n);
+                renderSize();
+              }
+            }
+          });
+          await Promise.all(workers);
+          renderSize();
+        })();
 
         const updateProgress = (currentAsset) => {
           const percent = loaded / total;
@@ -1534,14 +1478,21 @@
           }
           progressBar.style.backgroundPosition = `${bgPosition}% 0`;
 
-          if (currentAsset) {
-            resourceName.textContent = `正在加载：${currentAsset.name}`;
+          if (loadingPct) loadingPct.textContent = `${percentRounded}%`;
+          placeLoadingMascot(percent);
+          renderSize();
+          if (resourceName) {
+            resourceName.textContent = currentAsset && currentAsset.name ? currentAsset.name : '';
           }
         };
 
         const checkComplete = () => {
           if (loaded === total) {
             resourceName.textContent = '加载完成！';
+            if (loadingPct) loadingPct.textContent = '100%';
+            placeLoadingMascot(1);
+            renderSize();
+            playIntroBgm();
             setTimeout(() => {
               loadingScreen.classList.add('hidden');
               // 延迟一点再resolve，让淡出动画完成
@@ -1561,11 +1512,11 @@
           return new Promise((resolve, reject) => {
             const video = document.createElement('video');
             video.preload = 'auto';
-            video.oncanplaythrough = () => resolve(true);
+            video.oncanplaythrough = () => resolve({ ok: true, bytes: sizeByUrl.get(url) || 0 });
             video.onerror = () => {
               console.warn(`视频资源加载失败: ${url}`);
               failedAssets.push(assetName);
-              resolve(false); // 返回false表示失败
+              resolve({ ok: false, bytes: 0 });
             };
             if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
               setMediaSrcWithFallback(video, url);
@@ -1580,6 +1531,7 @@
           try {
             const storageKey = `img_${assetId}`;
             let imageSrc = url;
+            let measured = 0;
 
             // SVG文件跳过IndexedDB缓存，直接使用原始URL
             if (storageUtils.isSVG(url)) {
@@ -1598,9 +1550,11 @@
 
                 if (cached && cached.startsWith('data:')) {
                   imageSrc = cached;
+                  measured = dataUrlBytes(cached);
                 } else {
                   // 保存到IndexedDB
                   imageSrc = await storageUtils.saveImageToStorage(url, storageKey);
+                  measured = dataUrlBytes(imageSrc);
                 }
               } catch (error) {
                 console.warn('从IndexedDB加载失败，使用原始URL:', error);
@@ -1619,7 +1573,7 @@
                 // 更新资源状态
                 const resource = allResources.find(r => r.id === assetId);
                 if (resource) resource.loaded = true;
-                resolve(true);
+                resolve({ ok: true, bytes: measured || sizeByUrl.get(url) || 0 });
               };
               img.onerror = () => {
                 console.warn(`图片资源加载失败: ${url}`);
@@ -1629,7 +1583,7 @@
                   resource.loaded = false;
                   resource.failed = true;
                 }
-                resolve(false);
+                resolve({ ok: false, bytes: 0 });
               };
               if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
                 setMediaSrcWithFallback(img, url);
@@ -1652,7 +1606,7 @@
               resource.loaded = false;
               resource.failed = true;
             }
-            return false;
+            return { ok: false, bytes: 0 };
           }
         };
 
@@ -1661,17 +1615,18 @@
           for (const asset of assets) {
             updateProgress(asset);
 
-            let success = false;
+            let result = { ok: false, bytes: 0 };
             const resource = allResources.find(r => r.url === asset.url && r.name === asset.name);
             const assetId = resource ? resource.id : `resource_${assets.indexOf(asset)}`;
 
             if (asset.url.endsWith('.webm') || asset.type === 'video') {
-              success = await loadVideo(asset.url, asset.name);
+              result = await loadVideo(asset.url, asset.name);
             } else {
-              success = await loadImage(asset.url, asset.name, assetId);
+              result = await loadImage(asset.url, asset.name, assetId);
             }
 
             loaded++;
+            creditDownload(asset.url, result.bytes);
             updateProgress(asset);
             checkComplete();
           }
@@ -1940,6 +1895,25 @@
         switchSystemSub((cur && cur.getAttribute('data-sub')) || 'api');
         if (window.妹神官_settings_api && typeof window.妹神官_settings_api.init === 'function') {
           window.妹神官_settings_api.init();
+        }
+        if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.init === 'function') {
+          window.妹神官_settings_preset.init();
+        }
+        if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.init === 'function') {
+          window.妹神官_settings_worldbook.init();
+        }
+        if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
+          window.妹神官_settings_variable.init();
+        }
+      }
+      if (nextTab === 'routes') {
+        const cur = document.querySelector('#pane-routes .settings-subtab.active');
+        switchRoutesSub((cur && cur.getAttribute('data-sub')) || 'default');
+        if (window.妹神官_settings_api && typeof window.妹神官_settings_api.init === 'function') {
+          window.妹神官_settings_api.init();
+        }
+        if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.init === 'function') {
+          window.妹神官_settings_preset.init();
         }
       }
       if (nextTab === 'text-format') {
@@ -2458,10 +2432,28 @@
       });
     }
 
+    function switchRoutesSub(subId) {
+      const pane = document.getElementById('pane-routes');
+      if (!pane || !subId) return;
+      pane.querySelectorAll('.settings-subtab').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-sub') === subId);
+      });
+      pane.querySelectorAll('.settings-subpane').forEach((sub) => {
+        sub.classList.toggle('active', sub.getAttribute('data-subpane') === subId);
+      });
+    }
+
     const systemTabBtn = document.getElementById('settings-system-btn');
     if (systemTabBtn) {
       systemTabBtn.addEventListener('click', () => {
         switchSettingsTab('system');
+      });
+    }
+
+    const routesTabBtn = document.getElementById('settings-routes-btn');
+    if (routesTabBtn) {
+      routesTabBtn.addEventListener('click', () => {
+        switchSettingsTab('routes');
       });
     }
 
@@ -2474,7 +2466,16 @@
       });
     }
 
-    ['btn-preset-add', 'btn-preset-import', 'btn-preset-export', 'btn-regex-add', 'btn-prompt-add'].forEach((id) => {
+    const routesSubnav = document.getElementById('settings-routes-subnav');
+    if (routesSubnav) {
+      routesSubnav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.settings-subtab');
+        if (!btn) return;
+        switchRoutesSub(btn.getAttribute('data-sub'));
+      });
+    }
+
+    ['btn-regex-add'].forEach((id) => {
       const btn = document.getElementById(id);
       if (!btn) return;
       btn.addEventListener('click', () => {
@@ -3984,6 +3985,7 @@
 
         if (varsToRestore) {
           migrateLegacyHstateTree(varsToRestore);
+          if (lastLayer.requestFlags) adoptRequestFlags(lastLayer.requestFlags);
           recomputeDerivedHstateFields(varsToRestore);
           console.log('[LOAD] 开始恢复变量快照...');
           try {
@@ -4260,31 +4262,12 @@
                 }
               }
 
-              const fullUserInput = buildPromptPrefix(choiceText);
+              const content = await generateStoryRound(choiceText);
               currentStreamingContent = '';
-              setGalBusy(true);
-
-              const tavernGenerateFunc = window.parent.TavernHelper.generate;
-              const aiResponse = await tavernGenerateFunc({
-                user_input: fullUserInput,
-                should_stream: true,
-                disable_extras: true
-              });
-
-              await new Promise(resolve => setTimeout(resolve, 200));
-              setGalBusy(false);
-
-              if (currentStreamingContent.trim() === '') {
-                currentStreamingContent = aiResponse || '';
+              if (content) {
+                await processMessage(content);
               }
 
-              if (currentStreamingContent) {
-                await processMessage(currentStreamingContent);
-              } else if (aiResponse) {
-                await processMessage(aiResponse);
-              }
-
-              currentStreamingContent = '';
               logWithTag('BRANCH', '✅ 分支选择已发送给AI');
             } catch (error) {
               setGalBusy(false);
@@ -7945,6 +7928,8 @@ _.set('stat_data.系统.模式', '${mode}')
       const loadingScreen = document.getElementById('loading-screen');
       if (loadingScreen) {
         loadingScreen.classList.add('hidden');
+        const bootVideo = loadingScreen.querySelector('.loading-bg-video');
+        if (bootVideo) bootVideo.pause();
       }
 
       // 隐藏开始界面
@@ -7952,6 +7937,7 @@ _.set('stat_data.系统.模式', '${mode}')
       if (introMask) {
         introMask.style.display = 'none';
       }
+      stopIntroBgm();
 
       // 隐藏路线选择界面
       const openingPanel = document.getElementById('opening-panel');
@@ -8563,8 +8549,84 @@ _.set('stat_data.系统.模式', '${mode}')
       }
     }
 
+    const TITLE_BGM_BASE = 'https://huggingface.co/think-denim-frisk/FallenPriestess/resolve/main/audio/bgm/';
+    const TITLE_BGM_PAIR = {
+      nor: ['Title-yuuguredoki-Nor3', 'Title-yuuguredoki-Nor4'],
+      sak: ['Title-yuuguredoki-Sak3', 'Title-yuuguredoki-Sak4']
+    };
+
+    function applyTitleBgmByStage(stage) {
+      const pair = (stage === 3 || stage === 4) ? TITLE_BGM_PAIR.sak : TITLE_BGM_PAIR.nor;
+      const stem = pair[Math.random() < 0.5 ? 1 : 0];
+      const el = document.getElementById('intro-bgm');
+      if (!el) return;
+      const sources = el.querySelectorAll('source');
+      if (sources[0]) sources[0].src = `${TITLE_BGM_BASE}${stem}.ogg`;
+      if (sources[1]) sources[1].src = `${TITLE_BGM_BASE}${stem}.mp3`;
+      el.load();
+    }
+
+    const TITLE_BGM_MUTE_KEY = 'meishinkan_title_bgm_muted';
+
+    function isTitleBgmMuted() {
+      try {
+        return localStorage.getItem(TITLE_BGM_MUTE_KEY) === '1';
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function syncTitleBgmBtn() {
+      const btn = document.getElementById('intro-bgm-btn');
+      if (!btn) return;
+      const off = isTitleBgmMuted();
+      btn.classList.toggle('is-off', off);
+      btn.setAttribute('aria-pressed', off ? 'false' : 'true');
+    }
+
+    function setTitleBgmMuted(muted) {
+      try {
+        localStorage.setItem(TITLE_BGM_MUTE_KEY, muted ? '1' : '0');
+      } catch (_) {}
+      const introBgm = document.getElementById('intro-bgm');
+      if (muted) {
+        if (introBgm) introBgm.pause();
+      } else {
+        playIntroBgm();
+      }
+      syncTitleBgmBtn();
+    }
+
+    function stopIntroBgm() {
+      const introBgm = document.getElementById('intro-bgm');
+      if (!introBgm) return;
+      introBgm.pause();
+      introBgm.currentTime = 0;
+    }
+
+    function playIntroBgm() {
+      const introBgm = document.getElementById('intro-bgm');
+      if (!introBgm || isTitleBgmMuted()) return;
+      introBgm.volume = 0.45;
+      const tryPlay = () => {
+        if (isTitleBgmMuted()) return;
+        introBgm.play().catch(() => {});
+      };
+      if (introBgm.readyState >= 2) tryPlay();
+      else introBgm.addEventListener('canplay', tryPlay, { once: true });
+      if (!playIntroBgm._unlockBound) {
+        playIntroBgm._unlockBound = true;
+        const unlock = () => {
+          tryPlay();
+          document.removeEventListener('pointerdown', unlock);
+        };
+        document.addEventListener('pointerdown', unlock);
+      }
+    }
+
     // 检查自动存档并更新加载图片（根据堕落阶段）
     async function checkAutoSaveAndUpdateLoadingImage() {
+      let stageNum = 1;
       try {
         const AUTO_SAVE_NAME = '自动存档';
         const archive = await storageUtils.archivesDB.loadArchive(AUTO_SAVE_NAME);
@@ -8589,7 +8651,8 @@ _.set('stat_data.系统.模式', '${mode}')
           if (lastLayer && lastLayer.varsSnapshot) {
             // 获取堕落阶段
             const corruptionStage = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.堕落阶段');
-            const stageNum = parseInt(corruptionStage, 10);
+            const parsed = parseInt(corruptionStage, 10);
+            if (parsed >= 1 && parsed <= 4) stageNum = parsed;
 
             // 如果堕落阶段为3或4，替换加载图片
             if (stageNum === 3 || stageNum === 4) {
@@ -8605,6 +8668,8 @@ _.set('stat_data.系统.模式', '${mode}')
         // 如果检查失败，不影响正常加载流程
         console.warn('[LOADING] 检查自动存档失败，使用默认加载图片:', error);
       }
+      applyTitleBgmByStage(stageNum);
+      return stageNum;
     }
 
     /** 调试模式：跳过加载界面与标题界面，直接进入世界地图（见 地图/README.md） */
@@ -8645,7 +8710,13 @@ _.set('stat_data.系统.模式', '${mode}')
     }
 
     function hideBootScreens() {
-      document.getElementById('loading-screen')?.classList.add('hidden');
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        const bootVideo = loadingScreen.querySelector('.loading-bg-video');
+        if (bootVideo) bootVideo.pause();
+      }
+      stopIntroBgm();
       const introMask = document.getElementById('intro-mask');
       if (introMask) introMask.style.display = 'none';
       const openingPanel = document.getElementById('opening-panel');
@@ -8657,6 +8728,9 @@ _.set('stat_data.系统.模式', '${mode}')
 
     // 页面加载完成后：先显示加载界面并加载资源，加载完成后再进入开始界面（新游戏/继续/选项）
     window.addEventListener('DOMContentLoaded', async () => {
+      if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
+        window.妹神官_settings_variable.init();
+      }
       if (DEBUG_SKIP_TO_WORLD_MAP) {
         hideBootScreens();
         console.log('[DEBUG] 跳过资源加载与开始界面');
@@ -8695,6 +8769,7 @@ _.set('stat_data.系统.模式', '${mode}')
       try {
         await loadAllAssets();
         console.log('所有资源加载完成，进入开始界面');
+        playIntroBgm();
       } catch (err) {
         console.error('资源加载出错:', err);
       }
@@ -8714,6 +8789,16 @@ _.set('stat_data.系统.模式', '${mode}')
       }
     }
 
+    const introBgmBtn = document.getElementById('intro-bgm-btn');
+    if (introBgmBtn) {
+      introBgmBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setTitleBgmMuted(!isTitleBgmMuted());
+      });
+      syncTitleBgmBtn();
+    }
+
     const fullscreenBtn = document.getElementById('fullscreen-btn');
     if (fullscreenBtn) {
       fullscreenBtn.addEventListener('click', (e) => {
@@ -8725,11 +8810,9 @@ _.set('stat_data.系统.模式', '${mode}')
       // 监听全屏状态变化，更新按钮提示
       const updateFullscreenTitle = () => {
         const isFs = !!document.fullscreenElement;
-        if (isFs) {
-          fullscreenBtn.title = '退出全屏';
-        } else {
-          fullscreenBtn.title = '全屏';
-        }
+        fullscreenBtn.classList.toggle('is-fs', isFs);
+        fullscreenBtn.title = isFs ? '退出全屏' : '全屏';
+        fullscreenBtn.setAttribute('aria-label', fullscreenBtn.title);
       };
 
       // 监听全屏状态变化
@@ -8745,7 +8828,7 @@ _.set('stat_data.系统.模式', '${mode}')
       introCredits: null,
       introLicense: null,
       titleButtons: null,
-      fullscreenBtn: null
+      topRight: null
     };
 
     // 初始化元素引用
@@ -8753,7 +8836,7 @@ _.set('stat_data.系统.模式', '${mode}')
     decorativeElements.introCredits = document.querySelector('.intro-credits');
     decorativeElements.introLicense = document.querySelector('.intro-license');
     decorativeElements.titleButtons = document.querySelector('.title-buttons');
-    decorativeElements.fullscreenBtn = document.querySelector('.fullscreen-btn');
+    decorativeElements.topRight = document.querySelector('.intro-top-right');
 
     // 淡出装饰元素
     function fadeOutDecorativeElements() {
@@ -9459,7 +9542,13 @@ _.set('stat_data.系统.模式', '${mode}')
 
     /** 读档/旧聊天变量：合并 legacy 托莉娜.Hstate 到 Hstate纯爱/Hstate正常 */
     function migrateLegacyHstateTree(snapshot) {
-      if (!snapshot?.托莉娜) return;
+      if (!snapshot) return;
+      if (snapshot.系统 && snapshot.系统.请求) {
+        adoptRequestFlags(snapshot.系统.请求);
+        delete snapshot.系统.请求;
+      }
+      stripSystemRequest(snapshot);
+      if (!snapshot.托莉娜) return;
       const torina = snapshot.托莉娜;
       if (torina.Hstate) {
         const legacy = torina.Hstate;
@@ -9966,6 +10055,30 @@ _.set('stat_data.系统.模式', '${mode}')
       return enabled;
     }
 
+    function syncLocalWorldbookUids(stage, outfitValue, pureLoveMode) {
+      const wb = window.妹神官_settings_worldbook;
+      if (!wb || typeof wb.applyEnabled !== 'function') return;
+      const enabledStageUids = getCorruptionStageEnabledUIDs(stage, pureLoveMode);
+      const updates = [];
+      for (const uid of CORRUPTION_STAGE_LORE_UIDS) {
+        updates.push({ uid, enabled: enabledStageUids.has(uid) });
+      }
+      const outfitUIDs = [8, 10, 9, 18, 17, 2];
+      let targetUID = null;
+      if (outfitValue === '常服') targetUID = 8;
+      else if (outfitValue === '暴露常服') targetUID = 10;
+      else if (outfitValue === '魅魔常服') targetUID = 9;
+      else if (outfitValue === '魔王服') targetUID = 18;
+      else if (outfitValue === '浴巾') targetUID = 17;
+      else if (outfitValue === '女仆装') targetUID = 2;
+      for (const uid of outfitUIDs) {
+        updates.push({ uid, enabled: uid === targetUID });
+      }
+      updates.push({ uid: GAME_MODE_LORE_UID.PURE_LOVE, enabled: !!pureLoveMode });
+      updates.push({ uid: GAME_MODE_LORE_UID.NORMAL, enabled: !pureLoveMode });
+      wb.applyEnabled(updates);
+    }
+
     // 检测并控制 UID 状态（根据堕落阶段和服装）
     async function checkAndControlUIDs() {
       try {
@@ -9975,6 +10088,8 @@ _.set('stat_data.系统.模式', '${mode}')
 
         const stage = parseInt(corruptionStage, 10) || 1;
         const outfitValue = outfit || '常服';
+        const pureLoveModeEarly = isPureLoveMode();
+        syncLocalWorldbookUids(stage, outfitValue, pureLoveModeEarly);
 
         // 检查是否有可用的世界书 API
         if (typeof getCurrentCharPrimaryLorebook !== 'function' || typeof setLorebookEntries !== 'function') {
@@ -11766,6 +11881,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       openHstatus: function () { openHstatusTable(); },
       openSave: openGalSave,
       openSettings: openGalSettings,
+      setDefaultVars: function (next) {
+        if (!next || typeof next !== 'object') return;
+        ERA.defaultVars = JSON.parse(JSON.stringify(next));
+      },
       toggleAuto: toggleGalAuto,
       stopAuto: stopGalAuto,
       isAuto: function () { return galAutoOn; },
@@ -11796,26 +11915,11 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             if (nameplateBottom) nameplateBottom.textContent = '{{user}}';
           }
         }
-        const fullUserInput = buildPromptPrefix(choiceText);
+        const content = await generateStoryRound(choiceText);
         currentStreamingContent = '';
-        setGalBusy(true);
-        const tavernGenerateFunc = window.parent.TavernHelper.generate;
-        const aiResponse = await tavernGenerateFunc({
-          user_input: fullUserInput,
-          should_stream: true,
-          disable_extras: true
-        });
-        await new Promise(resolve => setTimeout(resolve, 200));
-        setGalBusy(false);
-        if (currentStreamingContent.trim() === '') {
-          currentStreamingContent = aiResponse || '';
+        if (content) {
+          await processMessage(content);
         }
-        if (currentStreamingContent) {
-          await processMessage(currentStreamingContent);
-        } else if (aiResponse) {
-          await processMessage(aiResponse);
-        }
-        currentStreamingContent = '';
         logWithTag('BRANCH', '✅ 分支选择已发送给AI');
       } catch (error) {
         setGalBusy(false);
@@ -12527,8 +12631,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           branches: parsed.branches || '',
           snapshots: parsed.snapshots || '',
           variables: parsed.variables || '',
-          varsSnapshot: currentVarsSnapshot ? JSON.parse(JSON.stringify(currentVarsSnapshot)) : null // ERA 变量快照
+          varsSnapshot: currentVarsSnapshot ? JSON.parse(JSON.stringify(currentVarsSnapshot)) : null,
+          requestFlags: Object.assign(emptyRequestFlags(), requestFlags),
         };
+        if (dialogueLayer.varsSnapshot) stripSystemRequest(dialogueLayer.varsSnapshot);
 
         dialogueLayers.push(dialogueLayer);
         if (parsed.otherpov && parsed.otherpov.trim()) {
@@ -12941,6 +13047,77 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     }
 
     // 构建对话历史文本（按轮次倒序；严格一轮 = 玩家输入 + AI 回复）
+    function getStoryParams() {
+      if (window.妹神官_settings_api && typeof window.妹神官_settings_api.getRouteParams === 'function') {
+        return window.妹神官_settings_api.getRouteParams('story') || {};
+      }
+      return {};
+    }
+
+    function buildWorldbookScanMessages() {
+      const pairs = getDialogueRoundPairs();
+      const msgs = [];
+      pairs.forEach((pair) => {
+        if (pair.player) {
+          msgs.push({ name: '{{user}}', text: String(pair.player.playerInput || '') });
+        }
+        if (pair.ai) {
+          let text = String(pair.ai.maintext || '');
+          if (pair.ai.otherpov) text += '\n' + pair.ai.otherpov;
+          msgs.push({ name: '托莉娜', text });
+        }
+      });
+      return msgs;
+    }
+
+    function collectActivatedWorldbookText(userInput) {
+      const wb = window.妹神官_settings_worldbook;
+      if (!wb) return '';
+      const loc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '';
+      const ctx = {
+        userInput: userInput || '',
+        userName: '{{user}}',
+        messages: buildWorldbookScanMessages(),
+        extras: { scenario: loc },
+        trigger: 'normal',
+      };
+      let entries = [];
+      if (typeof wb.scanAndActivate === 'function') {
+        const result = wb.scanAndActivate(ctx);
+        entries = (result && result.entries) || [];
+      } else if (typeof wb.collectActivatedEntries === 'function') {
+        entries = wb.collectActivatedEntries(ctx) || [];
+      }
+      if (!entries.length) return '';
+      if (typeof wb.formatActivatedText === 'function') return wb.formatActivatedText(entries);
+      return (
+        '## 世界书\n' +
+        entries
+          .map((e) => '### ' + (e.comment || '条目') + '\n' + String(e.content || '').trim())
+          .join('\n\n') +
+        '\n\n'
+      );
+    }
+
+    async function generateStoryRound(userInput) {
+      await checkAndControlUIDs();
+      const fullUserInput = buildPromptPrefix(userInput);
+      currentStreamingContent = '';
+      setGalBusy(true, '正在生成正文');
+      try {
+        const tavernGenerateFunc = window.parent.TavernHelper.generate;
+        const aiResponse = await tavernGenerateFunc({
+          user_input: fullUserInput,
+          should_stream: true,
+          disable_extras: true,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        return currentStreamingContent.trim() || aiResponse || '';
+      } finally {
+        setGalBusy(false);
+      }
+    }
+
     function buildDialogueHistory() {
       sanitizeDialogueLayers();
       const pairs = getDialogueRoundPairs();
@@ -12951,6 +13128,9 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
       const currentRound = pairs.length;
 
+      const keepFull = Math.max(1, Math.round(Number(getStoryParams().summaryAfter) || 3));
+      const total = pairs.length;
+
       let history = `## 对话历史\n\n`;
       history += `**当前对话轮次：第${currentRound}轮对话**\n\n`;
       history += '对话轮次说明：每轮对话包含玩家输入（偶数层）与 AI 回复（奇数层）；无 AI 回复的重复玩家输入仅保留最新一条。\n\n';
@@ -12958,6 +13138,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       for (let i = pairs.length - 1; i >= 0; i--) {
         const roundNum = i + 1;
         const { player, ai } = pairs[i];
+        const fromNewest = total - i;
 
         history += `### 第${roundNum}轮对话\n\n`;
 
@@ -12966,11 +13147,17 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         }
 
         if (ai) {
-          if (ai.maintext) {
-            history += `**AI回复：**\n${ai.maintext}\n\n`;
-          }
-          if (ai.snapshots) {
-            history += `**快照：**\n${ai.snapshots}\n\n`;
+          if (fromNewest > keepFull) {
+            if (ai.snapshots) {
+              history += `**总结：**\n${ai.snapshots}\n\n`;
+            }
+          } else {
+            if (ai.maintext) {
+              history += `**AI回复：**\n${ai.maintext}\n\n`;
+            }
+            if (ai.snapshots) {
+              history += `**快照：**\n${ai.snapshots}\n\n`;
+            }
           }
         }
 
@@ -13001,17 +13188,31 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       return Number(readStatFromPaths(['托莉娜.基础.性欲值']) ?? 0);
     }
 
-    function ensureSystemRequestState(vars) {
-      if (!vars.系统) vars.系统 = {};
-      if (!vars.系统.请求) {
-        vars.系统.请求 = {
-          晚安亲亲天数: -1,
-          回家请求天数: -1,
-          越过性欲50: false,
-          越过性欲80: false,
-        };
+    function emptyRequestFlags() {
+      return {
+        晚安亲亲天数: -1,
+        回家请求天数: -1,
+        越过性欲50: false,
+        越过性欲80: false,
+      };
+    }
+
+    let requestFlags = emptyRequestFlags();
+
+    function stripSystemRequest(vars) {
+      if (vars && vars.系统 && Object.prototype.hasOwnProperty.call(vars.系统, '请求')) {
+        delete vars.系统.请求;
       }
-      return vars.系统.请求;
+    }
+
+    function adoptRequestFlags(source) {
+      if (!source) return;
+      requestFlags = Object.assign(emptyRequestFlags(), source);
+    }
+
+    function persistRequestFlags() {
+      const lastLayer = getLastDialogueLayer();
+      if (lastLayer) lastLayer.requestFlags = Object.assign(emptyRequestFlags(), requestFlags);
     }
 
     /** 写入运行时变量快照（最后对话层 + ERA），供请求触发标记持久化 */
@@ -13040,12 +13241,8 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     }
 
     /**
-     * 按当前时间/地点/性欲自动追加 <request: …>（并在变量中标记已触发）
-     * - 18:00+ 在家：晚安亲亲（每日一次）
-     * - 20:00+ 任意地点：晚安亲亲（每日一次，与上条互斥）
-     * - 18:00+ 不在家：请求回家（每日一次）
-     * - 在家且性欲≥50：立刻亲亲（越过 50 一次；降至 50 以下后重置）
-     * - 不在家且性欲≥80：立刻亲亲（越过 80 一次；降至 80 以下后重置）
+     * 按当前时间/地点/性欲自动追加 <request: …>
+     * 触发记录不写入 stat_data。
      */
     function collectAutoRequestTags() {
       /** @type {string[]} */
@@ -13056,38 +13253,40 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       const lust = getCurrentLustValue();
       const atOrAfter18 = minutes >= 18 * 60;
       const atOrAfter20 = minutes >= 20 * 60;
+      const lastLayer = getLastDialogueLayer();
+      if (lastLayer && lastLayer.requestFlags) adoptRequestFlags(lastLayer.requestFlags);
+      const req = requestFlags;
 
-      patchRuntimeVarsSnapshot(vars => {
-        const req = ensureSystemRequestState(vars);
+      if (lust < 50) req.越过性欲50 = false;
+      if (lust < 80) req.越过性欲80 = false;
 
-        if (lust < 50) req.越过性欲50 = false;
-        if (lust < 80) req.越过性欲80 = false;
-
-        if (Number(req.晚安亲亲天数) !== day) {
-          if (atOrAfter20) {
-            tags.push('<request: 托莉娜请求今天的晚安亲亲>');
-            req.晚安亲亲天数 = day;
-          } else if (atOrAfter18 && atHome) {
-            tags.push('<request: 托莉娜请求今天的晚安亲亲>');
-            req.晚安亲亲天数 = day;
-          }
+      if (Number(req.晚安亲亲天数) !== day) {
+        if (atOrAfter20) {
+          tags.push('<request: 托莉娜请求今天的晚安亲亲>');
+          req.晚安亲亲天数 = day;
+        } else if (atOrAfter18 && atHome) {
+          tags.push('<request: 托莉娜请求今天的晚安亲亲>');
+          req.晚安亲亲天数 = day;
         }
+      }
 
-        if (Number(req.回家请求天数) !== day && atOrAfter18 && !atHome) {
-          tags.push('<request: 托莉娜因为时间过晚，请求回家>');
-          req.回家请求天数 = day;
-        }
+      if (Number(req.回家请求天数) !== day && atOrAfter18 && !atHome) {
+        tags.push('<request: 托莉娜因为时间过晚，请求回家>');
+        req.回家请求天数 = day;
+      }
 
-        if (atHome && lust >= 50 && !req.越过性欲50) {
-          tags.push('<request: 托莉娜请求立刻亲亲>');
-          req.越过性欲50 = true;
-        }
+      if (atHome && lust >= 50 && !req.越过性欲50) {
+        tags.push('<request: 托莉娜请求立刻亲亲>');
+        req.越过性欲50 = true;
+      }
 
-        if (!atHome && lust >= 80 && !req.越过性欲80) {
-          tags.push('<request: 托莉娜请求立刻亲亲>');
-          req.越过性欲80 = true;
-        }
-      });
+      if (!atHome && lust >= 80 && !req.越过性欲80) {
+        tags.push('<request: 托莉娜请求立刻亲亲>');
+        req.越过性欲80 = true;
+      }
+
+      persistRequestFlags();
+      patchRuntimeVarsSnapshot(stripSystemRequest);
 
       if (tags.length) {
         console.log('[REQUEST] 自动注入:', tags.join(' '));
@@ -13107,12 +13306,25 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     function buildPromptPrefix(userInput = '') {
       const userInputWithRequests = appendAutoRequestTags(userInput);
       const dialogueHistory = buildDialogueHistory();
+      const story = getStoryParams();
+      const targetChars = Math.round(Number(story.targetChars) || 0);
+      const storyPrompt = String(story.prompt || '').trim();
 
       let prefix = '';
+
+      if (storyPrompt) {
+        prefix += storyPrompt + '\n\n';
+      }
+
+      prefix += collectActivatedWorldbookText(userInput);
 
       // 1. 用户输入（D0位置，第一优先）
       if (userInputWithRequests && userInputWithRequests.trim()) {
         prefix += `## 用户输入（第一优先）\n\n${userInputWithRequests}\n\n`;
+      }
+
+      if (targetChars > 0) {
+        prefix += `正文目标字数：${targetChars}\n\n`;
       }
 
       // 2. 对话历史
@@ -13228,17 +13440,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           try {
             // 发送给AI之前，检测并控制 UID
             await checkAndControlUIDs();
-
-            // 构建完整的提示词（按照优先级顺序：user input -> 变量说明 -> 对话历史）
-            // user input 放在最前面（D0位置，第一优先）
             if (message && message.text) {
               const originalText = message.text;
-              const promptPrefix = buildPromptPrefix(originalText);
-
-              // promptPrefix 已经包含了 user input，直接使用
-              message.text = promptPrefix;
-
-              logWithTag('PROMPT', '已按照新顺序注入提示词：user input -> 变量说明 -> 对话历史');
+              message.text = buildPromptPrefix(originalText);
+              logWithTag('PROMPT', '已注入正文提示词');
             } else {
               console.warn('[EVENT] ⚠️ 消息对象中没有 text 字段:', message);
             }
@@ -13395,27 +13600,13 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         userInput =
           `【系统】{{user}}移动到了：${loc.name}（同行状态：待定）。请描写到达情景，并决定是否与托莉娜同行或分开，更新 托莉娜.行程.同行状态 与两地地点。maintext 仅限{{user}}视角；托莉娜独立戏份用 otherpov。`;
       }
-      const fullUserInput = buildPromptPrefix(userInput);
-
-      currentStreamingContent = '';
-      setGalBusy(true);
-
       try {
-        const aiResponse = await window.parent.TavernHelper.generate({
-          user_input: fullUserInput,
-          should_stream: true,
-          disable_extras: true,
-        });
-        await new Promise(resolve => setTimeout(resolve, 200));
-        setGalBusy(false);
-
-        const content = currentStreamingContent.trim() || aiResponse || '';
+        const content = await generateStoryRound(userInput);
         currentStreamingContent = '';
         if (content) {
           await processMessage(content);
         }
       } catch (error) {
-        setGalBusy(false);
         currentStreamingContent = '';
         console.error('[world-map] 前往地点时 generate 失败:', error);
       }
@@ -13424,6 +13615,9 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 页面加载时初始化
     window.addEventListener('DOMContentLoaded', async () => {
       console.log('[INIT] DOMContentLoaded 事件触发，开始初始化...');
+      if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
+        window.妹神官_settings_variable.init();
+      }
       setupStreamListener();
       console.log('[INIT] setupStreamListener 完成');
       setupMessageListener();

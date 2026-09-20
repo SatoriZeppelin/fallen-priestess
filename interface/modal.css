@@ -59,9 +59,30 @@
   animation: fp-overlay-in 0.42s var(--fp-ease);
 }
 
+.settings-overlay,
+.save-overlay {
+  animation: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.38s var(--fp-ease),
+    visibility 0s linear 0.38s;
+}
+
+.settings-overlay:not(.hidden),
+.save-overlay:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.42s var(--fp-ease),
+    visibility 0s linear 0s;
+}
+
 .settings-overlay.hidden,
 .save-overlay.hidden {
-  display: none;
+  display: flex;
 }
 
 @keyframes fp-overlay-in {
@@ -142,6 +163,18 @@
   max-width: 90vw;
   height: 90vh;
   max-height: 90vh;
+  animation: none;
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition:
+    opacity 0.42s var(--fp-ease),
+    transform 0.42s var(--fp-ease);
+}
+
+.settings-overlay:not(.hidden) .fp-panel,
+.save-overlay:not(.hidden) .fp-panel {
+  opacity: 1;
+  transform: none;
 }
 
 .settings-header,
@@ -867,6 +900,8 @@
   overflow-y: hidden;
   padding-bottom: 0;
   margin-bottom: -2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214, 176, 104, 0.55) transparent;
 }
 
 #settings-overlay .settings-tab {
@@ -1902,21 +1937,21 @@
 }
 
 /* ========== 系统设置：左侧二级栏 + 内容（天青结构 / 妹神官金色） ========== */
-#settings-overlay #pane-system {
+#settings-overlay .settings-l2-shell {
   flex-direction: row;
   align-items: stretch;
   gap: 0;
   margin: 0;
 }
 
-#settings-overlay #pane-system > .settings-subnav {
+#settings-overlay .settings-l2-shell > .settings-subnav {
   flex: none;
   flex-direction: column;
   flex-wrap: nowrap;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: flex-start;
   width: auto;
-  min-width: 0;
+  min-width: 7.4em;
   gap: 6px;
   padding: 10px 0 10px 0;
   margin-right: -2px;
@@ -1926,15 +1961,18 @@
   overflow-y: auto;
   box-sizing: border-box;
   z-index: 3;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214, 176, 104, 0.55) transparent;
 }
 
-#settings-overlay #pane-system > .settings-subnav .settings-subtab {
+#settings-overlay .settings-l2-shell > .settings-subnav .settings-subtab {
   position: relative;
   z-index: 1;
-  width: auto !important;
-  min-width: 5.6em;
+  width: 100% !important;
+  min-width: 0;
+  box-sizing: border-box;
   justify-content: center !important;
-  padding: 0.55em 0.95em 0.55em 0.9em !important;
+  padding: 0.55em 0.9em !important;
   border: 2px solid var(--set-frame) !important;
   border-right-color: transparent !important;
   border-radius: 8px 0 0 8px !important;
@@ -1944,12 +1982,12 @@
   letter-spacing: 0.08em !important;
 }
 
-#settings-overlay #pane-system > .settings-subnav .settings-subtab:hover {
+#settings-overlay .settings-l2-shell > .settings-subnav .settings-subtab:hover {
   background: rgba(214, 176, 104, 0.22) !important;
   color: #fff6d2 !important;
 }
 
-#settings-overlay #pane-system > .settings-subnav .settings-subtab.active {
+#settings-overlay .settings-l2-shell > .settings-subnav .settings-subtab.active {
   z-index: 3;
   background: var(--set-body-bg) !important;
   color: #f0d78a !important;
@@ -1957,7 +1995,7 @@
   border-right-color: var(--set-body-bg) !important;
 }
 
-#settings-overlay #pane-system .settings-subcontent {
+#settings-overlay .settings-l2-shell .settings-subcontent {
   flex: 1;
   min-width: 0;
   min-height: 0;
@@ -1972,40 +2010,77 @@
   scrollbar-color: rgba(214, 176, 104, 0.55) transparent;
 }
 
-#settings-overlay #pane-system .settings-subcontent::-webkit-scrollbar {
+#settings-overlay .settings-l2-shell .settings-subcontent::-webkit-scrollbar {
   width: 8px;
 }
 
-#settings-overlay #pane-system .settings-subcontent::-webkit-scrollbar-track {
+#settings-overlay .settings-l2-shell .settings-subcontent::-webkit-scrollbar-track {
   background: rgba(214, 176, 104, 0.08);
   border-radius: 999px;
 }
 
-#settings-overlay #pane-system .settings-subcontent::-webkit-scrollbar-thumb {
+#settings-overlay .settings-l2-shell .settings-subcontent::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(232, 196, 122, 0.85), rgba(176, 136, 72, 0.75));
   border-radius: 999px;
 }
 
-#settings-overlay #pane-system .settings-subcontent::-webkit-scrollbar-button {
+#settings-overlay .settings-l2-shell .settings-subcontent::-webkit-scrollbar-button {
   display: none;
 }
 
-#settings-overlay #pane-system .settings-subpane {
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar-track,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar-track {
+  background: rgba(214, 176, 104, 0.08);
+  border-radius: 999px;
+  margin: 0 10px;
+}
+
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar-thumb,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, rgba(232, 196, 122, 0.85), rgba(176, 136, 72, 0.75));
+  border-radius: 999px;
+  border: 1px solid rgba(80, 52, 20, 0.45);
+}
+
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar-thumb:hover,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, rgba(244, 214, 148, 0.95), rgba(196, 152, 86, 0.88));
+}
+
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar-button,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+#settings-overlay .settings-tabs-scroll::-webkit-scrollbar-corner,
+#settings-overlay .settings-l2-shell > .settings-subnav::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+#settings-overlay .settings-l2-shell .settings-subpane {
   display: none;
 }
 
-#settings-overlay #pane-system .settings-subpane.active {
+#settings-overlay .settings-l2-shell .settings-subpane.active {
   display: block;
 }
 
-#settings-overlay #pane-system .sys-l3 {
+#settings-overlay .settings-l2-shell .sys-l3 {
   display: flex;
   flex-direction: column;
   gap: 14px;
   color: #f3ead4;
 }
 
-#settings-overlay #pane-system .sys-toolbar {
+#settings-overlay .settings-l2-shell .sys-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2013,31 +2088,31 @@
   flex-wrap: wrap;
 }
 
-#settings-overlay #pane-system .sys-toolbar-actions {
+#settings-overlay .settings-l2-shell .sys-toolbar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-#settings-overlay #pane-system .sys-section-title,
-#settings-overlay #pane-system .sys-l4-title {
+#settings-overlay .settings-l2-shell .sys-section-title,
+#settings-overlay .settings-l2-shell .sys-l4-title {
   margin: 0 0 8px;
   color: #f0d78a;
   font: 700 16px/1.3 var(--fp-serif);
   letter-spacing: 0.1em;
 }
 
-#settings-overlay #pane-system .sys-l4-title {
+#settings-overlay .settings-l2-shell .sys-l4-title {
   font-size: 13px;
   letter-spacing: 0.08em;
 }
 
-#settings-overlay #pane-system .sys-l4 {
+#settings-overlay .settings-l2-shell .sys-l4 {
   min-width: 0;
 }
 
-#settings-overlay #pane-system .sys-input,
-#settings-overlay #pane-system .sys-select {
+#settings-overlay .settings-l2-shell .sys-input,
+#settings-overlay .settings-l2-shell .sys-select {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -2050,7 +2125,7 @@
   outline: none;
 }
 
-#settings-overlay #pane-system .sys-select {
+#settings-overlay .settings-l2-shell .sys-select {
   cursor: pointer;
   appearance: none;
   background-image:
@@ -2064,29 +2139,115 @@
   padding-right: 32px;
 }
 
-#settings-overlay #pane-system .sys-input:focus,
-#settings-overlay #pane-system .sys-select:focus {
+#settings-overlay .settings-l2-shell .sys-input:focus,
+#settings-overlay .settings-l2-shell .sys-select:focus {
   border-color: #f0d78a;
 }
 
-#settings-overlay #pane-system .sys-input::placeholder {
+#settings-overlay .settings-l2-shell .sys-input::placeholder {
   color: rgba(243, 234, 212, 0.4);
 }
 
-#settings-overlay #pane-system .sys-hint,
-#settings-overlay #pane-system .sys-empty {
+#settings-overlay .settings-l2-shell .sys-model-field {
+  position: relative;
+  width: 100%;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-combo {
+  position: relative;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-field .sys-input {
+  padding-right: 36px;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-caret {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #d6b068;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-field.is-open .sys-model-caret {
+  color: #f0d78a;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 220px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1.5px solid rgba(214, 176, 104, 0.7);
+  border-radius: 8px;
+  background: #1a1208;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214, 176, 104, 0.55) transparent;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu[hidden] {
+  display: none;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(232, 196, 122, 0.85), rgba(176, 136, 72, 0.75));
+  border-radius: 999px;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu li {
+  margin: 0;
+  padding: 8px 12px;
+  color: #f3ead4;
+  font: 600 13px/1.35 var(--fp-serif);
+  cursor: pointer;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu li:hover {
+  background: rgba(214, 176, 104, 0.18);
+  color: #f0d78a;
+}
+
+#settings-overlay .settings-l2-shell .sys-model-menu .sys-model-empty,
+#settings-overlay .settings-l2-shell .sys-model-menu .sys-model-empty:hover {
+  color: rgba(243, 234, 212, 0.5);
+  background: transparent;
+  cursor: default;
+}
+
+#settings-overlay .settings-l2-shell .sys-hint,
+#settings-overlay .settings-l2-shell .sys-empty {
   margin: 0;
   color: rgba(243, 234, 212, 0.62);
   font: 600 13px/1.5 var(--fp-serif);
 }
 
-#settings-overlay #pane-system .sys-hint code {
+#settings-overlay .settings-l2-shell .sys-hint code {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 12px;
   color: #f0d78a;
 }
 
-#settings-overlay #pane-system .sys-empty {
+#settings-overlay .settings-l2-shell .sys-empty {
   padding: 28px 12px;
   text-align: center;
   border: 1.5px dashed rgba(214, 176, 104, 0.35);
@@ -2094,14 +2255,14 @@
   background: rgba(20, 14, 9, 0.35);
 }
 
-#settings-overlay #pane-system .sys-api-profiles {
+#settings-overlay .settings-l2-shell .sys-api-profiles {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-#settings-overlay #pane-system .sys-api-card,
-#settings-overlay #pane-system .sys-api-routes {
+#settings-overlay .settings-l2-shell .sys-api-card,
+#settings-overlay .settings-l2-shell .sys-api-routes {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2111,14 +2272,14 @@
   background: rgba(20, 14, 9, 0.45);
 }
 
-#settings-overlay #pane-system .sys-api-card-head {
+#settings-overlay .settings-l2-shell .sys-api-card-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-#settings-overlay #pane-system .sys-api-toggle,
-#settings-overlay #pane-system .sys-icon-btn {
+#settings-overlay .settings-l2-shell .sys-api-toggle,
+#settings-overlay .settings-l2-shell .sys-icon-btn {
   flex: none;
   width: 28px;
   height: 28px;
@@ -2133,33 +2294,34 @@
   justify-content: center;
 }
 
-#settings-overlay #pane-system .sys-icon-btn:hover:not(:disabled),
-#settings-overlay #pane-system .sys-api-toggle:hover {
+#settings-overlay .settings-l2-shell .sys-icon-btn:hover:not(:disabled),
+#settings-overlay .settings-l2-shell .sys-api-toggle:hover {
   background: rgba(214, 176, 104, 0.18);
   border-color: rgba(214, 176, 104, 0.45);
 }
 
-#settings-overlay #pane-system .sys-icon-btn:disabled {
+#settings-overlay .settings-l2-shell .sys-icon-btn:disabled {
   opacity: 0.28;
   cursor: not-allowed;
 }
 
-#settings-overlay #pane-system .sys-icon-btn.is-danger:hover:not(:disabled) {
+#settings-overlay .settings-l2-shell .sys-icon-btn.is-danger:hover:not(:disabled) {
   color: #ffd2c4;
   border-color: rgba(240, 160, 140, 0.7);
   background: rgba(180, 72, 56, 0.22);
 }
 
-#settings-overlay #pane-system .sys-api-chevron {
+#settings-overlay .settings-l2-shell .sys-api-chevron {
   display: inline-flex;
   transition: transform 0.15s ease;
 }
 
-#settings-overlay #pane-system .sys-api-card.is-expanded .sys-api-chevron {
+#settings-overlay .settings-l2-shell .sys-api-card.is-expanded > .sys-api-card-head .sys-api-chevron,
+#settings-overlay .settings-l2-shell .sys-preset-entry.is-expanded > .sys-preset-entry-head .sys-api-chevron {
   transform: rotate(90deg);
 }
 
-#settings-overlay #pane-system .sys-api-card-main {
+#settings-overlay .settings-l2-shell .sys-api-card-main {
   flex: 1;
   min-width: 0;
   padding: 0;
@@ -2170,20 +2332,20 @@
   cursor: pointer;
 }
 
-#settings-overlay #pane-system .sys-api-card-title-row {
+#settings-overlay .settings-l2-shell .sys-api-card-title-row {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
 }
 
-#settings-overlay #pane-system .sys-api-card-title {
+#settings-overlay .settings-l2-shell .sys-api-card-title {
   color: #f0d78a;
   font: 700 15px/1.3 var(--fp-serif);
   letter-spacing: 0.06em;
 }
 
-#settings-overlay #pane-system .sys-api-card-sub {
+#settings-overlay .settings-l2-shell .sys-api-card-sub {
   margin-top: 3px;
   color: rgba(243, 234, 212, 0.55);
   font: 600 12px/1.3 var(--fp-serif);
@@ -2192,7 +2354,7 @@
   text-overflow: ellipsis;
 }
 
-#settings-overlay #pane-system .sys-api-badge {
+#settings-overlay .settings-l2-shell .sys-api-badge {
   flex: none;
   padding: 2px 7px;
   border-radius: 999px;
@@ -2202,18 +2364,18 @@
   color: #f0d78a;
 }
 
-#settings-overlay #pane-system .sys-api-badge.is-off {
+#settings-overlay .settings-l2-shell .sys-api-badge.is-off {
   color: rgba(243, 234, 212, 0.5);
   border-color: rgba(214, 176, 104, 0.22);
 }
 
-#settings-overlay #pane-system .sys-api-card-actions {
+#settings-overlay .settings-l2-shell .sys-api-card-actions {
   display: flex;
   align-items: center;
   gap: 2px;
 }
 
-#settings-overlay #pane-system .sys-api-card-body {
+#settings-overlay .settings-l2-shell .sys-api-card-body {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2221,30 +2383,300 @@
   border-top: 1px solid rgba(214, 176, 104, 0.18);
 }
 
-#settings-overlay #pane-system .sys-api-card:not(.is-expanded) .sys-api-card-body,
-#settings-overlay #pane-system .sys-api-card-body[hidden],
-#settings-overlay #pane-system .sys-advanced[hidden] {
+#settings-overlay .settings-l2-shell .sys-api-card:not(.is-expanded) .sys-api-card-body,
+#settings-overlay .settings-l2-shell .sys-api-card-body[hidden],
+#settings-overlay .settings-l2-shell .sys-advanced[hidden] {
   display: none !important;
 }
 
-#settings-overlay #pane-system .sys-api-card.is-off .sys-api-card-title {
+#settings-overlay .settings-l2-shell .sys-api-card.is-off .sys-api-card-title {
   color: rgba(240, 215, 138, 0.55);
 }
 
-#settings-overlay #pane-system .sys-api-actions,
-#settings-overlay #pane-system .sys-api-stream {
+#settings-overlay .settings-l2-shell .sys-preset-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-empty {
+  margin: 0;
+  color: rgba(243, 234, 212, 0.5);
+  font: 600 13px/1.4 var(--fp-serif);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(214, 176, 104, 0.28);
+  border-radius: 8px;
+  background: rgba(12, 8, 5, 0.38);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry.is-off {
+  opacity: 0.58;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry .sys-api-card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-idx {
+  flex: none;
+  min-width: 1.4em;
+  color: rgba(240, 215, 138, 0.7);
+  font: 700 12px/1 var(--fp-serif);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-role {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 176, 104, 0.4);
+  font: 700 11px/1 var(--fp-serif);
+  letter-spacing: 0.04em;
+  color: #f0d78a;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-role.is-user {
+  color: #d7ecff;
+  border-color: rgba(160, 196, 230, 0.45);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-role.is-assistant {
+  color: #e8d4ff;
+  border-color: rgba(196, 168, 230, 0.45);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(214, 176, 104, 0.16);
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry:not(.is-expanded) .sys-preset-entry-body,
+#settings-overlay .settings-l2-shell .sys-preset-entry-body[hidden] {
+  display: none !important;
+}
+
+#settings-overlay .settings-l2-shell .sys-preset-entry .sys-textarea {
+  min-height: 140px;
+}
+
+#settings-overlay .settings-l2-shell .sys-check-compact {
+  margin: 0;
+  padding: 0 2px;
+}
+
+#settings-overlay .settings-l2-shell .sys-wb-globals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 4px 0 16px;
+  padding: 12px;
+  border: 1.5px solid rgba(214, 176, 104, 0.35);
+  border-radius: 8px;
+  background: rgba(20, 14, 9, 0.35);
+}
+
+#settings-overlay .settings-l2-shell .sys-wb-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+#settings-overlay .settings-l2-shell .sys-wb-keys {
+  min-height: 64px;
+}
+
+#settings-overlay .settings-l2-shell .sys-api-actions,
+#settings-overlay .settings-l2-shell .sys-api-stream {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-#settings-overlay #pane-system .sys-routes-grid {
+#settings-overlay .settings-l2-shell .sys-foldernav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#settings-overlay .settings-l2-shell .sys-foldertab {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45em 0.85em;
+  border: 1.5px solid rgba(214, 176, 104, 0.45);
+  border-radius: 8px;
+  background: rgba(20, 14, 9, 0.45);
+  color: #f0d78a;
+  font: 700 13px/1 var(--fp-serif);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+#settings-overlay .settings-l2-shell .sys-foldertab:hover {
+  background: rgba(214, 176, 104, 0.18);
+  border-color: rgba(214, 176, 104, 0.7);
+}
+
+#settings-overlay .settings-l2-shell .sys-foldertab.active {
+  background: rgba(214, 176, 104, 0.28);
+  border-color: #f0d78a;
+  color: #fff6d2;
+}
+
+#settings-overlay .settings-l2-shell .sys-foldertab-count {
+  margin-left: 0.45em;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+#settings-overlay .settings-l2-shell .sys-textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 220px;
+  padding: 9px 12px;
+  border: 1.5px solid rgba(214, 176, 104, 0.55);
+  border-radius: 8px;
+  background: rgba(20, 14, 9, 0.65);
+  color: #f3ead4;
+  font: 600 13px/1.5 var(--fp-serif);
+  outline: none;
+  resize: vertical;
+}
+
+#settings-overlay .settings-l2-shell .sys-textarea:focus {
+  border-color: #f0d78a;
+}
+
+#settings-overlay .settings-l2-shell .sys-story-prompt .sys-textarea {
+  min-height: 380px;
+  white-space: pre-wrap;
+  font-family: ui-monospace, Consolas, "Sarasa Mono SC", monospace;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-json {
+  min-height: 420px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-node,
+#settings-overlay .settings-l2-shell .sys-var-leaf {
+  margin-left: calc(var(--d, 0) * 14px);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-branch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #f0d78a;
+  font: 700 14px/1.3 var(--fp-serif);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-align: left;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-branch:hover {
+  background: rgba(214, 176, 104, 0.14);
+  border-color: rgba(214, 176, 104, 0.35);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-chevron {
+  display: inline-block;
+  width: 1em;
+  transition: transform 0.15s ease;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-branch.is-open .sys-var-chevron {
+  transform: rotate(90deg);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-count {
+  margin-left: auto;
+  opacity: 0.55;
+  font-size: 12px;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-leaf {
+  padding: 8px 10px;
+  border: 1.5px solid rgba(214, 176, 104, 0.22);
+  border-radius: 8px;
+  background: rgba(20, 14, 9, 0.35);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-leaf-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-name {
+  flex: none;
+  min-width: 8em;
+  color: #f0d78a;
+  font: 700 13px/1.3 var(--fp-serif);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-input {
+  flex: 1;
+  min-width: 0;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-macro,
+#settings-overlay .settings-l2-shell .sys-var-comment {
+  margin-top: 4px;
+  color: rgba(243, 234, 212, 0.48);
+  font: 600 11px/1.4 var(--fp-serif);
+  word-break: break-all;
+}
+
+#settings-overlay .settings-l2-shell .sys-var-comment {
+  color: rgba(243, 234, 212, 0.62);
+}
+
+#settings-overlay .settings-l2-shell .sys-var-children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+#settings-overlay .settings-l2-shell .sys-routes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 12px;
 }
 
-#settings-overlay #pane-system .sys-check {
+#settings-overlay .settings-l2-shell .sys-check {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2253,13 +2685,13 @@
   cursor: pointer;
 }
 
-#settings-overlay #pane-system .sys-check input {
+#settings-overlay .settings-l2-shell .sys-check input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
 
-#settings-overlay #pane-system .sys-check-box {
+#settings-overlay .settings-l2-shell .sys-check-box {
   width: 16px;
   height: 16px;
   border: 1.5px solid rgba(214, 176, 104, 0.7);
@@ -2269,12 +2701,12 @@
   position: relative;
 }
 
-#settings-overlay #pane-system .sys-check input:checked + .sys-check-box {
+#settings-overlay .settings-l2-shell .sys-check input:checked + .sys-check-box {
   background: rgba(214, 176, 104, 0.88);
   border-color: #f0d78a;
 }
 
-#settings-overlay #pane-system .sys-check input:checked + .sys-check-box::after {
+#settings-overlay .settings-l2-shell .sys-check input:checked + .sys-check-box::after {
   content: '';
   position: absolute;
   left: 4px;
@@ -2286,7 +2718,7 @@
   transform: rotate(45deg);
 }
 
-#settings-overlay #pane-system .sys-api-status {
+#settings-overlay .settings-l2-shell .sys-api-status {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2294,14 +2726,31 @@
   font: 600 13px/1 var(--fp-serif);
 }
 
-#settings-overlay #pane-system .sys-api-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(214, 176, 104, 0.35);
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="loading"] {
+  color: #f0d78a;
 }
 
-#settings-overlay #pane-system .sys-advanced-toggle {
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="loading"] .sys-api-status-dot {
+  background: #f0d78a;
+}
+
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="ok"] {
+  color: #b6e0a8;
+}
+
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="ok"] .sys-api-status-dot {
+  background: #7dce6a;
+}
+
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="fail"] {
+  color: #ffd2c4;
+}
+
+#settings-overlay .settings-l2-shell .sys-api-status[data-state="fail"] .sys-api-status-dot {
+  background: #e07a62;
+}
+
+#settings-overlay .settings-l2-shell .sys-advanced-toggle {
   appearance: none;
   align-self: flex-start;
   padding: 0;
@@ -2313,23 +2762,144 @@
   cursor: pointer;
 }
 
-#settings-overlay #pane-system .sys-advanced-toggle:hover {
+#settings-overlay .settings-l2-shell .sys-advanced-toggle:hover {
   color: #fff6d2;
 }
 
-#settings-overlay #pane-system .sys-advanced {
+#settings-overlay .settings-l2-shell .sys-advanced {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding-top: 4px;
 }
 
+#settings-overlay .settings-l2-shell .sys-route-binds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 8px;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-row {
+  display: grid;
+  gap: 18px 28px;
+  align-items: start;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-row-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-row-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-row-1 {
+  grid-template-columns: 1fr;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-label {
+  color: rgba(243, 234, 212, 0.88);
+  font: 600 13px/1.2 var(--fp-serif);
+  letter-spacing: 0.04em;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range {
+  --pct: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #d6b068 0%,
+    #d6b068 var(--pct),
+    rgba(243, 234, 212, 0.18) var(--pct),
+    rgba(243, 234, 212, 0.18) 100%
+  );
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5.5px;
+  border: none;
+  border-radius: 50%;
+  background: #f4efe4;
+  box-shadow: 0 0 0 1px rgba(20, 14, 9, 0.35);
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range::-moz-range-track {
+  height: 3px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(243, 234, 212, 0.18);
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range::-moz-range-progress {
+  height: 3px;
+  border: none;
+  border-radius: 999px;
+  background: #d6b068;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: #f4efe4;
+  box-shadow: 0 0 0 1px rgba(20, 14, 9, 0.35);
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-val {
+  align-self: center;
+  width: 5.2em;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #f3ead4;
+  font: 600 14px/1.2 var(--fp-serif);
+  text-align: center;
+  outline: none;
+}
+
+#settings-overlay .settings-l2-shell .sys-sampler-val:focus {
+  color: #fff6d2;
+}
+
 @media (max-width: 980px) {
-  #settings-overlay #pane-system {
+  #settings-overlay .settings-l2-shell {
     flex-direction: column;
   }
 
-  #settings-overlay #pane-system > .settings-subnav {
+  #settings-overlay .settings-l2-shell > .settings-subnav {
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: flex-end;
@@ -2342,7 +2912,7 @@
     overflow-y: hidden;
   }
 
-  #settings-overlay #pane-system > .settings-subnav .settings-subtab {
+  #settings-overlay .settings-l2-shell > .settings-subnav .settings-subtab {
     width: auto !important;
     min-width: 0;
     flex: none;
@@ -2352,12 +2922,18 @@
     border-radius: 8px 8px 0 0 !important;
   }
 
-  #settings-overlay #pane-system > .settings-subnav .settings-subtab.active {
+  #settings-overlay .settings-l2-shell > .settings-subnav .settings-subtab.active {
     border-right-color: var(--set-frame) !important;
     border-bottom-color: var(--set-body-bg) !important;
   }
 
-  #settings-overlay #pane-system .settings-subcontent {
+  #settings-overlay .settings-l2-shell .settings-subcontent {
     border-radius: 0 8px 8px 8px;
+  }
+
+  #settings-overlay .settings-l2-shell .sys-sampler-row-2,
+  #settings-overlay .settings-l2-shell .sys-sampler-row-3,
+  #settings-overlay .settings-l2-shell .sys-route-binds {
+    grid-template-columns: 1fr;
   }
 }
