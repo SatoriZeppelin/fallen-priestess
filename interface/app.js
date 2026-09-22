@@ -1,156 +1,13 @@
 /* ========== index.js ========== */
-    // ========== 托莉娜立绘资源库 ==========
-    const tolinaSprites = {
-      // 第一层：底图（身体/服装底层）
-      L1_base: {
-        'SockW-Nude': 'https://files.catbox.moe/1pju7n.png',
-        'SockW-P1': 'https://files.catbox.moe/l9c5wy.png',
-        'SockW-P2': 'https://files.catbox.moe/wi07jf.png',
-        'SockW-P3': 'https://files.catbox.moe/dncgjq.png',
-        'BareLeg': 'https://files.catbox.moe/d876u2.png',
-        'BareLegNude': 'https://files.catbox.moe/dola5y.png',
-        'NudeLeg-Maid': 'https://files.catbox.moe/kapkqj.png',
-        'SockB-Maid': 'https://files.catbox.moe/uz92b2.png',
-        'SockB-Nude': 'https://files.catbox.moe/gk77d4.png',
-        'SockB-P3': 'https://files.catbox.moe/7aonpg.png',
-        'SockB-P4': 'https://files.catbox.moe/ahm5s7.png',
-        'SockW-Maid': 'https://files.catbox.moe/56jazo.png'
-      },
-
-      // 第二层：发色
-      L2_hair: {
-        'HairB': 'https://files.catbox.moe/wa9pv2.png',  // 黄色
-        'HairW': 'https://files.catbox.moe/x6ad8g.png'   // 白色
-      },
-
-      // 第三层：表情
-      L3_expression: {
-        // P1 系列（绿瞳）
-        P1: {
-          'msgk-noHeart': 'https://files.catbox.moe/hieebq.png',
-          'Nervous': 'https://files.catbox.moe/qf4wfu.png',
-          'Normal': 'https://files.catbox.moe/cu7vso.png',
-          'Okay': 'https://files.catbox.moe/cby40r.png',
-          'rebuke1': 'https://files.catbox.moe/w14swb.png',
-          'rebuke2': 'https://files.catbox.moe/p92xhl.png',
-          'Sad': 'https://files.catbox.moe/39pivr.png',
-          'Shock1': 'https://files.catbox.moe/or5iqb.png',
-          'Shock2': 'https://files.catbox.moe/ibd9at.png',
-          'Shock3': 'https://files.catbox.moe/czs8ac.png',
-          'Shock4': 'https://files.catbox.moe/y03ot3.png',
-          'Angry1': 'https://files.catbox.moe/d0fokf.png',
-          'Angry2': 'https://files.catbox.moe/3zr8ta.png',
-          'appalling': 'https://files.catbox.moe/azi3jg.png',
-          'Bitter': 'https://files.catbox.moe/61uspm.png',
-          'Cry': 'https://files.catbox.moe/k4loi9.png',
-          'Disappoint': 'https://files.catbox.moe/nq07tu.png',
-          'Evade1': 'https://files.catbox.moe/kdq6og.png',
-          'Evade2': 'https://files.catbox.moe/dfpftv.png',
-          'Focus': 'https://files.catbox.moe/7w93ov.png',
-          'Happy': 'https://files.catbox.moe/gu1ko4.png',
-          'KissWaiting': 'https://files.catbox.moe/0rug96.png',
-          'msgk': 'https://files.catbox.moe/scwi77.png',
-          'Shy1': 'https://files.catbox.moe/alayor.png',
-          'Shy2': 'https://files.catbox.moe/1wfgwq.png',
-          'Shy3': 'https://files.catbox.moe/dyur1k.png',
-          'Shy4': 'https://files.catbox.moe/dfbp51.png',
-          'Sigh': 'https://files.catbox.moe/vech41.png',
-          'Smile': 'https://files.catbox.moe/afuxch.png',
-          'Speechless': 'https://files.catbox.moe/t4c2x5.png',
-          'Stare': 'https://files.catbox.moe/qhjk23.png',
-          'Unhappy': 'https://files.catbox.moe/gcjagn.png',
-          'Worry1': 'https://files.catbox.moe/teuaif.png',
-          'Worry2': 'https://files.catbox.moe/3ei6rz.png'
-        },
-        // P3 系列（异色瞳）
-        P3: {
-          'Angry1': 'https://files.catbox.moe/0d7roj.png',
-          'Angry2': 'https://files.catbox.moe/6qs4uw.png',
-          'appalling': 'https://files.catbox.moe/ksqj1f.png',
-          'Bitter': 'https://files.catbox.moe/w6kl99.png',
-          'Cry': 'https://files.catbox.moe/6u1d85.png',
-          'Disappoint': 'https://files.catbox.moe/rv06e7.png',
-          'Evade1': 'https://files.catbox.moe/04ogaf.png',
-          'Evade2': 'https://files.catbox.moe/y2tb5y.png',
-          'Focus': 'https://files.catbox.moe/yg6ln7.png',
-          'Happy': 'https://files.catbox.moe/b4ahdb.png',
-          'KissWaiting': 'https://files.catbox.moe/7f4voy.png',
-          'msgk': 'https://files.catbox.moe/pqkdrc.png',
-          'msgk-noHeart': 'https://files.catbox.moe/cvc21p.png',
-          'Nervous': 'https://files.catbox.moe/hgsmob.png',
-          'Normal': 'https://files.catbox.moe/a0u712.png',
-          'Okay': 'https://files.catbox.moe/pwnsv0.png',
-          'rebuke1': 'https://files.catbox.moe/sbcoj2.png',
-          'rebuke2': 'https://files.catbox.moe/8sruf2.png',
-          'Sad': 'https://files.catbox.moe/w2t420.png',
-          'Shock1': 'https://files.catbox.moe/xnvgc6.png',
-          'Shock2': 'https://files.catbox.moe/zye4l8.png',
-          'Shock3': 'https://files.catbox.moe/d38pho.png',
-          'Shock4': 'https://files.catbox.moe/s6ewh1.png',
-          'Shy1': 'https://files.catbox.moe/box3th.png',
-          'Shy2': 'https://files.catbox.moe/0wswm4.png',
-          'Shy3': 'https://files.catbox.moe/r4ok5a.png',
-          'Shy4': 'https://files.catbox.moe/8fn3a0.png',
-          'Sigh': 'https://files.catbox.moe/3ms63a.png',
-          'Smile': 'https://files.catbox.moe/db8kko.png',
-          'Speechless': 'https://files.catbox.moe/wwu3jl.png',
-          'Stare': 'https://files.catbox.moe/2lr5vl.png',
-          'Unhappy': 'https://files.catbox.moe/vfo26g.png',
-          'Worry1': 'https://files.catbox.moe/lzgogu.png',
-          'Worry2': 'https://files.catbox.moe/wzn5zs.png'
-        }
-      },
-
-      // 第四层：衣服
-      L4_cloth: {
-        'P1': 'https://files.catbox.moe/eq7ii3.png',
-        'P2': 'https://files.catbox.moe/jpxfrs.png',
-        'P3': 'https://files.catbox.moe/cpic5l.png',
-        'P4': 'https://files.catbox.moe/xk684t.png',
-        'Bath': 'https://files.catbox.moe/z5zas0.png'
-      },
-
-      // 第五层：杂项遮罩
-      L5_special: {
-        'BlackFace': 'https://files.catbox.moe/us2r9v.png',
-        'Brush': 'https://files.catbox.moe/q801ld.png',
-        'MouthHair': 'https://files.catbox.moe/v14c12.png',
-        'Tear': 'https://files.catbox.moe/f1j6cg.png'
-      },
-
-      // 第六层：阴影
-      L6_shadow: {
-        'P1': 'https://files.catbox.moe/fw7xcp.png',
-        'P2': 'https://files.catbox.moe/s0rj8s.png',
-        'P3': 'https://files.catbox.moe/r7vrvy.png',
-        'P4': 'https://files.catbox.moe/kuwlis.png'
-      },
-
-      // 第七层：女仆装特殊图层
-      L7_maid: {
-        'L7Maid': 'https://files.catbox.moe/wc6lrg.png'
-      }
-    };
-
-    // ========== 间男角色立绘（左侧；对话格式 <人名|台词>）==========
-    const rivalMaleSprites = {
-      '哈罗德': {
-        base: 'https://files.catbox.moe/7twll8.png',   // Guard-Left
-        shade: 'https://files.catbox.moe/x8isar.png',  // Guard-Shade
-      },
-      '马蒂亚斯': {
-        base: 'https://files.catbox.moe/b01so5.png',   // Prince-Left
-        shade: 'https://files.catbox.moe/ebiiab.png',  // Prince-Shade
-      },
-      '埃德加': {
-        base: 'https://files.catbox.moe/087jch.png',   // LEdgar-Left-Black
-        shade: 'https://files.catbox.moe/jdrwzy.png', // LEdgar-Left-Shade
-      },
-      '约书亚': {
-        base: 'https://files.catbox.moe/jnorft.png',   // LJoshua-Left-Base
-        shade: 'https://files.catbox.moe/6grmtd.png',  // LJoshua-Left-Shade
-      },
-    };
+    // ========== 立绘资源（数据已迁移至 resource/game-assets.js，此处为统一 API 别名）==========
+    const gameAssets = window.妹神官_gameAssets || {};
+    const tolinaSprites = gameAssets.tolinaSprites || {};
+    const rivalMaleSprites = gameAssets.rivalMaleSprites || {};
+    // 统一 UI 资源读取（来自 game-assets）
+    function uiUrl(key) {
+      const ga = window.妹神官_gameAssets;
+      return (ga && typeof ga.getUI === 'function') ? (ga.getUI(key) || '') : '';
+    }
 
     // IndexedDB工具函数
     const storageUtils = {
@@ -228,7 +85,7 @@
           }
           return url;
         } catch (error) {
-          console.warn('保存图片到缓存失败:', error);
+          warnWithTag('WARN', '保存图片到缓存失败:', error);
           return url;
         }
       },
@@ -261,26 +118,26 @@
                 });
                 resolve(base64);
               } catch (e) {
-                console.warn('IndexedDB存储失败，使用原始URL:', e);
+                warnWithTag('WARN', 'IndexedDB存储失败，使用原始URL:', e);
                 resolve(url);
               }
             } catch (canvasError) {
               // canvas转换失败（可能是CORS限制），返回原始URL
-              console.warn('canvas转换失败，使用原始URL:', canvasError);
+              warnWithTag('WARN', 'canvas转换失败，使用原始URL:', canvasError);
               resolve(url);
             }
           };
 
           img.onerror = () => {
             // 图片加载失败，返回原始URL
-            console.warn('图片加载失败，使用原始URL');
+            warnWithTag('WARN', '图片加载失败，使用原始URL');
             resolve(url);
           };
 
           // 设置超时
           setTimeout(() => {
             if (!img.complete) {
-              console.warn('图片加载超时，使用原始URL');
+              warnWithTag('WARN', '图片加载超时，使用原始URL');
               resolve(url);
             }
           }, 10000);
@@ -297,7 +154,7 @@
           const store = transaction.objectStore(this.storeName);
           store.delete(key);
         } catch (error) {
-          console.warn('删除IndexedDB数据失败:', error);
+          warnWithTag('WARN', '删除IndexedDB数据失败:', error);
         }
       },
 
@@ -332,7 +189,7 @@
             request.onerror = () => resolve(0);
           });
         } catch (error) {
-          console.warn('获取IndexedDB大小失败:', error);
+          warnWithTag('WARN', '获取IndexedDB大小失败:', error);
           return 0;
         }
       },
@@ -451,21 +308,52 @@
       current[lastKey] = value;
     }
 
+    // 非破坏性合并：只把 src 中 target 缺失的路径补进 target（不覆盖已有值）
+    function mergeMissing(target, src) {
+      if (!src || typeof src !== 'object') return target;
+      if (!target || typeof target !== 'object') return target;
+      for (const key of Object.keys(src)) {
+        const sv = src[key];
+        const tv = target[key];
+        if (tv === undefined) {
+          target[key] = (sv && typeof sv === 'object') ? JSON.parse(JSON.stringify(sv)) : sv;
+        } else if (sv && typeof sv === 'object' && !Array.isArray(sv) && tv && typeof tv === 'object' && !Array.isArray(tv)) {
+          mergeMissing(tv, sv);
+        }
+      }
+      return target;
+    }
+
+    // 深度合并：src 的值覆盖/补入 target（叶子覆盖，对象递归）
+    function deepMerge(target, src) {
+      if (!src || typeof src !== 'object') return target;
+      if (!target || typeof target !== 'object') return target;
+      for (const key of Object.keys(src)) {
+        const sv = src[key];
+        const tv = target[key];
+        if (sv && typeof sv === 'object' && !Array.isArray(sv) && tv && typeof tv === 'object' && !Array.isArray(tv)) {
+          deepMerge(tv, sv);
+        } else {
+          target[key] = (sv && typeof sv === 'object') ? JSON.parse(JSON.stringify(sv)) : sv;
+        }
+      }
+      return target;
+    }
+
+    // ==================== ERA 变量存储（本地同步实现）====================
+    // 说明：变量真值始终存放在「最后对话层快照」（ERA.currentVars 指向它）。
+    // 本实现为纯本地同步操作，不依赖任何外部事件总线。
     const ERA = {
-      // 当前变量状态（从 ERA 同步）
+      // 当前变量状态（= 最后对话层快照，由 setvar/updatevar/recordDialogueLayer 维护）
       currentVars: null,
       // 是否已初始化
       initialized: false,
-      // 事件回调队列
-      queryCallbacks: new Map(),
-      // 查询计数器（用于生成唯一ID）
-      queryIdCounter: 0,
-      // 缓存管理
+      // 缓存（cache.vars 与 currentVars 指向同一棵树，保留字段以兼容既有引用）
       cache: {
-        vars: null,           // 缓存的变量数据
-        timestamp: 0,          // 缓存时间戳
-        ttl: 1000,            // 缓存有效期（毫秒），1秒内不重复查询
-        pendingQuery: null    // 正在进行的查询 Promise（避免重复查询）
+        vars: null,
+        timestamp: 0,
+        ttl: 1000,
+        pendingQuery: null
       },
 
       // 默认变量（开局时使用，未定义的均初始化为 0）
@@ -479,164 +367,90 @@
         return {};
       })(),
 
-      // 初始化 ERA 事件监听
       init() {
         if (this.initialized) return;
-
-        // 监听 ERA 写入完成事件
-        if (typeof eventOn === 'function') {
-          eventOn('era:writeDone', (payload) => {
-            logWithTag('ERA', '变量写入完成:', payload);
-            if (payload && payload.stat) {
-              this.currentVars = payload.stat;
-              // 更新缓存
-              this.cache.vars = payload.stat;
-              this.cache.timestamp = Date.now();
-            }
-          });
-
-          // 监听 ERA 查询结果事件
-          eventOn('era:queryResult', (payload) => {
-            // 查询结果静默处理，只在出错时输出
-            if (payload && payload.error) {
-              errorWithTag('ERA', '查询失败:', payload.error);
-            }
-            // 处理查询回调
-            if (payload && payload.queryId && this.queryCallbacks.has(payload.queryId)) {
-              const callback = this.queryCallbacks.get(payload.queryId);
-              this.queryCallbacks.delete(payload.queryId);
-              if (payload.error) {
-                callback.reject(new Error(payload.error));
-              } else {
-                // 更新缓存
-                if (payload.data) {
-                  this.cache.vars = payload.data;
-                  this.cache.timestamp = Date.now();
-                  this.currentVars = payload.data;
-                }
-                callback.resolve(payload.data);
-              }
-            }
-          });
-
-          logWithTag('ERA', 'ERA 事件监听已初始化');
-        } else {
-          warnWithTag('ERA', 'eventOn 不可用，ERA 功能受限');
-        }
-
         this.initialized = true;
+        logWithTag('ERA', 'ERA 本地变量存储已初始化');
       },
 
-      // 发送 ERA 事件
-      emit(eventName, detail) {
-        if (typeof eventEmit === 'function') {
-          eventEmit(eventName, detail);
-          // 查询类操作静默处理，写入类操作输出日志
-          const isQueryEvent = eventName.startsWith('era:get') || eventName === 'era:getCurrentVars';
-          if (!isQueryEvent) {
-            logWithTag('ERA', `发送事件 ${eventName}:`, detail);
-          }
-        } else {
-          errorWithTag('ERA', 'eventEmit 不可用，无法发送 ERA 事件');
+      // 确保 currentVars 存在（无则用默认变量初始化）
+      _ensureVars() {
+        if (!this.currentVars) {
+          this.currentVars = JSON.parse(JSON.stringify(this.defaultVars));
         }
+        return this.currentVars;
       },
 
       // 插入变量（非破坏性，只写入不存在的路径）
       insertByObject(obj) {
-        this.emit('era:insertByObject', { data: obj });
+        const target = this._ensureVars();
+        mergeMissing(target, obj);
+        this._syncCache();
       },
 
-      // 更新变量（修改已存在的变量）
+      // 更新变量（修改/新增路径）
       updateByObject(obj) {
-        this.emit('era:updateByObject', { data: obj });
+        const target = this._ensureVars();
+        deepMerge(target, obj);
+        this._syncCache();
       },
 
-      // 通过路径插入变量
+      // 通过路径插入变量（不存在才写）
       insertByPath(path, value) {
-        this.emit('era:insertByPath', { path, value });
+        const target = this._ensureVars();
+        if (getNestedValue(target, path) === undefined) {
+          setNestedValue(target, path, value);
+          this._syncCache();
+        }
       },
 
-      // 通过路径更新变量（支持 += 等运算）
+      // 通过路径更新变量（支持 = 与 += 运算）
       updateByPath(path, value, operator = '=') {
-        this.emit('era:updateByPath', { path, value, operator });
+        const target = this._ensureVars();
+        if (operator === '+=') {
+          const cur = parseFloat(getNestedValue(target, path)) || 0;
+          setNestedValue(target, path, cur + (parseFloat(value) || 0));
+        } else {
+          setNestedValue(target, path, value);
+        }
+        this._syncCache();
       },
 
       // 删除变量
       deleteByPath(path) {
-        this.emit('era:deleteByPath', { path });
+        const target = this._ensureVars();
+        const keys = String(path).split('.');
+        const lastKey = keys.pop();
+        let cur = target;
+        for (const k of keys) {
+          if (cur == null || typeof cur !== 'object') return;
+          cur = cur[k];
+        }
+        if (cur && typeof cur === 'object') {
+          delete cur[lastKey];
+          this._syncCache();
+        }
       },
 
-      // 获取当前变量（异步，通过事件，带缓存）
+      // 同步缓存指针（cache.vars 与 currentVars 同树）
+      _syncCache() {
+        this.cache.vars = this.currentVars;
+        this.cache.timestamp = Date.now();
+      },
+
+      // 获取当前变量（本地同步，保持 async 以兼容既有 await 调用）
       async getCurrentVars(forceRefresh = false) {
-        const now = Date.now();
-
-        // 如果有缓存且未过期，直接返回缓存
-        if (!forceRefresh && this.cache.vars && (now - this.cache.timestamp) < this.cache.ttl) {
-          return this.cache.vars;
-        }
-
-        // 如果有正在进行的查询，等待它完成
-        if (this.cache.pendingQuery) {
-          return this.cache.pendingQuery;
-        }
-
-        // 创建新的查询
-        const queryPromise = new Promise((resolve, reject) => {
-          const queryId = `query_${++this.queryIdCounter}_${Date.now()}`;
-          this.queryCallbacks.set(queryId, { resolve, reject });
-          this.emit('era:getCurrentVars', { queryId });
-
-          // 设置超时
-          setTimeout(() => {
-            if (this.queryCallbacks.has(queryId)) {
-              this.queryCallbacks.delete(queryId);
-              // 如果 ERA 不可用，回退到本地变量
-              const fallbackVars = this.currentVars || this.defaultVars;
-              // 更新缓存
-              this.cache.vars = fallbackVars;
-              this.cache.timestamp = Date.now();
-              resolve(fallbackVars);
-            }
-          }, 3000);
-        });
-
-        // 保存查询 Promise
-        this.cache.pendingQuery = queryPromise;
-
-        // 查询完成后更新缓存并清除 pendingQuery
-        queryPromise.then(vars => {
-          if (vars) {
-            this.cache.vars = vars;
-            this.cache.timestamp = Date.now();
-          }
-          this.cache.pendingQuery = null;
-        }).catch(() => {
-          this.cache.pendingQuery = null;
-        });
-
-        return queryPromise;
+        return this._ensureVars();
       },
 
-      // 获取指定消息密钥的快照
+      // 获取指定消息密钥的快照（本地实现暂不支持 mk 检索，返回当前变量）
       async getSnapshotAtMk(mk) {
-        return new Promise((resolve, reject) => {
-          const queryId = `query_${++this.queryIdCounter}_${Date.now()}`;
-          this.queryCallbacks.set(queryId, { resolve, reject });
-          this.emit('era:getSnapshotAtMk', { queryId, mk });
-
-          setTimeout(() => {
-            if (this.queryCallbacks.has(queryId)) {
-              this.queryCallbacks.delete(queryId);
-              resolve(null);
-            }
-          }, 3000);
-        });
+        return this._ensureVars();
       },
 
       // 通过路径获取变量值
       async getByPath(path) {
-        const vars = await this.getCurrentVars();
-        if (!vars) return undefined;
+        const vars = this._ensureVars();
         return getNestedValue(vars, path);
       }
     };
@@ -687,521 +501,14 @@
       }
     }
 
-    // 构建资源列表（统一资源定义）
+    // 构建资源列表（数据来自 resource/game-assets.js 单一数据源）
     function buildResourceList() {
-      const assets = [];
-
-      // 系统资源（原UI资源）
-      assets.push({ url: 'https://files.catbox.moe/2d1g4v.webm', name: '背景视频', category: '系统', type: 'video' });
-      assets.push({ url: 'https://files.catbox.moe/ycywe2.png', name: '标题Logo', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6ov4dt.png', name: 'New Game按钮', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/w6x4qd.png', name: 'Continue按钮', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/1qixsh.png', name: 'Option按钮', category: '系统', type: 'image' });
-      assets.push({ url: 'https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1', name: 'CC协议图标', category: '系统', type: 'image' });
-      assets.push({ url: 'https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1', name: 'BY协议图标', category: '系统', type: 'image' });
-      assets.push({ url: 'https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1', name: 'NC协议图标', category: '系统', type: 'image' });
-      assets.push({ url: 'https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1', name: 'SA协议图标', category: '系统', type: 'image' });
-
-      // 立绘资源
-      if (typeof tolinaSprites !== 'undefined') {
-        Object.entries(tolinaSprites.L1_base || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L1-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L2_hair || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L2-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L3_expression?.P1 || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L3-P1-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L3_expression?.P3 || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L3-P3-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L4_cloth || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L4-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L5_special || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L5-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L6_shadow || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L6-${key}`, category: '立绘', type: 'image' });
-        });
-        Object.entries(tolinaSprites.L7_maid || {}).forEach(([key, url]) => {
-          assets.push({ url, name: `托莉娜立绘-L7-${key}`, category: '立绘', type: 'image' });
-        });
+      const ga = window.妹神官_gameAssets;
+      if (!ga || !Array.isArray(ga.preloadList)) {
+        warnWithTag('资源', 'game-assets 未就绪，返回空资源列表');
+        return [];
       }
-      if (typeof rivalMaleSprites !== 'undefined') {
-        Object.entries(rivalMaleSprites).forEach(([name, layers]) => {
-          if (layers.base) {
-            assets.push({ url: layers.base, name: `间男立绘-${name}-本体`, category: '立绘', type: 'image' });
-          }
-          if (layers.shade) {
-            assets.push({ url: layers.shade, name: `间男立绘-${name}-阴影`, category: '立绘', type: 'image' });
-          }
-        });
-      }
-
-      // 背景资源
-      assets.push({ url: 'https://files.catbox.moe/dswunx.png', name: '白天露天废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/qj6dcy.png', name: '白天露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/y4spym.png', name: '草地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/uzpt5x.png', name: '草地小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/el5ch1.png', name: '打开大门传送门走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mevkx3.png', name: '地下建筑内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rlv186.png', name: '毒沼泽', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f9yq6v.png', name: '废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wp1iky.png', name: '关闭大门走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7pzktn.png', name: '旱地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2arfp5.png', name: '黑暗洞穴', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/myr71d.png', name: '黑森林', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ltnpnb.png', name: '荒地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fwuzgm.png', name: '荒芜草地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/zyu55x.png', name: '黄昏露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/o3rikj.png', name: '集市', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/35n6q8.png', name: '建筑内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ylkodm.png', name: '矿坑', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lx6625.png', name: '矿坑2', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ec996u.png', name: '矿坑3', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g5834r.png', name: '魔界废土', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lcuxzp.png', name: '木地板', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/np1np8.png', name: '熔岩地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8odtak.png', name: '沙漠', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/cc3k6f.png', name: '山路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dpbk63.png', name: '石制室内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/37b3nb.png', name: '石制室内2', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gungox.png', name: '树林小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x2zkz3.png', name: '透光矿坑', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/crmevj.png', name: '晚上露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xwhu4i.png', name: '小镇路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/cvh6io.png', name: '雪地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/woqe7c.png', name: '岩浆地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rutz1i.png', name: '依山小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/bwwhmr.png', name: '阴天露天废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/arv06v.png', name: '矿坑4', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x73t54.png', name: '林中小径', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g4auhb.png', name: '迷雾废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yec24e.png', name: '迷雾黑森林', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wq3zhj.png', name: '明亮洞穴', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hd5ruw.png', name: '荧光路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/54ar1p.png', name: '云上', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ynxgez.png', name: '傍晚广场', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/l52u8s.png', name: '傍晚教廷门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/31a6mq.png', name: '城垛', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ahpe9q.png', name: '城墙外', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4c2r5u.png', name: '房屋', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/bwxni5.png', name: '风暴海湾', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/n0e4jq.png', name: '海湾', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/e6glwy.png', name: '黄昏庄园门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4rsj5z.png', name: '教堂', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rf3kfk.png', name: '教堂讲台', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/31xlvk.png', name: '教堂门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g0tnbr.png', name: '客厅', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7cgt32.png', name: '客厅晚上', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dkenm7.png', name: '石制走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ct4o7h.png', name: '无光教堂', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/oa0wch.png', name: '夜晚房屋', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/03sg96.png', name: '夜晚广场', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dmbv2v.png', name: '夜晚海湾', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ku7x1b.png', name: '夜晚教堂', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fu80fn.png', name: '夜晚教堂门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7lhf43.png', name: '夜晚酒馆', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7fw6se.png', name: '树林', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rjfcof.png', name: '水潭', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/j29gf4.png', name: '王宫花园', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/05h0qs.png', name: '王宫走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4vblqw.png', name: '王座厅', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7fmmer.png', name: '卧室', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/emuhml.png', name: '卧室晚上', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/s0lzku.png', name: '夜晚庄园会客厅', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/t30w1k.png', name: '夜晚庄园门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7ld24b.png', name: '阴暗大门', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/uirewc.png', name: '营地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/al1jxf.png', name: '营地床铺', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/y7ein8.png', name: '营地晚上', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/sg26no.png', name: '庄园餐厅', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/87omvd.png', name: '庄园房间', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5d1l3p.png', name: '庄园会客厅', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2ne9c0.png', name: '庄园门口', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/msn1g0.png', name: '庄园室内花园', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/06iof0.png', name: '庄园书库', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/nyeozy.png', name: '庄园走廊', category: '背景', type: 'image' });
-
-      // CG资源 - Kiss系列
-      // Kiss全裸系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/zvpw3h.png', name: 'Kiss全裸-wink吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/eopylo.png', name: 'Kiss全裸-闭眼咧嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/snrr2h.png', name: 'Kiss全裸-激烈亲吻', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/1z7v55.png', name: 'Kiss全裸-惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/kic175.png', name: 'Kiss全裸-亲吻', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6snfuk.png', name: 'Kiss全裸-微笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f30kbc.png', name: 'Kiss全裸-心形瞳孔吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m6hyuh.png', name: 'Kiss全裸-睁眼抿嘴', category: 'CG', type: 'image' });
-      // Kiss着衣系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/a68y5p.png', name: 'Kiss着衣-闭眼嘟嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/vm3uj3.png', name: 'Kiss着衣-闭眼抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3i4q04.png', name: 'Kiss着衣-惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/q28gz4.png', name: 'Kiss着衣-亲吻', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/njly8i.png', name: 'Kiss着衣-无高光', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wz63bi.png', name: 'Kiss着衣-睁眼嘟嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5otlm5.png', name: 'Kiss着衣-睁眼咧嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/snb9w9.png', name: 'Kiss着衣-睁眼微笑', category: 'CG', type: 'image' });
-      // 乳交系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/sec9ke.png', name: '乳交-惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ee7s4m.png', name: '乳交-满脸精液', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pwnu0p.png', name: '乳交-满脸精液闭眼舔舐龟头', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/d16gyo.png', name: '乳交-抿嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8tt5cx.png', name: '乳交-微笑上下乳交', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5hddcc.png', name: '乳交-眼冒爱心满脸精液', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xihgql.png', name: '乳交-眼冒爱心满脸精液咧嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mfob6a.png', name: '乳交-眼冒爱心上下乳交舔舐龟头', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5etexr.png', name: '乳交-眼冒爱心射精上下乳交', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3a9gi1.png', name: '乳交-眼冒心形上下乳交', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/phzm52.png', name: '乳交-wink对龟头哈气', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x8c9r0.png', name: '乳交-wink舔舐龟头', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m3fghf.png', name: '乳交-闭眼舔舐龟头上下乳交', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ft6spt.png', name: '乳交-嘟嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8hyxry.png', name: '乳交-对龟头哈气', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ql9k8s.png', name: '乳交-近景', category: 'CG', type: 'image' });
-      // 骑乘位系列（资源名称格式：组名-CG名称）
-      // 骑乘位阶段12系列
-      assets.push({ url: 'https://files.catbox.moe/k5c6fb.png', name: '骑乘位阶段12-插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dii9nh.png', name: '骑乘位阶段12-插入破处', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xskj6g.png', name: '骑乘位阶段12-抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7a3oa7.png', name: '骑乘位阶段12-激烈抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/jmyndt.png', name: '骑乘位阶段12-素股微笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/c6aaw6.png', name: '骑乘位阶段12-素股张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pnihqh.png', name: '骑乘位阶段12-中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/oy0nez.png', name: '骑乘位阶段12-中出后温存', category: 'CG', type: 'image' });
-      // 骑乘位阶段34系列
-      assets.push({ url: 'https://files.catbox.moe/hn9a2w.png', name: '骑乘位阶段34-抱头插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/nplj5o.png', name: '骑乘位阶段34-抱头抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f57x9e.png', name: '骑乘位阶段34-抱头抽插咬牙', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/0crgcj.png', name: '骑乘位阶段34-插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/iq4wxr.png', name: '骑乘位阶段34-揉胸揉阴蒂插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mnutnj.png', name: '骑乘位阶段34-揉胸揉阴蒂嫌弃插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/jl2f3v.png', name: '骑乘位阶段34-素股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/j2f8bc.png', name: '骑乘位阶段34-中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/u4jc7b.png', name: '骑乘位阶段34-中出后温存', category: 'CG', type: 'image' });
-      // 骑乘位情趣内衣系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/hse095.png', name: '骑乘位情趣内衣-素股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mlpib9.png', name: '骑乘位情趣内衣-素股嘟嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/c0h3jq.png', name: '骑乘位情趣内衣-素股害羞', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/js3k50.png', name: '骑乘位情趣内衣-素股气呼呼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/090601.png', name: '骑乘位情趣内衣-素股咬牙', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/vjupbz.png', name: '骑乘位情趣内衣-中出后害羞', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/cdpegn.png', name: '骑乘位情趣内衣-中出后温存', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/owrda8.png', name: '骑乘位情趣内衣-插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/svv08p.png', name: '骑乘位情趣内衣-抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/03h1yz.png', name: '骑乘位情趣内衣-抽插2', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wnqliu.png', name: '骑乘位情趣内衣-抽插高潮中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x1obo7.png', name: '骑乘位情趣内衣-抽插娇喘', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/jcsxco.png', name: '骑乘位情趣内衣-抽插惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f6kbew.png', name: '骑乘位情趣内衣-抽插眯眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5zfgnj.png', name: '骑乘位情趣内衣-抽插咬牙', category: 'CG', type: 'image' });
-      // 床上后背位系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/3f8hkn.png', name: '床上后背位-插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ps7wxk.png', name: '床上后背位-射精翻白眼吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/22n1v8.png', name: '床上后背位-射精后翻白眼高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3s29nz.png', name: '床上后背位-射精后翻白眼剧烈高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/anqy6t.png', name: '床上后背位-射精后翻白眼流泪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/1vj1ub.png', name: '床上后背位-射精后高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/24yv1q.png', name: '床上后背位-射精后剧烈高潮吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/87z8ye.png', name: '床上后背位-射精后睁大眼流泪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dsdzw1.png', name: '床上后背位-射精剧烈高潮翻白眼', category: 'CG', type: 'image' });
-      // 地板后背位系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/7n7mox.png', name: '地板后背位-闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lx6b98.png', name: '地板后背位-插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wpfzoz.png', name: '地板后背位-插入翻白眼吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/n836u6.png', name: '地板后背位-插入预备闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xrpigt.png', name: '地板后背位-插入预备张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4nefhd.png', name: '地板后背位-等待', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/j32anl.png', name: '地板后背位-等待舔嘴唇', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/b9q30c.png', name: '地板后背位-等待睁大眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/w6tpj6.png', name: '地板后背位-射精翻白眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yujbr7.png', name: '地板后背位-射精后', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5tmues.png', name: '地板后背位-射精后翻白眼吐舌', category: 'CG', type: 'image' });
-      // 趴式后背位系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/a86uik.png', name: '趴式后背位-抽插心形瞳孔吐舌', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/s3yet2.png', name: '趴式后背位-抽插心形瞳孔吐舌中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/kk2gir.png', name: '趴式后背位-抽插心形瞳孔中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/0v0ap9.png', name: '趴式后背位-抽插张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ca93w2.png', name: '趴式后背位-抽插睁单眼闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/oj5uan.png', name: '趴式后背位-中出往后看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/984ara.png', name: '趴式后背位-插入睁单眼闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m4ox30.png', name: '趴式后背位-抽插闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fchm8c.png', name: '趴式后背位-抽插快感', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/o6p1h5.png', name: '趴式后背位-抽插心形瞳孔', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/w8uw2y.png', name: '趴式后背位-抽插心形瞳孔2', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2nqn2p.png', name: '趴式后背位-抽插心形瞳孔闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/njv63z.png', name: '趴式后背位-抽插心形瞳孔翻白眼中出', category: 'CG', type: 'image' });
-      // 侧入位系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/qovu68.png', name: '侧入位-翻白眼吐舌心形瞳孔抽插射精', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2e4q0u.png', name: '侧入位-翻白眼吐舌心形眼抽插射满身', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/psnu9z.png', name: '侧入位-翻白眼吐舌心形眼抽插射满身中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ylopcn.png', name: '侧入位-翻白眼心形眼抽插射满身高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/r4439a.png', name: '侧入位-往后看咬牙未插入精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/utzpsw.png', name: '侧入位-无高光翻白眼吐舌未插入精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8ry8bs.png', name: '侧入位-心形眼吐舌高潮射满身抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/zltkn5.png', name: '侧入位-咬牙往后看插入前', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ob6uu9.png', name: '侧入位-咬牙笑往后看插入前', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hup08d.png', name: '侧入位-睁大眼惊讶往后看射满身未插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/vba43b.png', name: '侧入位-睁单眼插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3zzryd.png', name: '侧入位-睁单眼抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/e6jqjl.png', name: '侧入位-睁单眼抽插精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lv29gu.png', name: '侧入位-闭眼抽插精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/co2o1g.png', name: '侧入位-闭眼高潮射身上未插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mqhyso.png', name: '侧入位-闭眼高潮未插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/kqu0sv.png', name: '侧入位-闭眼咬牙中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8sertn.png', name: '侧入位-抽插射满身闭眼咬牙中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ea7tjd.png', name: '侧入位-睁眼往后看舔嘴唇未插入射满身', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/imbo8o.png', name: '侧入位-睁眼往后看未插入射满身', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ih55mj.png', name: '侧入位-睁眼往后看笑抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/il4cxl.png', name: '侧入位-睁眼往后看笑猫嘴精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yrg1st.png', name: '侧入位-睁单眼射满身抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dgrr3a.png', name: '侧入位-睁单眼往后看未插入射满身', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/c6isbd.png', name: '侧入位-睁单眼微笑插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/kyg00u.png', name: '侧入位-睁单眼心形瞳孔抽插精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2gyetw.png', name: '侧入位-睁眼往后看抽插精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/tgcfzx.png', name: '侧入位-睁眼往后看猫唇未插入射满身', category: 'CG', type: 'image' });
-      // 正常位系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/3oumcw.png', name: '正常位-振动棒振动', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rx62oq.png', name: '正常位-中出后', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8ycxeb.png', name: '正常位-掰穴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/b3d2fk.png', name: '正常位-抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/iiawfp.png', name: '正常位-高潮中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/o3f7of.png', name: '正常位-射精在脚上后', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3tboew.png', name: '正常位-振动棒插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/20fhqf.png', name: '正常位-振动棒插入撸管', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/caa8fi.png', name: '正常位-振动棒插入撸管射精', category: 'CG', type: 'image' });
-      // 骑乘位女仆装系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/zd8307.png', name: '骑乘位女仆装-表达爱意拔出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/42lcpt.png', name: '骑乘位女仆装-表达爱意双手撑着抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/az8b9d.png', name: '骑乘位女仆装-颤抖拔出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/13qmy7.png', name: '骑乘位女仆装-单手捂嘴单手撑着抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xxwxje.png', name: '骑乘位女仆装-嘟嘴颤抖拔出手撑着', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4y5jxl.png', name: '骑乘位女仆装-嘟嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m3s86f.png', name: '骑乘位女仆装-翻白眼咬牙精液溢出抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/irlh5q.png', name: '骑乘位女仆装-害羞单手捂嘴单手撑着抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/70u90l.png', name: '骑乘位女仆装-惊讶看外面插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/r717pn.png', name: '骑乘位女仆装-咬牙抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gq9bz5.png', name: '骑乘位女仆装-咬牙激烈抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9l7irr.png', name: '骑乘位女仆装-张口闭眼中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dkkhsf.png', name: '骑乘位女仆装-张嘴闭眼中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dca7wa.png', name: '骑乘位女仆装-张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6io8cs.png', name: '骑乘位女仆装-张嘴害羞激烈抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hrs1g6.png', name: '骑乘位女仆装-张嘴激烈抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6n2w25.png', name: '骑乘位女仆装-张嘴精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ern82i.png', name: '骑乘位女仆装-中出后拔出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rv5660.png', name: '骑乘位女仆装-中出后自己爱抚乳头和阴蒂', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/tjn869.png', name: '骑乘位女仆装-抱头插入', category: 'CG', type: 'image' });
-      // 女仆装系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/c8co16.png', name: '女仆装-半开门探出抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/kowxno.png', name: '女仆装-半开门探出身体被抓住肩膀往后看惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ie94ge.png', name: '女仆装-半开门探出身体被抓住肩膀张嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pz01s1.png', name: '女仆装-半开门探出身体惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mupl8t.png', name: '女仆装-半开门探出身体露齿笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/0zd9m0.png', name: '女仆装-半开门探出身体抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/zzjg7n.png', name: '女仆装-半开门探出身体说话', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gbjemd.png', name: '女仆装-半开门探出身体往上看露齿笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/svbg8n.png', name: '女仆装-半开门探出身体小张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/czah4z.png', name: '女仆装-半开门探出身体笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/paffmz.png', name: '女仆装-半开门探出身体眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5myhfa.png', name: '女仆装-半开门探出身体眼神躲闪害羞', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9huleh.png', name: '女仆装-半开门探出身体眼神躲闪惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/y7e0q8.png', name: '女仆装-半开门探出身体用手臂遮住乳头闭眼张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fesnvu.png', name: '女仆装-半开门探出身体用手臂遮住乳头小张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/brnrgy.png', name: '女仆装-半开门探出身体用手臂遮住乳头笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6imv67.png', name: '女仆装-半开门探出身体张嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/arwh1y.png', name: '女仆装-半开门探出身体嘴部阴毛向上看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/h98dew.png', name: '女仆装-半开门探出身体嘴部阴毛眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/u00wvo.png', name: '女仆装-半开门探出身体嘴部阴毛张嘴', category: 'CG', type: 'image' });
-      // 女仆装早晨系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/jmpcry.png', name: '女仆装早晨-半开门探出身体小张嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rogbgv.png', name: '女仆装早晨-半开门探出身体心形眼颤抖', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/57jwoa.png', name: '女仆装早晨-半开门探出身体心形眼翻白眼高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7qzrld.png', name: '女仆装早晨-半开门探出身体眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/baxz7a.png', name: '女仆装早晨-半开门探出身体眼神躲闪嘟嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3pa9n9.png', name: '女仆装早晨-半开门探出身体眼神躲闪小张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/zctz14.png', name: '女仆装早晨-半开门探出身体眼神躲闪张嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/iftpio.png', name: '女仆装早晨-半开门探出身体张嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9q2ewq.png', name: '女仆装早晨-半开门探出身体闭眼张嘴高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pjgsz1.png', name: '女仆装早晨-半开门探出身体闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/odqh8t.png', name: '女仆装早晨-半开门探出身体咧嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/utj509.png', name: '女仆装早晨-半开门探出身体抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rivxke.png', name: '女仆装早晨-半开门探出身体抿嘴皱眉', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/jv7d6b.png', name: '女仆装早晨-半开门探出身体撇嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/exjh9u.png', name: '女仆装早晨-半开门探出身体平静', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/0pbp5m.png', name: '女仆装早晨-半开门探出身体微笑', category: 'CG', type: 'image' });
-      // 早晨系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/uvuvd4.png', name: '早晨-半开门探出身体全裸惊讶用手臂遮住乳头', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6sowym.png', name: '早晨-半开门探出身体全裸眯眼', category: 'CG', type: 'image' });
-      // 浴室系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/t6zoeu.png', name: '浴室-开门露出乳头拔出手指淫液拉丝', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/qmqlhf.png', name: '浴室-开门露出乳头被拽乳头往后看张嘴被抠小穴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/aim2j3.png', name: '浴室-开门露出乳头被拽乳头往后看张嘴被抠小穴高潮', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hxjcfv.png', name: '浴室-半开门探出上半身露出乳头闭眼抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/imzh14.png', name: '浴室-半开门探出上半身露出乳头张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3evydi.png', name: '浴室-半开门探出上半身抿嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9jvxi7.png', name: '浴室-半开门探出上半身撇嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/5q58z4.png', name: '浴室-半开门探出上半身手臂遮住乳头抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/6mc1y8.png', name: '浴室-半开门探出上半身手臂遮住乳头笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3nn7y3.png', name: '浴室-半开门探出上半身手臂遮住乳头眼神躲闪抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/shbyzx.png', name: '浴室-半开门探出上半身心形眼咬牙抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/i9mke8.png', name: '浴室-半开门探出上半身张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/maji6k.png', name: '浴室-半开门探出上半身张嘴娇喘心形眼翻白眼抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/r0h8uk.png', name: '浴室-半开门探出上半身张嘴眼神躲闪抽插', category: 'CG', type: 'image' });
-      // 浴室透视系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/eudvrq.png', name: '浴室透视-隔着门露出乳头心形眼翻白眼张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/t182wb.png', name: '浴室透视-隔着门露出乳头心形眼张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3wfqnf.png', name: '浴室透视-隔着门露出乳头眼睛躲闪闭嘴被揉胸', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/qukjca.png', name: '浴室透视-隔着门趴在门上', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yyyueg.png', name: '浴室透视-隔着门全裸心形眼闭嘴往后看中出精液溢出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8cjs4w.png', name: '浴室透视-隔着门全裸心形眼翻白眼大张嘴吐舌淫叫抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/e7rw43.png', name: '浴室透视-隔着门全裸心形眼翻白眼咬牙淫叫被拽乳头中出', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/05f51t.png', name: '浴室透视-隔着门全裸心形眼张嘴精液溢出肉棒打屁股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ak536s.png', name: '浴室透视-隔着门全裸心形眼张嘴淫叫精液溢出抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/a2xok5.png', name: '浴室透视-隔着门自己捂嘴露出乳头抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hpyfpf.png', name: '浴室透视-隔着门露出乳头被拽乳头往后看捂嘴被抠小穴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/enwehz.png', name: '浴室透视-隔着门露出乳头被拽乳头捂嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/w4bpx7.png', name: '浴室透视-隔着门露出乳头被拽乳头眼睛往后看闭嘴生气', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/a69u8m.png', name: '浴室透视-隔着门露出乳头被拽乳头眼神无光捂嘴被抠小穴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7ll4ua.png', name: '浴室透视-隔着门露出乳头闭眼张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ayqtqd.png', name: '浴室透视-隔着门露出乳头惊讶往后看被揉胸', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yhb28g.png', name: '浴室透视-隔着门露出乳头心形眼闭嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/p4batn.png', name: '浴室透视-隔着门露出乳头心形眼翻白眼大张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/jmx6rc.png', name: '浴室透视-隔着门露出乳头心形眼翻白眼大张嘴吐舌抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/y4cbw8.png', name: '浴室透视-半开门探出上半身露出乳头闭眼抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gsd4n9.png', name: '浴室透视-半开门探出上半身露出乳头张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/tmwckb.png', name: '浴室透视-半开门探出上半身抿嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ilx312.png', name: '浴室透视-半开门探出上半身撇嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/eb8xm2.png', name: '浴室透视-半开门探出上半身手臂遮住乳头抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7zmky5.png', name: '浴室透视-半开门探出上半身手臂遮住乳头笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/u2p4i6.png', name: '浴室透视-半开门探出上半身手臂遮住乳头眼神躲闪抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/4h8qos.png', name: '浴室透视-半开门探出上半身心形眼咬牙抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/tha7xq.png', name: '浴室透视-半开门探出上半身张嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/taeuil.png', name: '浴室透视-半开门探出上半身张嘴娇喘心形眼翻白眼抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/un2r5m.png', name: '浴室透视-半开门探出上半身张嘴眼神躲闪抽插', category: 'CG', type: 'image' });
-      // 常服系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/740v4n.png', name: '常服-半开门探出上半身嘴角阴毛抿嘴眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/co3muy.png', name: '常服-半开门探出上半身嘴角阴毛撇嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/vttzut.png', name: '常服-半开门探出上半身嘴角阴毛笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ra80of.png', name: '常服-半开门探出上半身嘴角阴毛眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/h06uxu.png', name: '常服-半开门探出上半身抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/30qkxr.png', name: '常服-半开门探出上半身抿嘴笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8whuzk.png', name: '常服-半开门探出上半身抿嘴笑往后看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g67sd2.png', name: '常服-半开门探出上半身撇嘴往后看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/r53uyx.png', name: '常服-半开门探出上半身往后看小张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ckvcx4.png', name: '常服-半开门探出上半身眼睛睁大惊讶', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ydf9at.png', name: '常服-半开门探出上半身眼神躲闪', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m84qww.png', name: '常服-半开门探出上半身嘴角阴毛', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/povo4b.png', name: '常服-半开门探出上半身嘴角阴毛大张嘴闭眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pg0qiy.png', name: '常服-半开门探出上半身嘴角阴毛抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/uj2bmo.png', name: '常服-半开门探出上身闭眼闭嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/73bmg2.png', name: '常服-半开门探出上身高兴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/n4xjap.png', name: '常服-半开门探出上身脸红', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mbjos5.png', name: '常服-半开门探出上身抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/67v582.png', name: '常服-半开门探出上身往上看小张嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yz5g5k.png', name: '常服-半开门探出上身往上看笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/knqqup.png', name: '常服-半开门探出上身笑', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/l4ir9d.png', name: '常服-半开门探出上身眼睛躲闪', category: 'CG', type: 'image' });
-      // 通用门外视角系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/0eawea.png', name: '通用门外视角-铁门外无声', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/d6zssj.png', name: '通用门外视角-铁门外淫叫', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/3p1ct9.png', name: '通用门外视角-木门外无声', category: 'CG', type: 'image' });
-      // 常服透视系列（资源名称格式：组名-CG名称）
-      assets.push({ url: 'https://files.catbox.moe/bu6izc.png', name: '常服透视-隔着门胸部露出张大嘴吐舌头抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2j5v65.png', name: '常服透视-隔着门胸部露出张大嘴往后看抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pvwe7z.png', name: '常服透视-隔着门咬牙中出心形眼翻白眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8389af.png', name: '常服透视-隔着门张大嘴娇喘插入', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/684n4l.png', name: '常服透视-隔着门张大嘴娇喘抽插心形眼', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fvi2ez.png', name: '常服透视-隔着门往后看惊讶肉棒顶着屁股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xc9jq9.png', name: '常服透视-隔着门往后看撇嘴生气肉棒顶着屁股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rx3jxw.png', name: '常服透视-隔着门心形眼中出后', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/pr6o0r.png', name: '常服透视-隔着门胸部露出张大嘴抽插', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ei03kv.png', name: '常服透视-半开门探出上半身抿嘴', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g8yrul.png', name: '常服透视-半开门探出上半身抿嘴笑往后看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9prqsd.png', name: '常服透视-半开门探出上半身撇嘴往后看', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f0fo7u.png', name: '常服透视-半开门探出上半身往后看小张嘴肉棒顶着屁股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/q6lf5v.png', name: '常服透视-半开门探出上半身眼睛睁大往后看肉棒顶着屁股', category: 'CG', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/o7zzmb.png', name: '常服透视-半开门探出上半身眼神躲闪小张嘴肉棒顶着屁股', category: 'CG', type: 'image' });
-
-      // 时间+天气系统图片
-      assets.push({ url: 'https://files.catbox.moe/g2x21l.png', name: 'Afternoon', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/p326lj.png', name: 'Midnight', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/m3l95j.png', name: 'Morning', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/1iepv7.png', name: 'Night', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xnzc7c.png', name: 'Noon', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/d555se.png', name: 'rainDay', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/s66j1n.png', name: 'rainNight', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/t34ltk.png', name: 'LeftCover', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/buwqmc.png', name: 'TimeBack', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/exeh4l.png', name: 'Message_name', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/87622v.png', name: 'Message_Under', category: '系统', type: 'image' });
-
-      // 游戏界面UI资源
-      assets.push({ url: 'https://files.catbox.moe/ogteua.png', name: '菜单界面背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gdyovq.png', name: '菜单界面前景边框', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/eu5cai.png', name: '金币背景框', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/knxts0.png', name: '堕落值变量条', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/40v6og.png', name: '性欲值变量条', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dtbqcz.png', name: 'Intro遮罩背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/e5v3lc.png', name: '设置界面背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hkgfil.png', name: '关闭按钮', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8b71o8.png', name: '按钮通用背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/9kmauu.png', name: '存档项背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/j17ccs.png', name: '加载Logo', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wj2c68.png', name: '全屏按钮', category: '系统', type: 'image' });
-
-      // 系统资源（原CG资源）
-      assets.push({ url: 'https://files.catbox.moe/z8wdof.png', name: '对话背景', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/0o6yij.png', name: 'CG画框', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wcejcp.jpg', name: '纯爱路线', category: '系统', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/s0how3.jpg', name: '游戏路线', category: '系统', type: 'image' });
-
-      // 背景资源
-      assets.push({ url: 'https://files.catbox.moe/dswunx.png', name: '白天露天废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/qj6dcy.png', name: '白天露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/y4spym.png', name: '草地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/uzpt5x.png', name: '草地小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/el5ch1.png', name: '打开大门传送门走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/mevkx3.png', name: '地下建筑内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rlv186.png', name: '毒沼泽', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/f9yq6v.png', name: '废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wp1iky.png', name: '关闭大门走廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/7pzktn.png', name: '旱地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/2arfp5.png', name: '黑暗洞穴', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/myr71d.png', name: '黑森林', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ltnpnb.png', name: '荒地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/fwuzgm.png', name: '荒芜草地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/zyu55x.png', name: '黄昏露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/o3rikj.png', name: '集市', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/35n6q8.png', name: '建筑内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ylkodm.png', name: '矿坑', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lx6625.png', name: '矿坑2', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/ec996u.png', name: '矿坑3', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g5834r.png', name: '魔界废土', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/lcuxzp.png', name: '木地板', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/np1np8.png', name: '熔岩地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/8odtak.png', name: '沙漠', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/cc3k6f.png', name: '山路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/dpbk63.png', name: '石制室内', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/37b3nb.png', name: '石制室内2', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/gungox.png', name: '树林小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x2zkz3.png', name: '透光矿坑', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/crmevj.png', name: '晚上露天长廊', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/xwhu4i.png', name: '小镇路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/cvh6io.png', name: '雪地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/woqe7c.png', name: '岩浆地', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/rutz1i.png', name: '依山小路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/bwwhmr.png', name: '阴天露天废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/arv06v.png', name: '矿坑4', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/x73t54.png', name: '林中小径', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/g4auhb.png', name: '迷雾废墟', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/yec24e.png', name: '迷雾黑森林', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/wq3zhj.png', name: '明亮洞穴', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/hd5ruw.png', name: '荧光路', category: '背景', type: 'image' });
-      assets.push({ url: 'https://files.catbox.moe/54ar1p.png', name: '云上', category: '背景', type: 'image' });
-
-      return assets;
+      return ga.preloadList.map(a => ({ url: a.url, name: a.name, category: a.category, type: a.type }));
     }
 
     // 初始化资源列表（不加载资源，只填充列表）
@@ -1216,7 +523,7 @@
         failed: false
       }));
 
-      console.log(`资源列表已初始化，共 ${allResources.length} 个资源`);
+      logWithTag('DEBUG', `资源列表已初始化，共 ${allResources.length} 个资源`);
     }
 
     function applyResolvedImageSrc(img, originalUrl, imageSrc) {
@@ -1300,7 +607,7 @@
           };
           img.onerror = () => {
             if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
-            console.warn(`图片资源加载失败: ${url}`);
+            warnWithTag('WARN', `图片资源加载失败: ${url}`);
             const resource = allResources.find(r => r.id === assetId);
             if (resource) {
               resource.loaded = false;
@@ -1311,7 +618,7 @@
           applyResolvedImageSrc(img, url, resolved.imageSrc);
         });
       } catch (error) {
-        console.warn(`加载图片失败: ${url}`, error);
+        warnWithTag('WARN', `加载图片失败: ${url}`, error);
         const resource = allResources.find(r => r.id === assetId);
         if (resource) {
           resource.loaded = false;
@@ -1520,7 +827,7 @@
             };
             video.onerror = () => {
               if (blobUrl) URL.revokeObjectURL(blobUrl);
-              console.warn(`视频资源加载失败: ${url}`);
+              warnWithTag('WARN', `视频资源加载失败: ${url}`);
               failedAssets.push(assetName);
               resolve({ ok: false, bytes: 0 });
             };
@@ -1572,7 +879,7 @@
                   }
                 }
                 if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
-                console.warn(`图片资源加载失败: ${url}`);
+                warnWithTag('WARN', `图片资源加载失败: ${url}`);
                 failedAssets.push(assetName);
                 const resource = allResources.find(r => r.id === assetId);
                 if (resource) {
@@ -1584,7 +891,7 @@
               applyResolvedImageSrc(img, url, resolved.imageSrc);
             });
           } catch (error) {
-            console.warn(`加载图片失败: ${url}`, error);
+            warnWithTag('WARN', `加载图片失败: ${url}`, error);
             failedAssets.push(assetName);
             const resource = allResources.find(r => r.id === assetId);
             if (resource) {
@@ -1621,7 +928,7 @@
 
         setTimeout(() => {
           if (loaded < total) {
-            console.warn('部分资源加载超时，继续进入游戏');
+            warnWithTag('WARN', '部分资源加载超时，继续进入游戏');
             loadingScreen.classList.add('hidden');
             resolve();
           }
@@ -1935,7 +1242,7 @@
       }
 
       const categoryResources = allResources.filter(r => r.category === category);
-      console.log(`渲染 ${category} 资源列表:`, categoryResources.length, '个资源'); // 调试信息
+      logWithTag('DEBUG', `渲染 ${category} 资源列表:`, categoryResources.length, '个资源'); // 调试信息
 
       if (categoryResources.length === 0) {
         const emptyMsg = document.createElement('div');
@@ -2030,7 +1337,7 @@
         scrollIndicator.textContent = '拖拽中...';
         scrollIndicator.style.opacity = '1';
 
-        console.log('开始拖拽:', { startY, startScrollTop }); // 调试信息
+        logWithTag('DEBUG', '开始拖拽:', { startY, startScrollTop }); // 调试信息
         e.preventDefault();
       };
 
@@ -2043,7 +1350,7 @@
 
         // 边界检查
         const maxScroll = itemsContainer.scrollHeight - itemsContainer.clientHeight;
-        console.log('拖拽中:', {
+        logWithTag('DEBUG', '拖拽中:', {
           deltaY,
           newScrollTop,
           currentScrollTop: itemsContainer.scrollTop,
@@ -2114,7 +1421,7 @@
         const contentHeight = itemsContainer.scrollHeight;
         const maxAllowedHeight = Math.min(400, window.innerHeight * 0.6);
 
-        console.log('调整容器高度:', {
+        logWithTag('DEBUG', '调整容器高度:', {
           contentHeight,
           maxAllowedHeight,
           containerHeight: itemsContainer.clientHeight,
@@ -2125,12 +1432,12 @@
           // 内容不超出限制，设置为auto高度
           itemsContainer.style.maxHeight = 'none';
           itemsContainer.style.height = 'auto';
-          console.log('内容高度正常，无需滚动，设置为auto高度');
+          logWithTag('DEBUG', '内容高度正常，无需滚动，设置为auto高度');
         } else {
           // 内容超出，限制高度并启用滚动
           itemsContainer.style.maxHeight = `${maxAllowedHeight}px`;
           itemsContainer.style.height = `${maxAllowedHeight}px`;
-          console.log('内容超出，限制高度并启用滚动:', maxAllowedHeight);
+          logWithTag('DEBUG', '内容超出，限制高度并启用滚动:', maxAllowedHeight);
         }
       };
 
@@ -2640,7 +1947,7 @@
         try {
           textFormatSettings = { ...textFormatSettings, ...JSON.parse(saved) };
         } catch (e) {
-          console.warn('加载文本格式设置失败:', e);
+          warnWithTag('WARN', '加载文本格式设置失败:', e);
         }
       }
       applyTextFormatSettings();
@@ -3290,7 +2597,8 @@
             branches: layer.branches,
             snapshots: layer.snapshots,
             variables: layer.variables,
-            varsSnapshot: layer.varsSnapshot || layer.mvuData, // 兼容旧数据
+            // 增量快照：只存相对上一层的变动（存档体积小，回溯靠基准累加）
+            varsDelta: layer.varsDelta || null,
             type: layer.type,
             playerInput: layer.playerInput
           })),
@@ -3363,7 +2671,8 @@
             branches: layer.branches,
             snapshots: layer.snapshots,
             variables: layer.variables,
-            varsSnapshot: layer.varsSnapshot || layer.mvuData, // 兼容旧数据
+            // 增量快照：只存相对上一层的变动（存档体积小，回溯靠基准累加）
+            varsDelta: layer.varsDelta || null,
             type: layer.type,
             playerInput: layer.playerInput
           })),
@@ -3467,7 +2776,7 @@
       let spriteLayers = null;
       let spriteAlign = 'right';
       if (!isCg) {
-        const varsSnapshot = layer.varsSnapshot || layer.mvuData || null;
+        const varsSnapshot = getLayerVars(layer) || layer.mvuData || null;
         if (current.isOtherSpeaker && typeof getRivalMaleSpriteLayers === 'function') {
           spriteLayers = getRivalMaleSpriteLayers(current.character, !!current.withShadow);
           spriteAlign = 'left';
@@ -3731,8 +3040,8 @@
     // 读档功能
     async function loadArchive(archiveName) {
       try {
-        console.log('[LOAD] ========== 开始读档 ==========');
-        console.log('[LOAD] 存档名称:', archiveName);
+        logWithTag('LOAD', '========== 开始读档 ==========');
+        logWithTag('LOAD', '存档名称:', archiveName);
 
         // 从IndexedDB加载存档
         const archive = await storageUtils.archivesDB.loadArchive(archiveName);
@@ -3743,21 +3052,21 @@
         }
 
         const archiveData = archive.data;
-        console.log('[LOAD] 存档数据加载成功');
+        logWithTag('LOAD', '存档数据加载成功');
 
         // 恢复路线信息（如果存在）
         if (archiveData.routeTitle) {
           isLoveRouteStart = archiveData.routeTitle === '纯爱路线';
-          console.log('[LOAD] 路线信息:', archiveData.routeTitle);
+          logWithTag('LOAD', '路线信息:', archiveData.routeTitle);
         }
 
         // 先初始化游戏界面（确保所有DOM元素都已创建）
-        console.log('[LOAD] 初始化游戏界面...');
+        logWithTag('LOAD', '初始化游戏界面...');
         // 设置读档标志，阻止 initGameInterface 显示预设对话
         window._isLoadingArchive = true;
         await initGameInterface();
         window._isLoadingArchive = false;
-        console.log('[LOAD] ✅ 游戏界面初始化完成');
+        logWithTag('LOAD', '✅ 游戏界面初始化完成');
 
         // 兼容旧存档格式（dialogueHistory）和新格式（dialogueLayers）
         let dialogueLayersFromArchive = [];
@@ -3765,7 +3074,7 @@
           // 新格式：使用对话层
           dialogueLayersFromArchive = archiveData.dialogueLayers;
           currentDialogueLayer = archiveData.currentDialogueLayer || 0;
-          console.log('[LOAD] 使用新格式，对话层数量:', dialogueLayersFromArchive.length);
+          logWithTag('LOAD', '使用新格式，对话层数量:', dialogueLayersFromArchive.length);
         } else if (archiveData.dialogueHistory && archiveData.dialogueHistory.length > 0) {
           // 旧格式：转换为对话层格式（兼容旧存档）
           dialogueLayersFromArchive = archiveData.dialogueHistory.map((entry, index) => ({
@@ -3782,7 +3091,7 @@
           // 计算当前对话层
           const maxLayer = Math.max(...dialogueLayersFromArchive.map(l => l.layer));
           currentDialogueLayer = maxLayer;
-          console.log('[LOAD] 使用旧格式，已转换，对话层数量:', dialogueLayersFromArchive.length);
+          logWithTag('LOAD', '使用旧格式，已转换，对话层数量:', dialogueLayersFromArchive.length);
         }
 
         if (dialogueLayersFromArchive.length === 0) {
@@ -3795,14 +3104,16 @@
         dialogueLayers.length = 0; // 清空现有历史
         dialogueLayers.push(...dialogueLayersFromArchive);
         sanitizeDialogueLayers();
-        console.log('[LOAD] ✅ 已加载', dialogueLayers.length, '个对话层到内存');
+        // 旧存档（整树快照）迁移为增量快照
+        migrateLegacySnapshotsToDelta();
+        logWithTag('LOAD', '✅ 已加载', dialogueLayers.length, '个对话层到内存');
 
         // 打印所有对话层信息（用于调试）
-        console.log('[LOAD] 所有对话层信息:');
+        logWithTag('LOAD', '所有对话层信息:');
         dialogueLayers.forEach(layer => {
           if (layer.type !== 'player' && layer.layer % 2 === 1) {
             const round = Math.floor((layer.layer + 1) / 2);
-            console.log(`  - 层 ${layer.layer} (第${round}轮): 内容长度 ${layer.maintext ? layer.maintext.length : 0}`);
+            logWithTag('DEBUG', `  - 层 ${layer.layer} (第${round}轮): 内容长度 ${layer.maintext ? layer.maintext.length : 0}`);
           }
         });
 
@@ -3828,21 +3139,21 @@
         }
 
         const lastRound = Math.floor((lastLayer.layer + 1) / 2);
-        console.log('[LOAD] ✅ 找到最后一轮对话:');
-        console.log('[LOAD]   - 对话层:', lastLayer.layer);
-        console.log('[LOAD]   - 对话轮次:', lastRound);
-        console.log('[LOAD]   - 内容长度:', lastLayer.maintext ? lastLayer.maintext.length : 0);
+        logWithTag('LOAD', '✅ 找到最后一轮对话:');
+        logWithTag('LOAD', '- 对话层:', lastLayer.layer);
+        logWithTag('LOAD', '- 对话轮次:', lastRound);
+        logWithTag('LOAD', '- 内容长度:', lastLayer.maintext ? lastLayer.maintext.length : 0);
 
         // 更新界面：加载最后对话层的内容
         if (lastLayer.maintext) {
           // 提前设置标志，防止其他代码覆盖对话
           window._isLoadingArchiveDialogue = true;
-          console.log('[LOAD] 已设置读档保护标志');
+          logWithTag('LOAD', '已设置读档保护标志');
 
-          console.log('[LOAD] 开始解析对话文本...');
+          logWithTag('LOAD', '开始解析对话文本...');
           // 解析对话
           const dialogues = parseTolinaDialogues(lastLayer.maintext);
-          console.log('[LOAD] ✅ 解析完成，共', dialogues.length, '段对话');
+          logWithTag('LOAD', '✅ 解析完成，共', dialogues.length, '段对话');
 
           // 恢复CG状态：遍历所有对话层，找到最后一个有效的CG标签
           // 清空CG状态
@@ -3859,12 +3170,12 @@
                 if (dialogue.cg && !dialogue.cg.isStop) {
                   // 找到最后一个有效的CG，恢复状态
                   cgState[dialogue.cg.groupName] = dialogue.cg.cgName;
-                  console.log(`[LOAD] [CG] 恢复CG状态: ${dialogue.cg.groupName} - ${dialogue.cg.cgName}`);
+                  logWithTag('LOAD', `[CG] 恢复CG状态: ${dialogue.cg.groupName} - ${dialogue.cg.cgName}`);
                   break;
                 } else if (dialogue.cg && dialogue.cg.isStop) {
                   // 如果遇到stop标签，清除该CG组的状态
                   delete cgState[dialogue.cg.groupName];
-                  console.log(`[LOAD] [CG] 清除CG组: ${dialogue.cg.groupName}`);
+                  logWithTag('LOAD', `[CG] 清除CG组: ${dialogue.cg.groupName}`);
                 }
               }
               // 如果找到了CG，停止向前搜索
@@ -3888,10 +3199,10 @@
           if (startIdx >= dialogues.length) startIdx = Math.max(0, dialogues.length - 1);
           currentDialogueIndex = startIdx;
 
-          console.log('[LOAD] 开始显示对话，索引:', startIdx);
+          logWithTag('LOAD', '开始显示对话，索引:', startIdx);
           await showDialogue(startIdx);
-          console.log('[LOAD] ✅ 已显示对话，当前索引:', currentDialogueIndex);
-          console.log('[LOAD] 当前对话总数:', currentDialogues.length);
+          logWithTag('LOAD', '✅ 已显示对话，当前索引:', currentDialogueIndex);
+          logWithTag('LOAD', '当前对话总数:', currentDialogues.length);
 
           // 延迟多次检查，确保显示不被覆盖
           const checkAndRestoreDialogue = async () => {
@@ -3901,7 +3212,7 @@
               const expectedText = expected && expected.dialogue;
 
               if (dialogueText && expectedText && dialogueText.textContent !== expectedText) {
-                console.log('[LOAD] ⚠️ 检测到对话内容被改变，恢复存档对话');
+                logWithTag('LOAD', '⚠️ 检测到对话内容被改变，恢复存档对话');
                 await showDialogue(currentDialogueIndex);
               }
             }
@@ -3913,7 +3224,7 @@
           setTimeout(checkAndRestoreDialogue, 1100);
           setTimeout(() => {
             window._isLoadingArchiveDialogue = false;
-            console.log('[LOAD] ✅ 读档对话显示完成，解除保护');
+            logWithTag('LOAD', '✅ 读档对话显示完成，解除保护');
           }, 1500);
 
           // 等待DOM更新完成，然后滚动到对话文本的顶部
@@ -3937,11 +3248,11 @@
               const isInDialogue = currentDialogues.length > 0 && currentDialogueIndex < currentDialogues.length - 1;
               if (!isInDialogue) {
                 // 如果对话已经显示完毕，显示分支选项
-                console.log('[LOAD] 对话已显示完毕，显示分支选项');
+                logWithTag('LOAD', '对话已显示完毕，显示分支选项');
                 updateBranches(lastLayer.branches);
               } else {
                 // 如果还在对话中，设置待显示的分支文本，等待用户点击完所有对话
-                console.log('[LOAD] 对话未显示完毕，设置待显示的分支文本');
+                logWithTag('LOAD', '对话未显示完毕，设置待显示的分支文本');
                 pendingBranchesText = lastLayer.branches;
               }
             } else {
@@ -3949,7 +3260,7 @@
             }
           }, 300);
         } else {
-          console.warn('[LOAD] ⚠️ 最后一轮对话没有文本内容');
+          warnWithTag('LOAD', '⚠️ 最后一轮对话没有文本内容');
           await updateMainText('');
           // 如果没有对话文本，直接处理分支选项
           if (lastLayer.branches) {
@@ -3967,13 +3278,13 @@
         }
 
         // 恢复变量状态（只使用 ERA）
-        const varsToRestore = lastLayer.varsSnapshot || lastLayer.mvuData?.stat_data || lastLayer.mvuData;
+        const varsToRestore = getLayerVars(lastLayer) || lastLayer.mvuData?.stat_data || lastLayer.mvuData;
 
         if (varsToRestore) {
           migrateLegacyHstateTree(varsToRestore);
           if (lastLayer.requestFlags) adoptRequestFlags(lastLayer.requestFlags);
           recomputeDerivedHstateFields(varsToRestore);
-          console.log('[LOAD] 开始恢复变量快照...');
+          logWithTag('LOAD', '开始恢复变量快照...');
           try {
             // 使用 ERA 的 insertByObject 恢复变量（完全替换）
             ERA.insertByObject(varsToRestore);
@@ -3981,7 +3292,7 @@
             ERA.cache.vars = varsToRestore;
             ERA.cache.timestamp = Date.now();
             ERA.currentVars = varsToRestore;
-            console.log('[LOAD] ✅ 变量快照已通过 ERA 恢复');
+            logWithTag('LOAD', '✅ 变量快照已通过 ERA 恢复');
           } catch (eraError) {
             console.error('[LOAD] ❌ ERA 恢复失败:', eraError);
           }
@@ -3989,7 +3300,7 @@
           // 如果没有变量快照，尝试使用 variables 字段
           try {
             await updateVariables(lastLayer.variables);
-            console.log('[LOAD] ✅ 已从 variables 字段恢复变量');
+            logWithTag('LOAD', '✅ 已从 variables 字段恢复变量');
           } catch (varError) {
             console.error('[LOAD] ❌ 从 variables 字段恢复失败:', varError);
           }
@@ -4033,7 +3344,7 @@
           saveOverlay.classList.add('hidden');
         }
 
-        console.log('[LOAD] ========== 读档完成 ==========');
+        logWithTag('LOAD', '========== 读档完成 ==========');
       } catch (error) {
         errorWithTag('LOAD', '读档失败', error);
         showArchiveNotification('读档失败，请查看控制台错误信息。', 'error');
@@ -4125,13 +3436,15 @@
       dialogueLayers = dialogueLayers.filter(l => l.layer <= layer.layer);
       currentDialogueLayer = layer.layer;
 
-      if (layer.varsSnapshot) {
-        migrateLegacyHstateTree(layer.varsSnapshot);
+      // 截断后失效后续缓存，并从基准 + delta 重建目标层完整树
+      invalidateSnapshotCacheFrom(0);
+      const restoredVars = getLayerVars(layer);
+      if (restoredVars) {
+        migrateLegacyHstateTree(restoredVars);
         try {
-          ERA.insertByObject(layer.varsSnapshot);
-          ERA.cache.vars = layer.varsSnapshot;
+          ERA.cache.vars = restoredVars;
           ERA.cache.timestamp = Date.now();
-          ERA.currentVars = layer.varsSnapshot;
+          ERA.currentVars = restoredVars;
         } catch (eraError) {
           console.error('[JUMP] ERA 恢复失败:', eraError);
         }
@@ -4175,11 +3488,11 @@
         // 获取当前对话层（最后一个奇数层）
         const lastLayer = getLastDialogueLayer();
 
-        console.log('[QUEST] 获取到的对话层:', lastLayer);
-        console.log('[QUEST] dialogueLayers 总数:', dialogueLayers.length);
+        logWithTag('QUEST', '获取到的对话层:', lastLayer);
+        logWithTag('QUEST', 'dialogueLayers 总数:', dialogueLayers.length);
 
         if (!lastLayer && dialogueLayers.length === 0) {
-          console.warn('[QUEST] 没有找到对话层');
+          warnWithTag('QUEST', '没有找到对话层');
           // 显示提示信息
           alert('当前没有对话记录');
           return;
@@ -4299,8 +3612,8 @@
           }
 
           const dialogues = parseTolinaDialogues(lastLayer.maintext);
-          console.log('[QUEST] 解析到的对话数量:', dialogues.length);
-          console.log('[QUEST] 对话内容:', dialogues);
+          logWithTag('QUEST', '解析到的对话数量:', dialogues.length);
+          logWithTag('QUEST', '对话内容:', dialogues);
 
           if (dialogues.length === 0) {
             const rawTextEntry = document.createElement('div');
@@ -4323,7 +3636,7 @@
               spriteContainer.className = 'quest-sprite-frame-inner';
 
               renderSpriteToContainer(spriteContainer, dialogue).catch(err => {
-                console.warn('[QUEST] 渲染立绘失败:', err);
+                warnWithTag('QUEST', '渲染立绘失败:', err);
               });
 
               frameContainer.appendChild(spriteContainer);
@@ -4336,7 +3649,7 @@
               messageEntry.appendChild(dialogueText);
               target.appendChild(messageEntry);
             });
-            console.log('[QUEST] 已快速显示', dialogues.length, '条对话，立绘正在异步加载');
+            logWithTag('QUEST', '已快速显示', dialogues.length, '条对话，立绘正在异步加载');
           }
         };
 
@@ -4481,7 +3794,7 @@
               // 确认跳转
               confirmButton.addEventListener('click', async () => {
                 try {
-                  console.log(`[JUMP] 开始跳转到层 ${layer.layer}`);
+                  logWithTag('JUMP', `开始跳转到层 ${layer.layer}`);
                   await jumpToDialogueLayer(layer);
 
                   // 关闭确认弹窗
@@ -4493,7 +3806,7 @@
                     questOverlay.remove();
                   }
 
-                  console.log('[JUMP] ✅ 跳转完成');
+                  logWithTag('JUMP', '✅ 跳转完成');
                 } catch (error) {
                   console.error('[JUMP] ❌ 跳转失败:', error);
                   alert('跳转失败: ' + (error.message || String(error)));
@@ -4604,7 +3917,7 @@
         // 添加到页面
         document.body.appendChild(overlay);
 
-        console.log('[QUEST] 历史消息弹窗已创建');
+        logWithTag('QUEST', '历史消息弹窗已创建');
       } catch (error) {
         console.error('[QUEST] showCurrentDialogueLayer 错误:', error);
         alert('打开历史消息失败: ' + (error.message || String(error)));
@@ -4831,9 +4144,9 @@ _.set('stat_data.系统.模式', '${mode}')
     // 更新菜单界面托莉娜立绘（根据当前阶段）
     async function updateMenuTorinaSprite() {
       const torinaSprite = document.getElementById('game-menu-torina-sprite');
-      console.log('[菜单] 更新托莉娜立绘，元素:', torinaSprite);
+      logWithTag('菜单', '更新托莉娜立绘，元素:', torinaSprite);
       if (!torinaSprite) {
-        console.warn('[菜单] 托莉娜立绘元素不存在');
+        warnWithTag('菜单', '托莉娜立绘元素不存在');
         return;
       }
 
@@ -4842,19 +4155,19 @@ _.set('stat_data.系统.模式', '${mode}')
         const lastLayer = getLastDialogueLayer();
         let varsSnapshot = null;
 
-        if (lastLayer && lastLayer.varsSnapshot) {
+        if (lastLayer && getLayerVars(lastLayer)) {
           // 优先使用最后对话层的快照（它应该就是 ERA.currentVars）
-          varsSnapshot = lastLayer.varsSnapshot;
-          console.log('[菜单] 使用最后对话层快照（当前运行时值）');
+          varsSnapshot = getLayerVars(lastLayer);
+          logWithTag('菜单', '使用最后对话层快照（当前运行时值）');
         } else if (ERA.currentVars) {
           // 如果没有对话层，使用 ERA.currentVars
           varsSnapshot = ERA.currentVars;
-          console.log('[菜单] 使用 ERA.currentVars（当前运行时值）');
+          logWithTag('菜单', '使用 ERA.currentVars（当前运行时值）');
         } else {
           // 如果都没有，使用 getvar 获取（会尝试从 ERA 查询）
           const stage = await getvar('stat_data.托莉娜.基础.堕落阶段');
           const stageNum = parseInt(stage, 10) || 1;
-          console.log('[菜单] 从 getvar 获取阶段:', stageNum);
+          logWithTag('菜单', '从 getvar 获取阶段:', stageNum);
           updateTorinaSpriteByStage(torinaSprite, stageNum);
           return;
         }
@@ -4863,28 +4176,19 @@ _.set('stat_data.系统.模式', '${mode}')
         // varsSnapshot 的结构是 { 托莉娜: { 基础: { 堕落阶段: 4 } } }（不包含 stat_data 前缀）
         const stage = getNestedValue(varsSnapshot, '托莉娜.基础.堕落阶段');
         const stageNum = parseInt(stage, 10) || 1;
-        console.log('[菜单] 从当前运行时值获取阶段:', stage, '->', stageNum);
+        logWithTag('菜单', '从当前运行时值获取阶段:', stage, '->', stageNum);
 
         updateTorinaSpriteByStage(torinaSprite, stageNum);
       } catch (error) {
-        console.warn('[菜单] 获取托莉娜阶段失败，使用默认立绘:', error);
+        warnWithTag('菜单', '获取托莉娜阶段失败，使用默认立绘:', error);
         // 使用默认阶段1的图片
         updateTorinaSpriteByStage(torinaSprite, 1);
       }
     }
 
       // ==================== Hstatus表界面 ====================
-      const HSTATUS_ASSETS = {
-        outerBg: 'https://files.catbox.moe/3jrv5v.png',
-        outerMain: 'https://files.catbox.moe/iaar1p.png',
-        outerHighlight: 'https://files.catbox.moe/e7e84g.png',
-        frame: 'https://files.catbox.moe/lht9hm.png',
-        innerBg: 'https://files.catbox.moe/92wfb8.png',
-        innerFg: 'https://files.catbox.moe/lbxw3t.png',
-        innerHighlight: 'https://files.catbox.moe/dm2rck.png',
-        cursor: 'https://files.catbox.moe/dgdqmk.png',
-        exitBtn: 'https://files.catbox.moe/fcyjir.png',
-      };
+      // Hstatus 界面资源（数据来自 resource/game-assets.js）
+      const HSTATUS_ASSETS = (window.妹神官_gameAssets && window.妹神官_gameAssets.hstatusAssets) || {};
 
       // 界面状态管理：纯爱头部界面 / 纯爱主界面 / 纯爱胸部界面 / 纯爱足部界面
       let hstatusViewMode = 'main'; // 'head' = 纯爱头部界面, 'main' = 纯爱主界面, 'chest' = 纯爱胸部界面, 'crotch' = 阴部界面, 'foot' = 纯爱足部界面
@@ -5733,8 +5037,8 @@ _.set('stat_data.系统.模式', '${mode}')
           if (hstatusViewMode !== preset.viewMode) return;
           if (viewKey === 'crotch') {
             const lastLayer = getLastDialogueLayer();
-            const snap = (lastLayer && lastLayer.varsSnapshot)
-              ? lastLayer.varsSnapshot
+            const snap = (lastLayer && getLayerVars(lastLayer))
+              ? getLayerVars(lastLayer)
               : ERA.currentVars;
             scheduleWombPopupFadeIn(snap);
           }
@@ -5771,8 +5075,8 @@ _.set('stat_data.系统.模式', '${mode}')
         applyClothesMask(preset, preset.innerEnd, preset.outerEnd);
         if (viewKey === 'crotch') {
           const lastLayer = getLastDialogueLayer();
-          const snap = (lastLayer && lastLayer.varsSnapshot)
-            ? lastLayer.varsSnapshot
+          const snap = (lastLayer && getLayerVars(lastLayer))
+            ? getLayerVars(lastLayer)
             : ERA.currentVars;
           scheduleWombPopupFadeIn(snap);
         }
@@ -5990,7 +5294,7 @@ _.set('stat_data.系统.模式', '${mode}')
           if (characterShake) characterShake.classList.remove('hstatus-sprite-transitioning');
           if (container) container.classList.remove('hstatus-layer-switching');
           createViewCursorsForMode();
-          console.log(`[Hstatus] ${goingInner ? '进入里' : '返回表'}${hstatusViewMode}界面`);
+          logWithTag('Hstatus', `${goingInner ? '进入里' : '返回表'}${hstatusViewMode}界面`);
         }, durationMs);
       }
 
@@ -6045,7 +5349,7 @@ _.set('stat_data.系统.模式', '${mode}')
         beginHstatusSpriteTransition(({ textDelayMs }) => {
           fadeOutTextOnly();
           hstatusViewMode = 'head';
-          console.log('[Hstatus] 进入纯爱头部界面');
+          logWithTag('Hstatus', '进入纯爱头部界面');
           clearHstatusSpriteViewClasses();
           const spriteImages = document.getElementById('hstatus-sprite-images');
           if (spriteImages) spriteImages.classList.add('head-view');
@@ -6061,7 +5365,7 @@ _.set('stat_data.系统.模式', '${mode}')
           fromViewKey: 'head',
           onSpriteEnter: () => {
             hstatusViewMode = 'main';
-            console.log('[Hstatus] 返回纯爱主界面');
+            logWithTag('Hstatus', '返回纯爱主界面');
             const spriteImages = document.getElementById('hstatus-sprite-images');
             if (spriteImages) spriteImages.classList.remove('head-view');
             prepareMainSideTextPanels();
@@ -6078,7 +5382,7 @@ _.set('stat_data.系统.模式', '${mode}')
         beginHstatusSpriteTransition(({ textDelayMs }) => {
           fadeOutTextOnly();
           hstatusViewMode = 'chest';
-          console.log('[Hstatus] 进入纯爱胸部界面');
+          logWithTag('Hstatus', '进入纯爱胸部界面');
           prepareChestSideTextPanels();
           clearHstatusSpriteViewClasses();
           const spriteImages = document.getElementById('hstatus-sprite-images');
@@ -6095,7 +5399,7 @@ _.set('stat_data.系统.模式', '${mode}')
           fromViewKey: 'chest',
           onSpriteEnter: () => {
             hstatusViewMode = 'main';
-            console.log('[Hstatus] 返回纯爱主界面');
+            logWithTag('Hstatus', '返回纯爱主界面');
             const spriteImages = document.getElementById('hstatus-sprite-images');
             if (spriteImages) spriteImages.classList.remove('chest-view');
             prepareMainSideTextPanels();
@@ -6114,7 +5418,7 @@ _.set('stat_data.系统.模式', '${mode}')
           toViewKey: 'crotch',
           onSpriteEnter: () => {
             hstatusViewMode = 'crotch';
-            console.log('[Hstatus] 进入阴部界面');
+            logWithTag('Hstatus', '进入阴部界面');
             prepareChestSideTextPanels();
             const spriteImages = document.getElementById('hstatus-sprite-images');
             if (spriteImages) {
@@ -6137,7 +5441,7 @@ _.set('stat_data.系统.模式', '${mode}')
             toViewKey: 'chest',
             onSpriteEnter: () => {
               hstatusViewMode = 'chest';
-              console.log('[Hstatus] 返回胸部界面');
+              logWithTag('Hstatus', '返回胸部界面');
               const spriteImages = document.getElementById('hstatus-sprite-images');
               if (spriteImages) {
                 spriteImages.classList.remove('crotch-view');
@@ -6160,7 +5464,7 @@ _.set('stat_data.系统.模式', '${mode}')
             fromViewKey: 'crotch',
             onSpriteEnter: () => {
               hstatusViewMode = 'main';
-              console.log('[Hstatus] 从阴部返回纯爱主界面');
+              logWithTag('Hstatus', '从阴部返回纯爱主界面');
               clearHstatusSpriteViewClasses();
               prepareMainSideTextPanels();
               createViewCursorsForMode('main');
@@ -6181,21 +5485,21 @@ _.set('stat_data.系统.模式', '${mode}')
         const cursorUpMain = document.createElement('img');
         cursorUpMain.className = 'hstatus-cursor-up';
         cursorUpMain.id = 'hstatus-cursor-up-main';
-        cursorUpMain.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorUpMain.src = uiUrl('cursor');
         cursorUpMain.alt = '指向箭头（向上）';
 
         // 创建向下箭头（下方正中）- 进入纯爱胸部界面
         const cursorDown = document.createElement('img');
         cursorDown.className = 'hstatus-cursor-down';
         cursorDown.id = 'hstatus-cursor-down';
-        cursorDown.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorDown.src = uiUrl('cursor');
         cursorDown.alt = '指向箭头（下方）';
 
         // 创建向右箭头（右侧正中，逆时针旋转90度）
         const cursorRight = document.createElement('img');
         cursorRight.className = 'hstatus-cursor-right';
         cursorRight.id = 'hstatus-cursor-right';
-        cursorRight.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorRight.src = uiUrl('cursor');
         cursorRight.alt = '指向箭头（右侧）';
 
         // 触摸滑动处理（手机端）
@@ -6307,7 +5611,7 @@ _.set('stat_data.系统.模式', '${mode}')
         removeAllCursors();
         clearHstatusSpriteViewClasses();
         hstatusViewMode = 'main';
-        console.log('[Hstatus] 返回纯爱主界面');
+        logWithTag('Hstatus', '返回纯爱主界面');
         prepareMainSideTextPanels();
         createViewCursorsForMode('main');
         setTimeout(async () => {
@@ -6325,14 +5629,14 @@ _.set('stat_data.系统.模式', '${mode}')
         const cursorDown = document.createElement('img');
         cursorDown.className = 'hstatus-cursor-down';
         cursorDown.id = 'hstatus-cursor-down';
-        cursorDown.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorDown.src = uiUrl('cursor');
         cursorDown.alt = '指向箭头（下方）';
 
         // 创建向右箭头（右侧正中，逆时针旋转90度）
         const cursorRightHead = document.createElement('img');
         cursorRightHead.className = 'hstatus-cursor-right';
         cursorRightHead.id = 'hstatus-cursor-right-head';
-        cursorRightHead.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorRightHead.src = uiUrl('cursor');
         cursorRightHead.alt = '指向箭头（右侧）';
 
         // 触摸滑动处理（手机端）
@@ -6390,21 +5694,21 @@ _.set('stat_data.系统.模式', '${mode}')
         const cursorUp = document.createElement('img');
         cursorUp.className = 'hstatus-cursor-up';
         cursorUp.id = 'hstatus-cursor-up';
-        cursorUp.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorUp.src = uiUrl('cursor');
         cursorUp.alt = '指向箭头（向上）';
 
         // 创建向下箭头（下方正中）- 进入纯爱足部界面
         const cursorDownChest = document.createElement('img');
         cursorDownChest.className = 'hstatus-cursor-down';
         cursorDownChest.id = 'hstatus-cursor-down-chest';
-        cursorDownChest.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorDownChest.src = uiUrl('cursor');
         cursorDownChest.alt = '指向箭头（下方）';
 
         // 创建向右箭头（右侧正中，逆时针旋转90度）
         const cursorRightSub = document.createElement('img');
         cursorRightSub.className = 'hstatus-cursor-right';
         cursorRightSub.id = 'hstatus-cursor-right-sub';
-        cursorRightSub.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorRightSub.src = uiUrl('cursor');
         cursorRightSub.alt = '指向箭头（右侧）';
 
         // 触摸滑动处理（手机端）
@@ -6486,13 +5790,13 @@ _.set('stat_data.系统.模式', '${mode}')
         const cursorUp = document.createElement('img');
         cursorUp.className = 'hstatus-cursor-up';
         cursorUp.id = 'hstatus-cursor-up-crotch';
-        cursorUp.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorUp.src = uiUrl('cursor');
         cursorUp.alt = '指向箭头（向上）';
 
         const cursorRightCrotch = document.createElement('img');
         cursorRightCrotch.className = 'hstatus-cursor-right';
         cursorRightCrotch.id = 'hstatus-cursor-right-crotch';
-        cursorRightCrotch.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorRightCrotch.src = uiUrl('cursor');
         cursorRightCrotch.alt = '指向箭头（右侧）';
 
         let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
@@ -6544,14 +5848,14 @@ _.set('stat_data.系统.模式', '${mode}')
         const cursorUp = document.createElement('img');
         cursorUp.className = 'hstatus-cursor-up';
         cursorUp.id = 'hstatus-cursor-up';
-        cursorUp.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorUp.src = uiUrl('cursor');
         cursorUp.alt = '指向箭头（向上）';
 
         // 创建向右箭头（右侧正中，逆时针旋转90度）
         const cursorRightFoot = document.createElement('img');
         cursorRightFoot.className = 'hstatus-cursor-right';
         cursorRightFoot.id = 'hstatus-cursor-right-foot';
-        cursorRightFoot.src = 'https://files.catbox.moe/dgdqmk.png';
+        cursorRightFoot.src = uiUrl('cursor');
         cursorRightFoot.alt = '指向箭头（右侧）';
 
         // 触摸滑动处理（手机端）
@@ -6568,7 +5872,7 @@ _.set('stat_data.系统.模式', '${mode}')
           setTimeout(() => {
             removeAllCursors();
             hstatusViewMode = 'chest';
-            console.log('[Hstatus] 进入纯爱胸部界面');
+            logWithTag('Hstatus', '进入纯爱胸部界面');
             createViewCursorsForMode('chest');
           }, 500);
         });
@@ -6591,7 +5895,7 @@ _.set('stat_data.系统.模式', '${mode}')
             setTimeout(() => {
               removeAllCursors();
               hstatusViewMode = 'chest';
-              console.log('[Hstatus] 进入纯爱胸部界面（滑动）');
+              logWithTag('Hstatus', '进入纯爱胸部界面（滑动）');
               createViewCursorsForMode('chest');
             }, 500);
           }
@@ -6654,7 +5958,7 @@ _.set('stat_data.系统.模式', '${mode}')
         fadeInText();
       }, 10);
 
-      console.log('[Hstatus] Hstatus表界面已打开');
+      logWithTag('Hstatus', 'Hstatus表界面已打开');
     }
 
     // 关闭Hstatus表界面
@@ -6693,26 +5997,14 @@ _.set('stat_data.系统.模式', '${mode}')
             overlay.parentNode.removeChild(overlay);
           }
         }, 300); // 与CSS动画时间一致
-        console.log('[Hstatus] Hstatus表界面已关闭');
+        logWithTag('Hstatus', 'Hstatus表界面已关闭');
       }
     }
 
     // 根据精液状态变量更新 Hstatus 精液叠加层（阈值 5 和 30：<5 不显示，5-30 Little，>30 Much；层级低于服装，不参与服装遮罩）
-    const CUM_URLS = {
-      chestLittle: 'https://files.catbox.moe/htr1dh.png',
-      chestMuch: 'https://files.catbox.moe/sct15g.png',
-      bellyLittle: 'https://files.catbox.moe/1qk8mk.png',
-      bellyMuch: 'https://files.catbox.moe/iznrta.png',
-      legLittle: 'https://files.catbox.moe/j8g4g4.png',
-      legMuch: 'https://files.catbox.moe/ay6ljp.png'
-    };
-    const WOMB_POPUP_URLS = [
-      'https://files.catbox.moe/q6u20q.png',  // 0: 0-5
-      'https://files.catbox.moe/9nv2qy.png',  // 1: 5-25
-      'https://files.catbox.moe/d166xy.png',  // 2: 25-50
-      'https://files.catbox.moe/8blqgc.png',  // 3: 50-75
-      'https://files.catbox.moe/p9r91i.png'   // 4: 75+
-    ];
+    // 精液叠加层 / 子宫弹窗（数据来自 resource/game-assets.js）
+    const CUM_URLS = (window.妹神官_gameAssets && window.妹神官_gameAssets.cumUrls) || {};
+    const WOMB_POPUP_URLS = (window.妹神官_gameAssets && window.妹神官_gameAssets.wombPopupUrls) || [];
     function updateHstatusCumOverlays(varsSnapshot) {
       const chestEl = document.getElementById('hstatus-sprite-cum-chest');
       const bellyEl = document.getElementById('hstatus-sprite-cum-belly');
@@ -6876,7 +6168,7 @@ _.set('stat_data.系统.模式', '${mode}')
       const spriteClothes = document.getElementById('hstatus-sprite-clothes');
 
       if (!spriteBody || !spriteClothes) {
-        console.warn('[Hstatus] 立绘元素不存在');
+        warnWithTag('Hstatus', '立绘元素不存在');
         return;
       }
 
@@ -6885,8 +6177,8 @@ _.set('stat_data.系统.模式', '${mode}')
         const lastLayer = getLastDialogueLayer();
         let varsSnapshot = null;
 
-        if (lastLayer && lastLayer.varsSnapshot) {
-          varsSnapshot = lastLayer.varsSnapshot;
+        if (lastLayer && getLayerVars(lastLayer)) {
+          varsSnapshot = getLayerVars(lastLayer);
         } else if (ERA.currentVars) {
           varsSnapshot = ERA.currentVars;
         } else {
@@ -6906,12 +6198,12 @@ _.set('stat_data.系统.模式', '${mode}')
         const stageNum = parseInt(stage, 10) || 1;
         const outfitValue = outfit || '常服';
 
-        console.log('[Hstatus] 更新立绘 - 阶段:', stageNum, '服装:', outfitValue);
+        logWithTag('Hstatus', '更新立绘 - 阶段:', stageNum, '服装:', outfitValue);
 
         updateHstatusSpriteByStage(spriteBody, spriteClothes, stageNum, outfitValue);
         updateHstatusCumOverlays(varsSnapshot);
       } catch (error) {
-        console.warn('[Hstatus] 获取立绘信息失败，使用默认立绘:', error);
+        warnWithTag('Hstatus', '获取立绘信息失败，使用默认立绘:', error);
         // 使用默认阶段1的图片
         updateHstatusSpriteByStage(spriteBody, spriteClothes, 1, false);
         updateHstatusCumOverlays(ERA.currentVars);
@@ -6919,150 +6211,21 @@ _.set('stat_data.系统.模式', '${mode}')
     }
 
     // 根据阶段和服装更新立绘图片（服装与堕落阶段分离）
+    // 根据阶段和服装更新立绘图片（数据来自 resource/game-assets.js 穿搭矩阵）
     function updateHstatusSpriteByStage(bodyElement, clothesElement, stageNum, outfitValue) {
-      let bodyUrl = '';
-      let clothesUrl = '';
+      const ga = window.妹神官_gameAssets;
+      const outfit = (ga && typeof ga.getHstatusOutfit === 'function')
+        ? ga.getHstatusOutfit(outfitValue, stageNum)
+        : { body: '', clothes: '' };
+      const bodyUrl = outfit.body || '';
+      const clothesUrl = outfit.clothes || '';
 
-      // 根据服装值选择对应的立绘
-      if (outfitValue === '女仆装') {
-        // 女仆装模式：根据阶段选择
-        if (stageNum === 1 || stageNum === 2) {
-          bodyUrl = 'https://files.catbox.moe/hbwlvs.png';
-          clothesUrl = 'https://files.catbox.moe/42fqqz.png';
-        } else if (stageNum === 3 || stageNum === 4) {
-          bodyUrl = 'https://files.catbox.moe/2nisdk.png';
-          clothesUrl = 'https://files.catbox.moe/y8qk8b.png';
-        } else {
-          bodyUrl = 'https://files.catbox.moe/hbwlvs.png';
-          clothesUrl = 'https://files.catbox.moe/42fqqz.png';
-        }
-      } else if (outfitValue === '常服') {
-        // 常服：根据阶段选择Body，Clothes使用P1
-        switch (stageNum) {
-          case 1:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/8dussi.png';
-            break;
-          case 2:
-            bodyUrl = 'https://files.catbox.moe/330l0g.png';
-            clothesUrl = 'https://files.catbox.moe/8dussi.png';
-            break;
-          case 3:
-            bodyUrl = 'https://files.catbox.moe/l9h2lz.png';
-            clothesUrl = 'https://files.catbox.moe/8dussi.png';
-            break;
-          case 4:
-            bodyUrl = 'https://files.catbox.moe/6qamux.png';
-            clothesUrl = 'https://files.catbox.moe/8dussi.png';
-            break;
-          default:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/8dussi.png';
-        }
-      } else if (outfitValue === '暴露常服') {
-        // 暴露常服：根据阶段选择Body，Clothes使用P2
-        switch (stageNum) {
-          case 1:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/ft5fz7.png';
-            break;
-          case 2:
-            bodyUrl = 'https://files.catbox.moe/330l0g.png';
-            clothesUrl = 'https://files.catbox.moe/ft5fz7.png';
-            break;
-          case 3:
-            bodyUrl = 'https://files.catbox.moe/l9h2lz.png';
-            clothesUrl = 'https://files.catbox.moe/ft5fz7.png';
-            break;
-          case 4:
-            bodyUrl = 'https://files.catbox.moe/6qamux.png';
-            clothesUrl = 'https://files.catbox.moe/ft5fz7.png';
-            break;
-          default:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/ft5fz7.png';
-        }
-      } else if (outfitValue === '魅魔常服') {
-        // 魅魔常服：根据阶段选择Body，Clothes使用P3
-        switch (stageNum) {
-          case 1:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/4uv97f.png';
-            break;
-          case 2:
-            bodyUrl = 'https://files.catbox.moe/330l0g.png';
-            clothesUrl = 'https://files.catbox.moe/4uv97f.png';
-            break;
-          case 3:
-            bodyUrl = 'https://files.catbox.moe/l9h2lz.png';
-            clothesUrl = 'https://files.catbox.moe/4uv97f.png';
-            break;
-          case 4:
-            bodyUrl = 'https://files.catbox.moe/6qamux.png';
-            clothesUrl = 'https://files.catbox.moe/4uv97f.png';
-            break;
-          default:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/4uv97f.png';
-        }
-      } else if (outfitValue === '魔王服') {
-        // 魔王服：根据阶段选择Body，Clothes使用P4
-        switch (stageNum) {
-          case 1:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/goz9h9.png';
-            break;
-          case 2:
-            bodyUrl = 'https://files.catbox.moe/330l0g.png';
-            clothesUrl = 'https://files.catbox.moe/goz9h9.png';
-            break;
-          case 3:
-            bodyUrl = 'https://files.catbox.moe/l9h2lz.png';
-            clothesUrl = 'https://files.catbox.moe/goz9h9.png';
-            break;
-          case 4:
-            bodyUrl = 'https://files.catbox.moe/6qamux.png';
-            clothesUrl = 'https://files.catbox.moe/goz9h9.png';
-            break;
-          default:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/goz9h9.png';
-        }
-      } else if (outfitValue === '浴巾') {
-        // 浴巾：根据阶段选择Body，Clothes使用Bath
-        switch (stageNum) {
-          case 1:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/z5zas0.png';
-            break;
-          case 2:
-            bodyUrl = 'https://files.catbox.moe/330l0g.png';
-            clothesUrl = 'https://files.catbox.moe/z5zas0.png';
-            break;
-          case 3:
-            bodyUrl = 'https://files.catbox.moe/l9h2lz.png';
-            clothesUrl = 'https://files.catbox.moe/z5zas0.png';
-            break;
-          case 4:
-            bodyUrl = 'https://files.catbox.moe/6qamux.png';
-            clothesUrl = 'https://files.catbox.moe/z5zas0.png';
-            break;
-          default:
-            bodyUrl = 'https://files.catbox.moe/9og146.png';
-            clothesUrl = 'https://files.catbox.moe/z5zas0.png';
-        }
-      } else {
-        // 默认使用常服
-        bodyUrl = 'https://files.catbox.moe/9og146.png';
-        clothesUrl = 'https://files.catbox.moe/8dussi.png';
-      }
+      logWithTag('Hstatus', '设置立绘 - Body:', bodyUrl, 'Clothes:', clothesUrl, '服装:', outfitValue);
 
-      console.log('[Hstatus] 设置立绘 - Body:', bodyUrl, 'Clothes:', clothesUrl, '服装:', outfitValue);
-
-      // 设置图片src
       bodyElement.src = bodyUrl;
       clothesElement.src = clothesUrl;
     }
+
 
     // 更新Hstatus文字内容
     async function updateHstatusText() {
@@ -7071,7 +6234,7 @@ _.set('stat_data.系统.模式', '${mode}')
       const leftPanel = document.getElementById('hstatus-text-panel-left');
 
       if (!leftContent || !rightContent) {
-        console.warn('[Hstatus] 文字面板元素不存在');
+        warnWithTag('Hstatus', '文字面板元素不存在');
         return;
       }
 
@@ -7083,8 +6246,8 @@ _.set('stat_data.系统.模式', '${mode}')
         const lastLayer = getLastDialogueLayer();
         let varsSnapshot = null;
 
-        if (lastLayer && lastLayer.varsSnapshot) {
-          varsSnapshot = lastLayer.varsSnapshot;
+        if (lastLayer && getLayerVars(lastLayer)) {
+          varsSnapshot = getLayerVars(lastLayer);
         } else if (ERA.currentVars) {
           varsSnapshot = ERA.currentVars;
         }
@@ -7564,9 +6727,9 @@ _.set('stat_data.系统.模式', '${mode}')
           enableHstatusLeftArcLayout(leftContent, leftPanel);
         }
 
-        console.log('[Hstatus] 文字内容已更新');
+        logWithTag('Hstatus', '文字内容已更新');
       } catch (error) {
-        console.warn('[Hstatus] 获取文字数据失败，使用默认值:', error);
+        warnWithTag('Hstatus', '获取文字数据失败，使用默认值:', error);
         // 使用默认值
         if (leftContent) {
           leftContent.innerHTML = '';
@@ -7628,7 +6791,7 @@ _.set('stat_data.系统.模式', '${mode}')
     async function updateCorruptionValueBar() {
       const corruptionValueBar = document.getElementById('corruption-value-bar');
       if (!corruptionValueBar) {
-        console.warn('[菜单] 堕落值变量条元素不存在');
+        warnWithTag('菜单', '堕落值变量条元素不存在');
         return;
       }
 
@@ -7640,20 +6803,20 @@ _.set('stat_data.系统.模式', '${mode}')
         const lastLayer = getLastDialogueLayer();
         let varsSnapshot = null;
 
-        if (lastLayer && lastLayer.varsSnapshot) {
+        if (lastLayer && getLayerVars(lastLayer)) {
           // 优先使用最后对话层的快照（它应该就是 ERA.currentVars）
-          varsSnapshot = lastLayer.varsSnapshot;
-          console.log('[菜单] 使用最后对话层快照（当前运行时值）获取堕落值');
+          varsSnapshot = getLayerVars(lastLayer);
+          logWithTag('菜单', '使用最后对话层快照（当前运行时值）获取堕落值');
         } else if (ERA.currentVars) {
           // 如果没有对话层，使用 ERA.currentVars
           varsSnapshot = ERA.currentVars;
-          console.log('[菜单] 使用 ERA.currentVars（当前运行时值）获取堕落值');
+          logWithTag('菜单', '使用 ERA.currentVars（当前运行时值）获取堕落值');
         }
 
         if (varsSnapshot) {
           currentCorruption = getNestedValue(varsSnapshot, '托莉娜.基础.堕落值');
           if (currentCorruption !== undefined && currentCorruption !== null) {
-            console.log('[菜单] 从当前运行时值获取堕落值:', currentCorruption);
+            logWithTag('菜单', '从当前运行时值获取堕落值:', currentCorruption);
           }
         }
 
@@ -7661,7 +6824,7 @@ _.set('stat_data.系统.模式', '${mode}')
         if (currentCorruption === undefined || currentCorruption === null) {
           currentCorruption = await getvar('stat_data.托莉娜.基础.堕落值');
           if (currentCorruption !== undefined && currentCorruption !== null) {
-            console.log('[菜单] 从 getvar 获取堕落值:', currentCorruption);
+            logWithTag('菜单', '从 getvar 获取堕落值:', currentCorruption);
           }
         }
 
@@ -7673,7 +6836,7 @@ _.set('stat_data.系统.模式', '${mode}')
         const percentage = maxCorruption > 0 ? (currentCorruption / maxCorruption) * 100 : 0;
         const clampedPercentage = Math.max(0, Math.min(100, percentage)); // 限制在0-100之间
 
-        console.log('[菜单] 堕落值:', currentCorruption, '/', maxCorruption, '=', clampedPercentage + '%');
+        logWithTag('菜单', '堕落值:', currentCorruption, '/', maxCorruption, '=', clampedPercentage + '%');
 
         // 使用clip-path来控制显示百分比
         // clip-path: inset(0 right 0 0) 表示从右边裁剪，显示左边的百分比
@@ -7681,7 +6844,7 @@ _.set('stat_data.系统.模式', '${mode}')
         corruptionValueBar.style.clipPath = `inset(0 ${rightClip}% 0 0)`;
 
       } catch (error) {
-        console.warn('[菜单] 获取堕落值失败:', error);
+        warnWithTag('菜单', '获取堕落值失败:', error);
         // 默认显示0%
         corruptionValueBar.style.clipPath = 'inset(0 100% 0 0)';
       }
@@ -7691,7 +6854,7 @@ _.set('stat_data.系统.模式', '${mode}')
     async function updateLustValueBar() {
       const lustValueBar = document.getElementById('lust-value-bar');
       if (!lustValueBar) {
-        console.warn('[菜单] 性欲值变量条元素不存在');
+        warnWithTag('菜单', '性欲值变量条元素不存在');
         return;
       }
 
@@ -7703,20 +6866,20 @@ _.set('stat_data.系统.模式', '${mode}')
         const lastLayer = getLastDialogueLayer();
         let varsSnapshot = null;
 
-        if (lastLayer && lastLayer.varsSnapshot) {
+        if (lastLayer && getLayerVars(lastLayer)) {
           // 优先使用最后对话层的快照（它应该就是 ERA.currentVars）
-          varsSnapshot = lastLayer.varsSnapshot;
-          console.log('[菜单] 使用最后对话层快照（当前运行时值）获取性欲值');
+          varsSnapshot = getLayerVars(lastLayer);
+          logWithTag('菜单', '使用最后对话层快照（当前运行时值）获取性欲值');
         } else if (ERA.currentVars) {
           // 如果没有对话层，使用 ERA.currentVars
           varsSnapshot = ERA.currentVars;
-          console.log('[菜单] 使用 ERA.currentVars（当前运行时值）获取性欲值');
+          logWithTag('菜单', '使用 ERA.currentVars（当前运行时值）获取性欲值');
         }
 
         if (varsSnapshot) {
           currentLust = getNestedValue(varsSnapshot, '托莉娜.基础.性欲值');
           if (currentLust !== undefined && currentLust !== null) {
-            console.log('[菜单] 从当前运行时值获取性欲值:', currentLust);
+            logWithTag('菜单', '从当前运行时值获取性欲值:', currentLust);
           }
         }
 
@@ -7724,7 +6887,7 @@ _.set('stat_data.系统.模式', '${mode}')
         if (currentLust === undefined || currentLust === null) {
           currentLust = await getvar('stat_data.托莉娜.基础.性欲值');
           if (currentLust !== undefined && currentLust !== null) {
-            console.log('[菜单] 从 getvar 获取性欲值:', currentLust);
+            logWithTag('菜单', '从 getvar 获取性欲值:', currentLust);
           }
         }
 
@@ -7736,7 +6899,7 @@ _.set('stat_data.系统.模式', '${mode}')
         const percentage = maxLust > 0 ? (currentLust / maxLust) * 100 : 0;
         const clampedPercentage = Math.max(0, Math.min(100, percentage)); // 限制在0-100之间
 
-        console.log('[菜单] 性欲值:', currentLust, '/', maxLust, '=', clampedPercentage + '%');
+        logWithTag('菜单', '性欲值:', currentLust, '/', maxLust, '=', clampedPercentage + '%');
 
         // 使用clip-path来控制显示百分比
         // clip-path: inset(0 right 0 0) 表示从右边裁剪，显示左边的百分比
@@ -7744,29 +6907,18 @@ _.set('stat_data.系统.模式', '${mode}')
         lustValueBar.style.clipPath = `inset(0 ${rightClip}% 0 0)`;
 
       } catch (error) {
-        console.warn('[菜单] 获取性欲值失败:', error);
+        warnWithTag('菜单', '获取性欲值失败:', error);
         // 默认显示0%
         lustValueBar.style.clipPath = 'inset(0 100% 0 0)';
       }
     }
 
-    // 根据阶段更新立绘图片
+    // 根据阶段更新立绘图片（数据来自 resource/game-assets.js）
     function updateTorinaSpriteByStage(spriteElement, stageNum) {
-      let spriteUrl = '';
-      if (stageNum === 1) {
-        spriteUrl = 'https://files.catbox.moe/xrfvzg.png';
-      } else if (stageNum === 2) {
-        spriteUrl = 'https://files.catbox.moe/md0p61.png';
-      } else if (stageNum === 3) {
-        spriteUrl = 'https://files.catbox.moe/5utwfz.png';
-      } else if (stageNum === 4) {
-        spriteUrl = 'https://files.catbox.moe/4ro2io.png';
-      } else {
-        // 默认使用阶段1
-        spriteUrl = 'https://files.catbox.moe/xrfvzg.png';
-      }
+      const ga = window.妹神官_gameAssets;
+      const spriteUrl = (ga && typeof ga.getMenuSprite === 'function') ? (ga.getMenuSprite(stageNum) || '') : '';
 
-      console.log('[菜单] 设置托莉娜立绘:', spriteUrl, '阶段:', stageNum);
+      logWithTag('菜单', '设置托莉娜立绘:', spriteUrl, '阶段:', stageNum);
       spriteElement.style.backgroundImage = `url('${resolveAssetUrl(spriteUrl)}')`;
       spriteElement.style.display = 'block'; // 确保元素可见
 
@@ -7776,17 +6928,17 @@ _.set('stat_data.系统.模式', '${mode}')
         // top: 20px 使顶部向下移动20px，bottom: -20px 使底部仍然贴底
         spriteElement.style.top = '40px';
         spriteElement.style.bottom = '-40px'; // 负值使底部仍然贴底
-        console.log('[菜单] 阶段', stageNum, '：立绘向下移动40px（基础值）');
+        logWithTag('菜单', '阶段', stageNum, '：立绘向下移动40px（基础值）');
       } else {
         // 阶段1或2时，恢复原始位置
         spriteElement.style.top = '0';
         spriteElement.style.bottom = '0';
-        console.log('[菜单] 阶段', stageNum, '：立绘恢复原始位置');
+        logWithTag('菜单', '阶段', stageNum, '：立绘恢复原始位置');
       }
 
       // 验证背景图片是否设置成功
       const computedStyle = window.getComputedStyle(spriteElement);
-      console.log('[菜单] 立绘元素样式:', {
+      logWithTag('菜单', '立绘元素样式:', {
         backgroundImage: computedStyle.backgroundImage,
         width: computedStyle.width,
         height: computedStyle.height,
@@ -7830,8 +6982,8 @@ _.set('stat_data.系统.模式', '${mode}')
       const menuContainer = document.getElementById('game-menu-container');
       if (!menuContainer) return;
 
-      const menuImageUrl = 'https://files.catbox.moe/ogteua.png';
-      const borderImageUrl = 'https://files.catbox.moe/gdyovq.png';
+      const menuImageUrl = uiUrl('menuBg');
+      const borderImageUrl = uiUrl('menuBorder');
       const img = new Image();
       const borderImg = new Image();
 
@@ -7878,7 +7030,7 @@ _.set('stat_data.系统.模式', '${mode}')
           }
         };
         borderImg.onerror = function() {
-          console.warn('[MENU] 前景边框图片加载失败');
+          warnWithTag('MENU', '前景边框图片加载失败');
         };
         borderImg.src = borderImageUrl;
 
@@ -8006,7 +7158,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const gameFullscreenBtn = document.createElement('img');
           gameFullscreenBtn.className = 'game-fullscreen-btn';
           gameFullscreenBtn.id = 'game-fullscreen-btn';
-          gameFullscreenBtn.src = 'https://files.catbox.moe/wj2c68.png';
+          gameFullscreenBtn.src = uiUrl('fullscreenBtn');
           gameFullscreenBtn.alt = '全屏';
           gameFullscreenBtn.title = '全屏';
 
@@ -8014,7 +7166,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const gameMenuBtn = document.createElement('img');
           gameMenuBtn.className = 'game-menu-btn';
           gameMenuBtn.id = 'game-menu-btn';
-          gameMenuBtn.src = 'https://files.catbox.moe/fcyjir.png';
+          gameMenuBtn.src = uiUrl('menuBtn');
           gameMenuBtn.alt = '菜单';
           gameMenuBtn.title = '菜单';
 
@@ -8030,7 +7182,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const gameMenuExitBtn = document.createElement('img');
           gameMenuExitBtn.className = 'game-menu-exit-btn';
           gameMenuExitBtn.id = 'game-menu-exit-btn';
-          gameMenuExitBtn.src = 'https://files.catbox.moe/hkgfil.png';
+          gameMenuExitBtn.src = uiUrl('menuExitBtn');
           gameMenuExitBtn.alt = '退出';
           gameMenuExitBtn.title = '退出';
 
@@ -8043,7 +7195,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const gameMenuSettingsUI = document.createElement('img');
           gameMenuSettingsUI.className = 'game-menu-settings-ui';
           gameMenuSettingsUI.id = 'game-menu-settings-ui';
-          gameMenuSettingsUI.src = 'https://files.catbox.moe/dykagy.png';
+          gameMenuSettingsUI.src = uiUrl('menuSettingsUI');
           gameMenuSettingsUI.alt = '设置';
           gameMenuSettingsUI.title = '设置';
 
@@ -8051,14 +7203,14 @@ _.set('stat_data.系统.模式', '${mode}')
           const settingsLabel = document.createElement('img');
           settingsLabel.className = 'settings-label';
           settingsLabel.id = 'settings-label';
-          settingsLabel.src = 'https://files.catbox.moe/3fc4yw.png';
+          settingsLabel.src = uiUrl('settingsLabel');
           settingsLabel.alt = '设定';
 
           // 创建Hstatus UI（在设置按钮左边）
           const gameMenuHstatusUI = document.createElement('img');
           gameMenuHstatusUI.className = 'game-menu-hstatus-ui';
           gameMenuHstatusUI.id = 'game-menu-hstatus-ui';
-          gameMenuHstatusUI.src = 'https://files.catbox.moe/yayh3o.png';
+          gameMenuHstatusUI.src = uiUrl('menuHstatusUI');
           gameMenuHstatusUI.alt = 'Hstatus';
           gameMenuHstatusUI.title = 'Hstatus';
 
@@ -8066,14 +7218,14 @@ _.set('stat_data.系统.模式', '${mode}')
           const hstatusLabel = document.createElement('img');
           hstatusLabel.className = 'hstatus-label';
           hstatusLabel.id = 'hstatus-label';
-          hstatusLabel.src = 'https://files.catbox.moe/zj7251.png'; // Hstatus标签图片
+          hstatusLabel.src = uiUrl('hstatusLabel'); // Hstatus标签图片
           hstatusLabel.alt = 'Hstatus';
 
           // 创建地图 UI（在 Hstatus 按钮下方）
           const gameMenuMapUI = document.createElement('img');
           gameMenuMapUI.className = 'game-menu-map-ui';
           gameMenuMapUI.id = 'game-menu-map-ui';
-          gameMenuMapUI.src = 'https://files.catbox.moe/n3kdfi.png';
+          gameMenuMapUI.src = uiUrl('menuMapUI');
           gameMenuMapUI.alt = '地图';
           gameMenuMapUI.title = '地图';
 
@@ -8081,14 +7233,14 @@ _.set('stat_data.系统.模式', '${mode}')
           const mapLabel = document.createElement('img');
           mapLabel.className = 'map-label';
           mapLabel.id = 'map-label';
-          mapLabel.src = 'https://files.catbox.moe/vpyzz7.png';
+          mapLabel.src = uiUrl('mapLabel');
           mapLabel.alt = '地图';
 
           // 创建历史消息UI
           const gameMenuHistoryUI = document.createElement('img');
           gameMenuHistoryUI.className = 'game-menu-history-ui';
           gameMenuHistoryUI.id = 'game-menu-history-ui';
-          gameMenuHistoryUI.src = 'https://files.catbox.moe/v0cbzh.png';
+          gameMenuHistoryUI.src = uiUrl('menuHistoryUI');
           gameMenuHistoryUI.alt = '历史消息';
           gameMenuHistoryUI.title = '历史消息';
 
@@ -8096,14 +7248,14 @@ _.set('stat_data.系统.模式', '${mode}')
           const historyLabel = document.createElement('img');
           historyLabel.className = 'history-label';
           historyLabel.id = 'history-label';
-          historyLabel.src = 'https://files.catbox.moe/y9656v.png'; // 历史消息标签图片
+          historyLabel.src = uiUrl('historyLabel'); // 历史消息标签图片
           historyLabel.alt = '历史消息';
 
           // 创建保存UI
           const gameMenuSaveUI = document.createElement('img');
           gameMenuSaveUI.className = 'game-menu-save-ui';
           gameMenuSaveUI.id = 'game-menu-save-ui';
-          gameMenuSaveUI.src = 'https://files.catbox.moe/l143y2.png';
+          gameMenuSaveUI.src = uiUrl('menuSaveUI');
           gameMenuSaveUI.alt = '保存';
           gameMenuSaveUI.title = '保存';
 
@@ -8111,7 +7263,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const saveLabel = document.createElement('img');
           saveLabel.className = 'save-label';
           saveLabel.id = 'save-label';
-          saveLabel.src = 'https://files.catbox.moe/aiw7z8.png';
+          saveLabel.src = uiUrl('saveLabel');
           saveLabel.alt = '保存';
 
           // 设置UI点击事件：打开设置界面（和开始界面一样）
@@ -8274,7 +7426,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const corruptionBar = document.createElement('img');
           corruptionBar.className = 'corruption-status-bar';
           corruptionBar.id = 'corruption-status-bar';
-          corruptionBar.src = 'https://files.catbox.moe/fc42vd.png';
+          corruptionBar.src = uiUrl('corruptionBar');
           corruptionBar.alt = '堕落值';
           corruptionBar.onload = function() {
             // 保持原始图像像素尺寸，不允许变化
@@ -8308,7 +7460,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const lustBar = document.createElement('img');
           lustBar.className = 'lust-status-bar';
           lustBar.id = 'lust-status-bar';
-          lustBar.src = 'https://files.catbox.moe/g5wizu.png';
+          lustBar.src = uiUrl('lustBar');
           lustBar.alt = '性欲值';
           lustBar.onload = function() {
             // 保持原始图像像素尺寸，不允许变化
@@ -8374,7 +7526,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const timeBack = document.createElement('img');
           timeBack.className = 'time-back';
           timeBack.id = 'time-back';
-          timeBack.src = 'https://files.catbox.moe/buwqmc.png';
+          timeBack.src = uiUrl('timeBack');
           timeBack.alt = 'TimeBack';
 
           const timeImage = document.createElement('img');
@@ -8389,7 +7541,7 @@ _.set('stat_data.系统.模式', '${mode}')
           const leftCover = document.createElement('img');
           leftCover.className = 'left-cover';
           leftCover.id = 'left-cover';
-          leftCover.src = 'https://files.catbox.moe/t34ltk.png';
+          leftCover.src = uiUrl('leftCover');
           leftCover.alt = 'LeftCover';
 
           // 创建体力进度条容器
@@ -8481,37 +7633,19 @@ _.set('stat_data.系统.模式', '${mode}')
             }, 600); // 等待淡入动画完成后再显示对话
           }
 
-          // 初始化时间+天气系统
+          // 初始化时间+天气系统（后续由变量刷新事件 refreshUIByVariablePath 驱动，无需轮询）
           try {
             await updateTimeWeatherSystem();
           } catch (e) {
             errorWithTag('TIME', '初始化时间天气系统失败', e);
           }
 
-          // 定期更新时间+天气系统（每1秒检查一次）
-          setInterval(async () => {
-            try {
-              await updateTimeWeatherSystem();
-            } catch (e) {
-              errorWithTag('TIME', '定期更新时间天气系统失败', e);
-            }
-          }, 1000);
-
-          // 初始化体力进度条
+          // 初始化体力进度条（同上，事件驱动）
           try {
             await updateStaminaBar();
           } catch (e) {
             errorWithTag('STAMINA', '初始化体力条失败', e);
           }
-
-          // 定期更新体力进度条（每1秒检查一次）
-          setInterval(async () => {
-            try {
-              await updateStaminaBar();
-            } catch (e) {
-              errorWithTag('STAMINA', '定期更新体力条失败', e);
-            }
-          }, 1000);
 
           // 监听窗口大小变化，更新偏移量
           window.addEventListener('resize', () => {
@@ -8624,9 +7758,15 @@ _.set('stat_data.系统.模式', '${mode}')
             }
           }
 
-          if (lastLayer && lastLayer.varsSnapshot) {
+          // 从存档原始层序列重建最后一层完整树（基准 + 逐层 delta，兼容旧整树档）
+          let accTree = JSON.parse(JSON.stringify(ERA.defaultVars));
+          for (const l of dialogueLayers) {
+            if (l.varsDelta && typeof l.varsDelta === 'object') deepMerge(accTree, l.varsDelta);
+            else if (l.varsSnapshot && typeof l.varsSnapshot === 'object') accTree = JSON.parse(JSON.stringify(l.varsSnapshot));
+          }
+          if (lastLayer) {
             // 获取堕落阶段
-            const corruptionStage = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.堕落阶段');
+            const corruptionStage = getNestedValue(accTree, '托莉娜.基础.堕落阶段');
             const parsed = parseInt(corruptionStage, 10);
             if (parsed >= 1 && parsed <= 4) stageNum = parsed;
 
@@ -8634,15 +7774,15 @@ _.set('stat_data.系统.模式', '${mode}')
             if (stageNum === 3 || stageNum === 4) {
               const loadingLogo = document.querySelector('.loading-logo');
               if (loadingLogo) {
-                loadingLogo.src = 'https://files.catbox.moe/39yn6v.png';
-                console.log('[LOADING] 根据自动存档的堕落阶段，已更新加载图片');
+                loadingLogo.src = uiUrl('loadingLogo');
+                logWithTag('LOADING', '根据自动存档的堕落阶段，已更新加载图片');
               }
             }
           }
         }
       } catch (error) {
         // 如果检查失败，不影响正常加载流程
-        console.warn('[LOADING] 检查自动存档失败，使用默认加载图片:', error);
+        warnWithTag('LOADING', '检查自动存档失败，使用默认加载图片:', error);
       }
       applyTitleBgmByStage(stageNum);
       return stageNum;
@@ -8672,7 +7812,7 @@ _.set('stat_data.系统.模式', '${mode}')
       hstatusPendingOpenState = { layer: 'inner', view: 'head' };
       openHstatusTable();
       window._debugHstatusInnerHead = false;
-      console.log('[DEBUG] 已打开里 Hstatus 头部界面（正常模式）');
+      logWithTag('DEBUG', '已打开里 Hstatus 头部界面（正常模式）');
     }
 
     async function startRivalMaleSpriteDebug() {
@@ -8682,7 +7822,7 @@ _.set('stat_data.系统.模式', '${mode}')
       await new Promise(resolve => setTimeout(resolve, 800));
       await updateMainText(RIVAL_MALE_DEBUG_TEXT);
       window._debugRivalMaleSprites = false;
-      console.log('[DEBUG] 间男立绘调试已启动：点击对话区右侧进入下一句，左侧回退');
+      logWithTag('DEBUG', '间男立绘调试已启动：点击对话区右侧进入下一句，左侧回退');
     }
 
     function hideBootScreens() {
@@ -8709,7 +7849,7 @@ _.set('stat_data.系统.模式', '${mode}')
       }
       if (DEBUG_SKIP_TO_WORLD_MAP) {
         hideBootScreens();
-        console.log('[DEBUG] 跳过资源加载与开始界面');
+        logWithTag('DEBUG', '跳过资源加载与开始界面');
         return;
       }
 
@@ -8719,7 +7859,7 @@ _.set('stat_data.系统.模式', '${mode}')
       if (DEBUG_RIVAL_MALE_SPRITES) {
         try {
           await loadAllAssets();
-          console.log('[DEBUG] 资源加载完成，进入间男立绘调试');
+          logWithTag('DEBUG', '资源加载完成，进入间男立绘调试');
           await startRivalMaleSpriteDebug();
         } catch (err) {
           console.error('[DEBUG] 间男立绘调试启动失败:', err);
@@ -8730,7 +7870,7 @@ _.set('stat_data.系统.模式', '${mode}')
       if (DEBUG_HSTATUS_INNER_HEAD) {
         try {
           await loadAllAssets();
-          console.log('[DEBUG] 资源加载完成，进入里 Hstatus 头部调试');
+          logWithTag('DEBUG', '资源加载完成，进入里 Hstatus 头部调试');
           await startHstatusInnerHeadDebug();
         } catch (err) {
           console.error('[DEBUG] 里 Hstatus 头部调试启动失败:', err);
@@ -8744,7 +7884,7 @@ _.set('stat_data.系统.模式', '${mode}')
       // 先显示加载界面并等待所有资源加载完成（加载条与进度由 loadAllAssets 内部更新，完成后会自动隐藏加载界面）
       try {
         await loadAllAssets();
-        console.log('所有资源加载完成，进入开始界面');
+        logWithTag('DEBUG', '所有资源加载完成，进入开始界面');
         playIntroBgm();
       } catch (err) {
         console.error('资源加载出错:', err);
@@ -8908,15 +8048,30 @@ _.set('stat_data.系统.模式', '${mode}')
     // ============================================
     const errorCache = new Set(); // 错误缓存，防止重复输出
 
+    // ==================== 统一日志门面 ====================
+    // 所有日志经 logWithTag/warnWithTag/errorWithTag 输出，带 [TAG] 前缀与级别。
+    // 可通过 window.妹神官_setLogLevel('silent'|'error'|'warn'|'info'|'debug') 控制输出级别。
+    const LOG_LEVELS = { silent: 0, error: 1, warn: 2, info: 3, debug: 4 };
+    let currentLogLevel = LOG_LEVELS.info; // 默认输出 info 及以上（warn/error）
+
+    function shouldLog(level) {
+      return LOG_LEVELS[level] <= currentLogLevel;
+    }
+
     function logWithTag(tag, message, ...args) {
-      // 静默模式：不输出日志
+      // 'DEBUG' 标签走 debug 通道（默认 info 级别下隐藏，调试时 setLogLevel('debug') 开启）
+      const level = (tag === 'DEBUG') ? 'debug' : 'info';
+      if (!shouldLog(level)) return;
+      console.log(`[${tag}] ${message}`, ...args);
     }
 
     function warnWithTag(tag, message, ...args) {
-      // 静默模式：不输出警告
+      if (!shouldLog('warn')) return;
+      console.warn(`[${tag}] ${message}`, ...args);
     }
 
     function errorWithTag(tag, message, error = null, ...args) {
+      if (!shouldLog('error')) return;
       const errorKey = `${tag}:${message}`;
       if (errorCache.has(errorKey)) {
         return; // 已输出过，不再重复输出
@@ -8932,6 +8087,16 @@ _.set('stat_data.系统.模式', '${mode}')
       }
     }
 
+    // 暴露日志级别控制（便于调试时动态调整）
+    window.妹神官_setLogLevel = function (level) {
+      if (level in LOG_LEVELS) {
+        currentLogLevel = LOG_LEVELS[level];
+        console.log(`[LOG] 日志级别已切换为: ${level}`);
+      } else {
+        console.warn(`[LOG] 未知日志级别: ${level}，可选: ${Object.keys(LOG_LEVELS).join('/')}`);
+      }
+    };
+
     // 清除错误缓存（可选，用于重置错误状态）
     function clearErrorCache() {
       errorCache.clear();
@@ -8942,20 +8107,6 @@ _.set('stat_data.系统.模式', '${mode}')
     let isStreamingActive = false;
 
     // 设置流式消息监听器
-    function setupStreamListener() {
-      if (window.eventOn && typeof window.eventOn === 'function') {
-        window.eventOn('js_stream_token_received_incrementally', (chunk) => {
-          // 如果正在流式传输，累积内容
-          if (isStreamingActive) {
-            currentStreamingContent += chunk;
-          }
-        });
-        logWithTag('INIT', '✅ 流式消息监听器已设置');
-      } else {
-        warnWithTag('INIT', '⚠️ 警告：无法设置流式消息监听器（eventOn不存在）');
-      }
-    }
-
     const APPLY_STORY_HOOKS = false;
 
     /**
@@ -8987,7 +8138,7 @@ _.set('stat_data.系统.模式', '${mode}')
     function warnIfTorinaPovLeakedInMaintext(maintext, otherpov) {
       if (!maintext || otherpov?.trim()) return;
       if (/与此同时|另一边|另一面|【托莉娜视角】|\{\{user\}\}(?:并)?不知情|毫不知情|毫无察觉/.test(maintext)) {
-        console.warn('[MSG] 疑似托莉娜视角写在 maintext 内且未使用 otherpov');
+        warnWithTag('MSG', '疑似托莉娜视角写在 maintext 内且未使用 otherpov');
         if (typeof toastr !== 'undefined') {
           toastr.warning('托莉娜视角可能写在正文中，未分离 otherpov', '', { timeOut: 5000 });
         }
@@ -9047,7 +8198,7 @@ _.set('stat_data.系统.模式', '${mode}')
           if (split) {
             result.maintext = split.maintext;
             result.otherpov = split.otherpov;
-            console.warn('[MSG] 已从 maintext 自动拆分 otherpov（模型未使用标签）');
+            warnWithTag('MSG', '已从 maintext 自动拆分 otherpov（模型未使用标签）');
           }
         }
       }
@@ -9385,8 +8536,8 @@ _.set('stat_data.系统.模式', '${mode}')
 
         // 优先从最后对话层快照读取（当前运行时值就是最后对话层快照）
         const lastLayer = getLastDialogueLayer();
-        if (lastLayer && lastLayer.varsSnapshot) {
-          const snapshotValue = getNestedValue(lastLayer.varsSnapshot, actualPath);
+        if (lastLayer && getLayerVars(lastLayer)) {
+          const snapshotValue = getNestedValue(getLayerVars(lastLayer), actualPath);
           if (snapshotValue !== undefined) {
             return snapshotValue;
           }
@@ -9553,7 +8704,7 @@ _.set('stat_data.系统.模式', '${mode}')
       let sum = 0;
       ABSORB_COUNT_SOURCE_PATHS.forEach(p => { sum += (parseFloat(getNestedValue(snapshot, p)) || 0); });
       setNestedValue(snapshot, '托莉娜.Hstate纯爱.表.总表.从你吸取魔力次数', sum);
-      console.log('[VAR] 自动计算：从你吸取魔力次数 = 口交+足交+接吻+颜射+乳交+性交+肛交+因为其他原因吸取你魔力次数 =', sum);
+      logWithTag('VAR', '自动计算：从你吸取魔力次数 = 口交+足交+接吻+颜射+乳交+性交+肛交+因为其他原因吸取你魔力次数 =', sum);
       return sum;
     }
 
@@ -9570,7 +8721,7 @@ _.set('stat_data.系统.模式', '${mode}')
       let sum = 0;
       ABSORB_TOTAL_SOURCE_PATHS.forEach(p => { sum += (parseFloat(getNestedValue(snapshot, p)) || 0); });
       setNestedValue(snapshot, '托莉娜.Hstate纯爱.表.总表.从你吸取魔力总量', sum);
-      console.log('[VAR] 自动计算：从你吸取魔力总量 = 接吻魔力量+乳交+小穴+屁穴+因为其他原因吸取你魔力 =', sum);
+      logWithTag('VAR', '自动计算：从你吸取魔力总量 = 接吻魔力量+乳交+小穴+屁穴+因为其他原因吸取你魔力 =', sum);
       return sum;
     }
 
@@ -9586,7 +8737,7 @@ _.set('stat_data.系统.模式', '${mode}')
       let sum = 0;
       ORGASM_COUNT_SOURCE_PATHS.forEach(p => { sum += (parseFloat(getNestedValue(snapshot, p)) || 0); });
       setNestedValue(snapshot, '托莉娜.Hstate纯爱.表.总表.与你高潮的次数', sum);
-      console.log('[VAR] 自动计算：与你高潮的次数 = 因你小穴高潮+因你屁穴高潮+因为你胸部高潮+因为其他原因被你玩弄至高潮 =', sum);
+      logWithTag('VAR', '自动计算：与你高潮的次数 = 因你小穴高潮+因你屁穴高潮+因为你胸部高潮+因为其他原因被你玩弄至高潮 =', sum);
       return sum;
     }
 
@@ -9601,7 +8752,7 @@ _.set('stat_data.系统.模式', '${mode}')
       let sum = 0;
       NORMAL_ABSORB_COUNT_SOURCE_PATHS.forEach(p => { sum += (parseFloat(getNestedValue(snapshot, p)) || 0); });
       setNestedValue(snapshot, '托莉娜.Hstate正常.表.总表.总吸取魔力次数', sum);
-      console.log('[VAR] 自动计算：总吸取魔力次数 = 亲吻+口交+乳交+足交 =', sum);
+      logWithTag('VAR', '自动计算：总吸取魔力次数 = 亲吻+口交+乳交+足交 =', sum);
       return sum;
     }
 
@@ -9620,11 +8771,11 @@ _.set('stat_data.系统.模式', '${mode}')
       if (path === NORMAL_INNER_MOUTH_SEMEN_PATH) {
         const cur = parseFloat(getNestedValue(snapshot, NORMAL_INNER_SWALLOWED_PATH)) || 0;
         setNestedValue(snapshot, NORMAL_INNER_SWALLOWED_PATH, cur + delta);
-        console.log('[VAR] 正常·里：吞下的精液量 +=', delta, '(口中精液量正向增量)');
+        logWithTag('VAR', '正常·里：吞下的精液量 +=', delta, '(口中精液量正向增量)');
       } else if (path === NORMAL_INNER_UTERUS_SEMEN_PATH || path === NORMAL_INNER_RECTAL_SEMEN_PATH) {
         const cur = parseFloat(getNestedValue(snapshot, NORMAL_INNER_INJECTED_TOTAL_PATH)) || 0;
         setNestedValue(snapshot, NORMAL_INNER_INJECTED_TOTAL_PATH, cur + delta);
-        console.log('[VAR] 正常·里：被射入精液总量 +=', delta, `(${path})`);
+        logWithTag('VAR', '正常·里：被射入精液总量 +=', delta, `(${path})`);
       }
     }
 
@@ -9692,14 +8843,9 @@ _.set('stat_data.系统.模式', '${mode}')
           return true;
         }
 
-        // 如果最后对话层没有 varsSnapshot，从 ERA.currentVars 或默认值创建
-        if (!lastLayer.varsSnapshot) {
-          lastLayer.varsSnapshot = ERA.currentVars ? JSON.parse(JSON.stringify(ERA.currentVars)) : JSON.parse(JSON.stringify(ERA.defaultVars));
-        }
-        migrateLegacyHstateTree(lastLayer.varsSnapshot);
-
-        // 获取当前变量快照（用于检查当前值）
-        const varsSnapshot = lastLayer.varsSnapshot;
+        // 获取最后对话层完整变量树（惰性重建 + 缓存）
+        const varsSnapshot = getLayerVars(lastLayer);
+        migrateLegacyHstateTree(varsSnapshot);
         const numValue = parseFloat(value) || 0;
 
         // 特殊处理：性欲值溢出到堕落值
@@ -9719,7 +8865,7 @@ _.set('stat_data.系统.模式', '${mode}')
             // 增加堕落值（但不超过100）
             const newCorruption = Math.min(100, currentCorruption + corruptionIncrease);
 
-            console.log('[VAR] 性欲值溢出:', numValue, '-> 100, 堕落值增加:', corruptionIncrease, '->', newCorruption);
+            logWithTag('VAR', '性欲值溢出:', numValue, '-> 100, 堕落值增加:', corruptionIncrease, '->', newCorruption);
 
             // 先更新堕落值（如果达到100，会触发堕落阶段增加）
             await setvar('托莉娜.基础.堕落值', newCorruption);
@@ -9750,7 +8896,7 @@ _.set('stat_data.系统.模式', '${mode}')
             // 增加1堕落阶段（但不超过4）
             const newStage = Math.min(4, currentStage + 1);
 
-            console.log('[VAR] 堕落值达到100，触发阶段提升:', {
+            logWithTag('VAR', '堕落值达到100，触发阶段提升:', {
               原性欲值: currentLust,
               新性欲值: newLust,
               原堕落值: 100,
@@ -9774,23 +8920,22 @@ _.set('stat_data.系统.模式', '${mode}')
         }
 
         // 更新最后对话层的变量快照（这是当前运行时值的来源）
-        setNestedValue(lastLayer.varsSnapshot, actualPath, value);
+        setNestedValue(getLayerVars(lastLayer), actualPath, value);
+        // 记录增量：该变动属于本层（AI 层为本轮增量容器）
+        recordLayerDelta(lastLayer, actualPath, value);
 
-        triggerHstateRecalc(lastLayer.varsSnapshot, actualPath);
+        triggerHstateRecalc(getLayerVars(lastLayer), actualPath);
         // 同步更新 ERA.currentVars 和 cache.vars，使其与最后对话层快照保持一致
         // 让 ERA.currentVars 直接引用最后对话层的快照，避免多套平行值
-        ERA.currentVars = lastLayer.varsSnapshot;
-        ERA.cache.vars = lastLayer.varsSnapshot;
+        ERA.currentVars = getLayerVars(lastLayer);
+        ERA.cache.vars = getLayerVars(lastLayer);
         ERA.cache.timestamp = Date.now();
 
-        console.log('[VAR] 已更新变量（当前运行时值 = 最后对话层快照）:', actualPath, '=', value);
-
-        // 同步到 ST 聊天变量，供 prompt 中 {{get_chat_variable::stat_data.xxx}} 使用（防抖）
-        syncVariablesToSTDebounced();
+        logWithTag('VAR', '已更新变量（当前运行时值 = 最后对话层快照）:', actualPath, '=', value);
 
         // 刷新相关界面元素
         refreshUIByVariablePath(actualPath).catch(e => {
-          console.warn('[VAR] 刷新界面元素失败:', e);
+          warnWithTag('VAR', '刷新界面元素失败:', e);
         });
 
         return true;
@@ -9798,48 +8943,6 @@ _.set('stat_data.系统.模式', '${mode}')
         errorWithTag('VAR', '设置变量失败', e);
         return false;
       }
-    }
-
-    // 获取当前变量对象（用于同步到 SillyTavern 聊天变量，供 prompt 中 {{get_chat_variable::stat_data.xxx}} 使用）
-    function getCurrentVarsForSync() {
-      const lastLayer = getLastDialogueLayer();
-      let statData;
-      if (lastLayer && lastLayer.varsSnapshot) {
-        statData = JSON.parse(JSON.stringify(lastLayer.varsSnapshot));
-      } else if (ERA.currentVars) {
-        statData = JSON.parse(JSON.stringify(ERA.currentVars));
-      } else if (ERA.cache && ERA.cache.vars) {
-        statData = JSON.parse(JSON.stringify(ERA.cache.vars));
-      } else {
-        statData = ERA.defaultVars ? JSON.parse(JSON.stringify(ERA.defaultVars)) : {};
-      }
-      migrateLegacyHstateTree(statData);
-      recomputeDerivedHstateFields(statData);
-      return statData;
-    }
-
-    // 将当前前端变量同步到 ST 聊天变量（与 char_card_1 一样，让 AI 在下次生成时能读到）
-    let _syncVariablesToSTTimer = null;
-    async function syncVariablesToST() {
-      try {
-        if (typeof window.insertOrAssignVariables !== 'function') {
-          return;
-        }
-        const statData = getCurrentVarsForSync();
-        await window.insertOrAssignVariables({ stat_data: statData }, { type: 'chat' });
-        console.log('[VAR] 已同步变量到 ST 聊天变量（prompt 中可用 {{get_chat_variable::stat_data.xxx}}）');
-      } catch (e) {
-        console.warn('[VAR] 同步变量到 ST 失败', e);
-      }
-    }
-
-    // 防抖：避免 setvar 连续调用时频繁同步
-    function syncVariablesToSTDebounced() {
-      if (_syncVariablesToSTTimer) clearTimeout(_syncVariablesToSTTimer);
-      _syncVariablesToSTTimer = setTimeout(() => {
-        _syncVariablesToSTTimer = null;
-        syncVariablesToST();
-      }, 300);
     }
 
     // 更新变量（增量更新，只使用 ERA）
@@ -9862,13 +8965,11 @@ _.set('stat_data.系统.模式', '${mode}')
           return true;
         }
 
-        // 如果最后对话层没有 varsSnapshot，从 ERA.currentVars 或默认值创建
-        if (!lastLayer.varsSnapshot) {
-          lastLayer.varsSnapshot = ERA.currentVars ? JSON.parse(JSON.stringify(ERA.currentVars)) : JSON.parse(JSON.stringify(ERA.defaultVars));
-        }
+        // 获取最后对话层完整变量树（惰性重建 + 缓存）
+        const updSnap = getLayerVars(lastLayer);
 
         // 获取当前值并计算新值
-        const currentValue = getNestedValue(lastLayer.varsSnapshot, actualPath);
+        const currentValue = getNestedValue(updSnap, actualPath);
         let newValue = (parseFloat(currentValue) || 0) + parseFloat(increment);
 
         // 特殊处理：性欲值溢出到堕落值
@@ -9882,13 +8983,13 @@ _.set('stat_data.系统.模式', '${mode}')
             newValue = 100;
 
             // 获取当前堕落值
-            let currentCorruption = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.堕落值');
+            let currentCorruption = getNestedValue(getLayerVars(lastLayer), '托莉娜.基础.堕落值');
             currentCorruption = parseFloat(currentCorruption) || 0;
 
             // 增加堕落值（但不超过100）
             const newCorruption = Math.min(100, currentCorruption + corruptionIncrease);
 
-            console.log('[VAR] 性欲值溢出（增量）:', currentValue, '+', increment, '-> 100, 堕落值增加:', corruptionIncrease, '->', newCorruption);
+            logWithTag('VAR', '性欲值溢出（增量）:', currentValue, '+', increment, '-> 100, 堕落值增加:', corruptionIncrease, '->', newCorruption);
 
             // 先更新堕落值（如果达到100，会触发堕落阶段增加）
             await setvar('托莉娜.基础.堕落值', newCorruption);
@@ -9905,11 +9006,11 @@ _.set('stat_data.系统.模式', '${mode}')
 
           if (clampedValue >= 100) {
             // 获取当前性欲值
-            let currentLust = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.性欲值');
+            let currentLust = getNestedValue(getLayerVars(lastLayer), '托莉娜.基础.性欲值');
             currentLust = parseFloat(currentLust) || 0;
 
             // 获取当前堕落阶段
-            let currentStage = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.堕落阶段');
+            let currentStage = getNestedValue(getLayerVars(lastLayer), '托莉娜.基础.堕落阶段');
             currentStage = parseInt(currentStage, 10) || 1;
 
             // 清空一半的性欲值和全部堕落值
@@ -9919,7 +9020,7 @@ _.set('stat_data.系统.模式', '${mode}')
             // 增加1堕落阶段（但不超过4）
             const newStage = Math.min(4, currentStage + 1);
 
-            console.log('[VAR] 堕落值达到100（增量），触发阶段提升:', {
+            logWithTag('VAR', '堕落值达到100（增量），触发阶段提升:', {
               原性欲值: currentLust,
               新性欲值: newLust,
               原堕落值: 100,
@@ -9943,23 +9044,22 @@ _.set('stat_data.系统.模式', '${mode}')
         }
 
         // 更新最后对话层的变量快照（这是当前运行时值的来源）
-        setNestedValue(lastLayer.varsSnapshot, actualPath, newValue);
-        applyNormalInnerSemenSyncFromAdd(lastLayer.varsSnapshot, actualPath, increment);
+        setNestedValue(getLayerVars(lastLayer), actualPath, newValue);
+        // 记录增量：该变动属于本层（AI 层为本轮增量容器）
+        recordLayerDelta(lastLayer, actualPath, newValue);
+        applyNormalInnerSemenSyncFromAdd(getLayerVars(lastLayer), actualPath, increment);
 
-        triggerHstateRecalc(lastLayer.varsSnapshot, actualPath);
+        triggerHstateRecalc(getLayerVars(lastLayer), actualPath);
         // 同步更新 ERA.currentVars 和 cache.vars，使其与最后对话层快照保持一致
-        ERA.currentVars = lastLayer.varsSnapshot;
-        ERA.cache.vars = lastLayer.varsSnapshot;
+        ERA.currentVars = getLayerVars(lastLayer);
+        ERA.cache.vars = getLayerVars(lastLayer);
         ERA.cache.timestamp = Date.now();
 
-        // 同步到 ST 聊天变量（防抖）
-        syncVariablesToSTDebounced();
-
-        console.log('[VAR] 已更新变量（增量，当前运行时值 = 最后对话层快照）:', actualPath, '=', currentValue, '+', increment, '=', newValue);
+        logWithTag('VAR', '已更新变量（增量，当前运行时值 = 最后对话层快照）:', actualPath, '=', currentValue, '+', increment, '=', newValue);
 
         // 刷新相关界面元素
         refreshUIByVariablePath(actualPath).catch(e => {
-          console.warn('[VAR] 刷新界面元素失败:', e);
+          warnWithTag('VAR', '刷新界面元素失败:', e);
         });
 
         return true;
@@ -9975,20 +9075,6 @@ _.set('stat_data.系统.模式', '${mode}')
 
     /** 堕落阶段相关世界书 UID（3/4 规则组 + 纯爱人设 12–15 + 正常人设 44–47） */
     const CORRUPTION_STAGE_LORE_UIDS = [3, 4, 12, 13, 14, 15, 44, 45, 46, 47];
-
-    /** @param {boolean} pureLoveMode @param {Array<{uid:number,enabled:boolean}>|undefined} entries */
-    function collectGameModeLoreUidUpdates(pureLoveMode, entries) {
-      const updates = [];
-      const entry33 = entries?.find(e => e.uid === GAME_MODE_LORE_UID.PURE_LOVE);
-      const entry43 = entries?.find(e => e.uid === GAME_MODE_LORE_UID.NORMAL);
-      if (entry33 && entry33.enabled !== pureLoveMode) {
-        updates.push({ uid: GAME_MODE_LORE_UID.PURE_LOVE, enabled: pureLoveMode });
-      }
-      if (entry43 && entry43.enabled !== !pureLoveMode) {
-        updates.push({ uid: GAME_MODE_LORE_UID.NORMAL, enabled: !pureLoveMode });
-      }
-      return updates;
-    }
 
     /** @returns {Set<number>} 当前应开启的堕落阶段相关 UID */
     function getCorruptionStageEnabledUIDs(stage, pureLoveMode) {
@@ -10027,7 +9113,7 @@ _.set('stat_data.系统.模式', '${mode}')
       wb.applyEnabled(updates);
     }
 
-    // 检测并控制 UID 状态（根据堕落阶段和服装）
+    // 检测并控制 UID 状态（根据堕落阶段和服装，同步本地世界书条目开关）
     async function checkAndControlUIDs() {
       try {
         // 获取当前堕落阶段和服装
@@ -10036,233 +9122,136 @@ _.set('stat_data.系统.模式', '${mode}')
 
         const stage = parseInt(corruptionStage, 10) || 1;
         const outfitValue = outfit || '常服';
-        const pureLoveModeEarly = isPureLoveMode();
-        syncLocalWorldbookUids(stage, outfitValue, pureLoveModeEarly);
-
-        if (typeof getCurrentCharPrimaryLorebook !== 'function' || typeof setLorebookEntries !== 'function') {
-          return;
-        }
-
-        // 使用世界书 API 直接操作
-        const lorebook = getCurrentCharPrimaryLorebook();
-        if (!lorebook) {
-          console.warn('[UID] 无法获取当前角色的世界书');
-          return;
-        }
-
-        // 获取所有条目
-        const entries = await getLorebookEntries(lorebook);
-
-        // 需要更新的条目列表
-        const updates = [];
-
         const pureLoveMode = isPureLoveMode();
-        const enabledStageUids = getCorruptionStageEnabledUIDs(stage, pureLoveMode);
-
-        // 1. 堕落阶段：纯爱 3/4+12–15；正常 3/4+44–47（12–15 全关）
-        for (const uid of CORRUPTION_STAGE_LORE_UIDS) {
-          const entry = entries.find(e => e.uid === uid);
-          if (entry) {
-            const shouldEnable = enabledStageUids.has(uid);
-            if (entry.enabled !== shouldEnable) {
-              updates.push({ uid, enabled: shouldEnable });
-            }
-          }
-        }
-
-        // 2. 根据服装控制服装相关 UID（8, 10, 9, 18, 17, 2）
-        const outfitUIDs = [8, 10, 9, 18, 17, 2];
-        let targetUID = null;
-        if (outfitValue === '常服') targetUID = 8;
-        else if (outfitValue === '暴露常服') targetUID = 10;
-        else if (outfitValue === '魅魔常服') targetUID = 9;
-        else if (outfitValue === '魔王服') targetUID = 18;
-        else if (outfitValue === '浴巾') targetUID = 17;
-        else if (outfitValue === '女仆装') targetUID = 2;
-
-        for (const uid of outfitUIDs) {
-          const entry = entries.find(e => e.uid === uid);
-          if (entry) {
-            const shouldEnable = uid === targetUID;
-            if (entry.enabled !== shouldEnable) {
-              updates.push({ uid: uid, enabled: shouldEnable });
-            }
-          }
-        }
-
-        updates.push(...collectGameModeLoreUidUpdates(pureLoveMode, entries));
-
-        // 执行更新
-        if (updates.length > 0) {
-          await setLorebookEntries(lorebook, updates);
-          console.log('[UID] 已根据堕落阶段', stage, '和服装', outfitValue, '更新', updates.length, '个世界书条目');
-        } else {
-          console.log('[UID] 所有世界书条目状态已正确，无需更新');
-        }
+        syncLocalWorldbookUids(stage, outfitValue, pureLoveMode);
       } catch (e) {
         console.error('[UID] 检测和控制 UID 失败:', e);
       }
     }
 
-    async function refreshUIByVariablePath(path) {
-      try {
-        console.log('[刷新] 根据变量路径刷新界面:', path);
+    // ==================== UI 刷新批量合并 ====================
+    // 问题：变量连发（一轮 AI 可能改 N 个变量）时，旧实现每个变量都 checkAndControlUIDs + 各自刷 UI，
+    // 导致 N 次 UID 检测、N 次立绘重绘、N 次 Hstatus 重算。
+    // 方案：把每条路径需要的 UI 副作用翻译成「待办标记」并入集合，下一帧统一执行一次。
+    const _uiRefreshState = {
+      pending: false,       // 是否已安排一帧后的统一刷新
+      uid: false,           // 需要 checkAndControlUIDs
+      galSprite: false,     // 需要重绘 gal 立绘
+      menuSprite: false,    // 需要重绘菜单立绘
+      hstatusSprite: false, // 需要重绘 Hstatus 立绘
+      hstatusText: false,   // 需要重绘 Hstatus 文字
+      corruptionBar: false, // 需要刷新堕落值条
+      lustBar: false,       // 需要刷新性欲值条
+      cumOverlays: false,   // 需要刷新精液叠加层
+      wombPopup: false,     // 需要刷新子宫精液弹窗
+      timeWeather: false,   // 需要刷新时间/天气
+      stamina: false,       // 需要刷新体力条
+      mapMarkers: false     // 需要刷新地图角色标记
+    };
 
-        // 在刷新界面之前检测并控制 UID
-        await checkAndControlUIDs();
-
-        // 根据变量路径判断需要刷新哪些界面元素
-        if (path === '托莉娜.基础.堕落阶段') {
-          // 刷新 gal 界面立绘和菜单界面立绘
-          console.log('[刷新] 刷新堕落阶段相关界面...');
-
-          // 1. 刷新 gal 界面立绘（主游戏界面）
-          const lastLayer = getLastDialogueLayer();
-          if (lastLayer && lastLayer.maintext) {
-            // 解析最后对话层的对话，获取最后一个立绘标签
-            const dialogues = parseTolinaDialogues(lastLayer.maintext);
-            if (dialogues.length > 0) {
-              // 使用最后一个对话的立绘信息重新渲染
-              const lastDialogue = dialogues[dialogues.length - 1];
-              await renderDialogueSprite(lastDialogue);
-              console.log('[刷新] ✅ gal 界面立绘已刷新');
-            }
-          }
-
-          // 2. 刷新菜单界面立绘（如果菜单已打开）
-          const menuOverlay = document.getElementById('game-menu-overlay');
-          if (menuOverlay && menuOverlay.classList.contains('show')) {
-            await updateMenuTorinaSprite();
-            console.log('[刷新] ✅ 菜单界面立绘已刷新');
-          }
-
-          // 3. 刷新Hstatus表立绘和文字（如果Hstatus表界面已打开）
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show')) {
-            await updateHstatusSprite();
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus表立绘和文字已刷新');
-          }
-        } else if (path === '托莉娜.基础.堕落值') {
-          // 刷新堕落值变量条
-          console.log('[刷新] 刷新堕落值相关界面...');
-          const menuOverlay = document.getElementById('game-menu-overlay');
-          if (menuOverlay && menuOverlay.classList.contains('show')) {
-            await updateCorruptionValueBar();
-            console.log('[刷新] ✅ 堕落值变量条已刷新');
-          }
-          // 更新堕落条位置
-          updateCorruptionBarPosition();
-          console.log('[刷新] ✅ 堕落条位置已刷新');
-        } else if (path === '托莉娜.基础.性欲值') {
-          // 刷新性欲值条
-          console.log('[刷新] 刷新性欲值相关界面...');
-          const menuOverlay = document.getElementById('game-menu-overlay');
-          if (menuOverlay && menuOverlay.classList.contains('show')) {
-            await updateLustValueBar();
-            console.log('[刷新] ✅ 性欲值条已刷新');
-          }
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show')) {
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus 魔力/性欲文字已刷新');
-          }
-        } else if (path && path.startsWith('托莉娜.Hstate纯爱.表.精液状态')) {
-          // 刷新 Hstatus 精液叠加层（仅当 Hstatus 已打开）
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show')) {
-            const lastLayer = getLastDialogueLayer();
-            const snap = (lastLayer && lastLayer.varsSnapshot) ? lastLayer.varsSnapshot : ERA.currentVars;
-            updateHstatusCumOverlays(snap);
-            console.log('[刷新] ✅ Hstatus 精液叠加层已刷新');
-          }
-        } else if (path === '托莉娜.Hstate纯爱.表.阴部.子宫内你的精液量') {
-          // 刷新子宫精液弹窗（仅当 Hstatus 已打开且在阴部界面）
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show') && hstatusViewMode === 'crotch') {
-            const lastLayer = getLastDialogueLayer();
-            const snap = (lastLayer && lastLayer.varsSnapshot) ? lastLayer.varsSnapshot : ERA.currentVars;
-            updateWombPopup(snap);
-            console.log('[刷新] ✅ 子宫精液弹窗已刷新');
-          }
-        } else if (path && path.startsWith('托莉娜.Hstate纯爱.表.足部')) {
-          // 刷新阴部界面右侧足部四行（仅当 Hstatus 已打开且在阴部界面）
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show') && hstatusViewMode === 'crotch') {
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus 足部右侧文字已刷新');
-          }
-        } else if (path === '托莉娜.Hstate正常.里.总表.献出初夜的对象') {
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show') && hstatusLayerMode === 'inner') {
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus 里界面处女状态文字已刷新');
-          }
-        } else if (path && path.startsWith('托莉娜.Hstate正常.表.')) {
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show') && hstatusLayerMode === 'outer') {
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus 正常表界面文字已刷新');
-          }
-        } else if (path === '托莉娜.基础.服装') {
-          // 刷新 gal 界面立绘、菜单界面立绘和Hstatus表立绘
-          console.log('[刷新] 刷新服装相关界面...');
-
-          // 1. 刷新 gal 界面立绘（主游戏界面）
-          const lastLayer = getLastDialogueLayer();
-          if (lastLayer && lastLayer.maintext) {
-            // 解析最后对话层的对话，获取最后一个立绘标签
-            const dialogues = parseTolinaDialogues(lastLayer.maintext);
-            if (dialogues.length > 0) {
-              // 使用最后一个对话的立绘信息重新渲染
-              const lastDialogue = dialogues[dialogues.length - 1];
-              await renderDialogueSprite(lastDialogue);
-              console.log('[刷新] ✅ gal 界面立绘已刷新');
-            }
-          }
-
-          // 2. 刷新菜单界面立绘（如果菜单已打开）
-          const menuOverlay = document.getElementById('game-menu-overlay');
-          if (menuOverlay && menuOverlay.classList.contains('show')) {
-            await updateMenuTorinaSprite();
-            console.log('[刷新] ✅ 菜单界面立绘已刷新');
-          }
-
-          // 3. 刷新Hstatus表立绘和文字（如果Hstatus表界面已打开）
-          const hstatusOverlay = document.getElementById('hstatus-table-overlay');
-          if (hstatusOverlay && hstatusOverlay.classList.contains('show')) {
-            await updateHstatusSprite();
-            await updateHstatusText();
-            console.log('[刷新] ✅ Hstatus表立绘和文字已刷新');
-          }
-        } else if (path.startsWith('系统.时间.') || path === '系统.天气') {
-          // 刷新天气系统
-          console.log('[刷新] 刷新时间/天气相关界面...');
-          await updateTimeWeatherSystem();
-          console.log('[刷新] ✅ 天气系统已刷新');
-        } else if (path === '系统.体力.当前体力值') {
-          // 刷新体力条
-          console.log('[刷新] 刷新体力相关界面...');
-          await updateStaminaBar();
-          console.log('[刷新] ✅ 体力条已刷新');
-        } else if (
-          path === '系统.地点.当前地点' ||
-          path === '系统.地点.托莉娜地点' ||
-          path === '地点.当前地点' ||
-          path === '地点.托莉娜地点' ||
-          path === '托莉娜.行程.同行状态'
-        ) {
-          if (typeof MeishinkanWorldMap?.refreshActorMarkers === 'function') {
-            await MeishinkanWorldMap.refreshActorMarkers();
-            console.log('[刷新] ✅ 地图角色标记已刷新');
-          }
-        }
-
-        console.log('[刷新] 界面刷新完成');
-      } catch (e) {
-        console.error('[刷新] ❌ 刷新过程出错:', e);
+    // 把一条变量路径翻译成待办标记（不立即操作 DOM）
+    function _collectUIRefreshFlags(path) {
+      const s = _uiRefreshState;
+      s.uid = true; // 任意变量变动都需要先检测 UID（统一做一次）
+      if (path === '托莉娜.基础.堕落阶段') {
+        s.galSprite = true; s.menuSprite = true; s.hstatusSprite = true; s.hstatusText = true;
+      } else if (path === '托莉娜.基础.堕落值') {
+        s.corruptionBar = true;
+      } else if (path === '托莉娜.基础.性欲值') {
+        s.lustBar = true; s.hstatusText = true;
+      } else if (path && path.startsWith('托莉娜.Hstate纯爱.表.精液状态')) {
+        s.cumOverlays = true;
+      } else if (path === '托莉娜.Hstate纯爱.表.阴部.子宫内你的精液量') {
+        s.wombPopup = true;
+      } else if (path && path.startsWith('托莉娜.Hstate纯爱.表.足部')) {
+        s.hstatusText = true;
+      } else if (path === '托莉娜.Hstate正常.里.总表.献出初夜的对象') {
+        s.hstatusText = true;
+      } else if (path && path.startsWith('托莉娜.Hstate正常.表.')) {
+        s.hstatusText = true;
+      } else if (path === '托莉娜.基础.服装') {
+        s.galSprite = true; s.menuSprite = true; s.hstatusSprite = true; s.hstatusText = true;
+      } else if (path && (path.startsWith('系统.时间.') || path === '系统.天气')) {
+        s.timeWeather = true;
+      } else if (path === '系统.体力.当前体力值') {
+        s.stamina = true;
+      } else if (
+        path === '系统.地点.当前地点' || path === '系统.地点.托莉娜地点' ||
+        path === '地点.当前地点' || path === '地点.托莉娜地点' || path === '托莉娜.行程.同行状态'
+      ) {
+        s.mapMarkers = true;
       }
     }
+
+    function _resetUIRefreshFlags() {
+      const s = _uiRefreshState;
+      s.pending = false;
+      s.uid = s.galSprite = s.menuSprite = s.hstatusSprite = s.hstatusText = false;
+      s.corruptionBar = s.lustBar = s.cumOverlays = s.wombPopup = false;
+      s.timeWeather = s.stamina = s.mapMarkers = false;
+    }
+
+    // 统一执行收集到的所有 UI 副作用（每种只跑一次）
+    async function _flushUIRefresh() {
+      const s = _uiRefreshState;
+      _resetUIRefreshFlags();
+      try {
+        if (s.uid) await checkAndControlUIDs();
+
+        const menuOpen = (() => { const el = document.getElementById('game-menu-overlay'); return !!(el && el.classList.contains('show')); })();
+        const hstatusOpen = (() => { const el = document.getElementById('hstatus-table-overlay'); return !!(el && el.classList.contains('show')); })();
+
+        // gal 立绘（堕落阶段/服装共用同一重绘逻辑）
+        if (s.galSprite) {
+          const lastLayer = getLastDialogueLayer();
+          if (lastLayer && lastLayer.maintext) {
+            const dialogues = parseTolinaDialogues(lastLayer.maintext);
+            if (dialogues.length > 0) {
+              await renderDialogueSprite(dialogues[dialogues.length - 1]);
+            }
+          }
+        }
+        if (s.menuSprite && menuOpen) await updateMenuTorinaSprite();
+        if (s.hstatusSprite && hstatusOpen) await updateHstatusSprite();
+        if (s.hstatusText && hstatusOpen) await updateHstatusText();
+        if (s.corruptionBar) {
+          if (menuOpen) await updateCorruptionValueBar();
+          updateCorruptionBarPosition();
+        }
+        if (s.lustBar && menuOpen) await updateLustValueBar();
+        if (s.cumOverlays && hstatusOpen) {
+          const lastLayer = getLastDialogueLayer();
+          const snap = (lastLayer && getLayerVars(lastLayer)) ? getLayerVars(lastLayer) : ERA.currentVars;
+          updateHstatusCumOverlays(snap);
+        }
+        if (s.wombPopup && hstatusOpen && hstatusViewMode === 'crotch') {
+          const lastLayer = getLastDialogueLayer();
+          const snap = (lastLayer && getLayerVars(lastLayer)) ? getLayerVars(lastLayer) : ERA.currentVars;
+          updateWombPopup(snap);
+        }
+        if (s.timeWeather) await updateTimeWeatherSystem();
+        if (s.stamina) await updateStaminaBar();
+        if (s.mapMarkers && typeof MeishinkanWorldMap?.refreshActorMarkers === 'function') {
+          await MeishinkanWorldMap.refreshActorMarkers();
+        }
+        logWithTag('刷新', '批量界面刷新完成');
+      } catch (e) {
+        console.error('[刷新] ❌ 批量刷新过程出错:', e);
+      }
+    }
+
+    // 对外入口：收集路径并安排一次统一刷新（同一帧内多次调用只刷一次）
+    async function refreshUIByVariablePath(path) {
+      _collectUIRefreshFlags(path);
+      if (_uiRefreshState.pending) return; // 已安排，等下一帧统一刷
+      _uiRefreshState.pending = true;
+      // 用 requestAnimationFrame（无则退化为 setTimeout 0）把本帧内所有变动合并成一次刷新
+      const schedule = (typeof requestAnimationFrame === 'function')
+        ? requestAnimationFrame
+        : (cb) => setTimeout(cb, 0);
+      schedule(() => { _flushUIRefresh(); });
+    }
+
 
     // ==================== 控制台测试变量接口 ====================
     // 在浏览器控制台中使用：_.set('路径', 值), _.add('路径', 增量), _.help()
@@ -10279,7 +9268,7 @@ _.set('stat_data.系统.模式', '${mode}')
         const promise = (async () => {
           try {
             const value = await getvar(path);
-            console.log(`[_] ${path} =`, value);
+            logWithTag('_', `${path} =`, value);
             return value;
           } catch (e) {
             console.error(`[_] 获取失败: ${path}`, e);
@@ -10306,9 +9295,9 @@ _.set('stat_data.系统.模式', '${mode}')
           try {
             const success = await setvar(path, value);
             if (success) {
-              console.log(`[_] ✅ 已设置: ${path} =`, value);
+              logWithTag('_', `✅ 已设置: ${path} =`, value);
             } else {
-              console.warn(`[_] ⚠️ 设置失败: ${path}`);
+              warnWithTag('_', `⚠️ 设置失败: ${path}`);
             }
             return success;
           } catch (e) {
@@ -10336,14 +9325,14 @@ _.set('stat_data.系统.模式', '${mode}')
           try {
             const currentValue = await getvar(path);
             if (currentValue === undefined || currentValue === null) {
-              console.warn(`[_] ⚠️ 变量不存在，无法更新: ${path}`);
+              warnWithTag('_', `⚠️ 变量不存在，无法更新: ${path}`);
               return false;
             }
 
             const newValue = (parseFloat(currentValue) || 0) + parseFloat(amount);
             const success = await setvar(path, newValue);
             if (success) {
-              console.log(`[_] ✅ 已更新: ${path} = ${currentValue} ${amount >= 0 ? '+' : ''}${amount} = ${newValue}`);
+              logWithTag('_', `✅ 已更新: ${path} = ${currentValue} ${amount >= 0 ? '+' : ''}${amount} = ${newValue}`);
             }
             return success;
           } catch (e) {
@@ -10380,7 +9369,7 @@ _.set('stat_data.系统.模式', '${mode}')
             );
 
             const successCount = results.filter(r => r).length;
-            console.log(`[_] ✅ 批量设置完成: ${successCount}/${Object.keys(vars).length} 成功`);
+            logWithTag('_', `✅ 批量设置完成: ${successCount}/${Object.keys(vars).length} 成功`);
             return successCount === Object.keys(vars).length;
           } catch (e) {
             console.error('[_] ❌ 批量设置失败', e);
@@ -10402,7 +9391,7 @@ _.set('stat_data.系统.模式', '${mode}')
         const promise = (async () => {
           try {
             const vars = ERA.currentVars || ERA.cache.vars || ERA.defaultVars;
-            console.log('[_] 📋 所有变量:', vars);
+            logWithTag('_', '📋 所有变量:', vars);
             return vars;
           } catch (e) {
             console.error('[_] ❌ 获取所有变量失败', e);
@@ -10447,7 +9436,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
             console.group('[_] 📋 所有变量（键值对）');
             for (const [key, value] of Object.entries(flattened)) {
-              console.log(`  ${key}:`, value);
+              logWithTag('DEBUG', `  ${key}:`, value);
             }
             console.groupEnd();
 
@@ -10466,7 +9455,7 @@ _.set('stat_data.系统.模式', '${mode}')
        * 显示帮助信息
        */
       help() {
-        console.log(`
+        logWithTag('DEBUG', `
 ╔══════════════════════════════════════════════════════════════╗
 ║              控制台测试变量接口 - 使用说明                    ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -10560,20 +9549,14 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     };
 
     // 初始化时显示帮助提示
-    console.log('%c[测试变量]', 'color: #4CAF50; font-weight: bold; font-size: 14px;',
+    logWithTag('DEBUG', '%c[测试变量]', 'color: #4CAF50; font-weight: bold; font-size: 14px;',
       '控制台测试变量接口已就绪！输入 _.help() 查看使用说明');
 
     // 默认游戏变量（根据[initvar].yaml定义）
     // 已移除：不再使用默认值，只从MVU读取
 
-    // 时间图片映射
-    const timeImageMap = {
-      '早': 'https://files.catbox.moe/m3l95j.png',      // Morning
-      '中': 'https://files.catbox.moe/xnzc7c.png',      // Noon
-      '晚': 'https://files.catbox.moe/g2x21l.png',      // Afternoon
-      '夜': 'https://files.catbox.moe/1iepv7.png',      // Night
-      '午夜': 'https://files.catbox.moe/p326lj.png'     // Midnight
-    };
+    // 时间图片映射（数据来自 resource/game-assets.js）
+    const timeImageMap = (window.妹神官_gameAssets && window.妹神官_gameAssets.timeImageMap) || {};
 
     // 时间文本映射（用于显示）
     const timeTextMap = {
@@ -10634,27 +9617,24 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       }
 
       // 如果天气是雨，使用下雨图片
+      const gaTW = window.妹神官_gameAssets;
+      const rainDayUrl = (gaTW && gaTW.getWeatherImage) ? gaTW.getWeatherImage('rainDay') : null;
+      const rainNightUrl = (gaTW && gaTW.getWeatherImage) ? gaTW.getWeatherImage('rainNight') : null;
+      const morningUrl = (gaTW && gaTW.getTimeImage) ? gaTW.getTimeImage('早') : null;
       if (weather === '雨' || weather === 'rain') {
-        if (time === '早' || time === '中' || time === '晚') {
-          // 早中晚使用白天下雨图
-          timeImage.src = 'https://files.catbox.moe/d555se.png'; // rainDay
-          timeImage.classList.add('show');
-        } else if (time === '夜' || time === '午夜') {
-          // 夜和午夜使用晚上下雨图
-          timeImage.src = 'https://files.catbox.moe/s66j1n.png'; // rainNight
-          timeImage.classList.add('show');
+        if (time === '夜' || time === '午夜') {
+          timeImage.src = rainNightUrl; // 夜和午夜使用晚上下雨图
         } else {
-          // 如果时间未读取到，默认显示白天下雨图
-          timeImage.src = 'https://files.catbox.moe/d555se.png'; // rainDay
-          timeImage.classList.add('show');
+          timeImage.src = rainDayUrl; // 早中晚（含未读取到）使用白天下雨图
         }
+        timeImage.classList.add('show');
       } else if (time && timeImageMap[time]) {
         // 如果天气不是雨，根据时间显示对应图片
         timeImage.src = timeImageMap[time];
         timeImage.classList.add('show');
       } else {
         // 如果时间未读取到，默认显示早晨图
-        timeImage.src = 'https://files.catbox.moe/m3l95j.png'; // Morning
+        timeImage.src = morningUrl;
         timeImage.classList.add('show');
       }
 
@@ -10952,14 +9932,14 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
                          tolinaSprites.L1_base['SockB-Maid'] ||
                          getFirstImageFromObject(tolinaSprites.L1_base);
               if (layers.L1 && !tolinaSprites.L1_base[parsedTag.baseKey]) {
-                console.warn(`[立绘] 未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
+                warnWithTag('立绘', `未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
               }
             }
           } else {
             layers.L1 = tolinaSprites.L1_base['NudeLeg-Maid'] ||
                        (tolinaSprites.L1_base[parsedTag.baseKey] ? tolinaSprites.L1_base[parsedTag.baseKey] : getFirstImageFromObject(tolinaSprites.L1_base));
             if (layers.L1 && !tolinaSprites.L1_base[parsedTag.baseKey] && parsedTag.baseKey !== 'NudeLeg-Maid') {
-              console.warn(`[立绘] 未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
+              warnWithTag('立绘', `未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
             }
           }
         } else if (tolinaSprites.L1_base[parsedTag.baseKey]) {
@@ -10968,7 +9948,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         } else {
           layers.L1 = getFirstImageFromObject(tolinaSprites.L1_base);
           if (layers.L1) {
-            console.warn(`[立绘] 未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
+            warnWithTag('立绘', `未找到L1底图: ${parsedTag.baseKey}，使用回退图片`);
           }
         }
       }
@@ -10990,7 +9970,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             // 如果找不到指定表情，使用P1系列的第一张
             layers.L3 = getFirstImageFromObject(tolinaSprites.L3_expression.P1);
             if (layers.L3) {
-              console.warn(`[立绘] 未找到L3表情(P1): ${parsedTag.expression}，使用回退图片`);
+              warnWithTag('立绘', `未找到L3表情(P1): ${parsedTag.expression}，使用回退图片`);
             }
           }
         } else if (isStage34) {
@@ -11001,7 +9981,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             // 如果找不到指定表情，使用P3系列的第一张
             layers.L3 = getFirstImageFromObject(tolinaSprites.L3_expression.P3);
             if (layers.L3) {
-              console.warn(`[立绘] 未找到L3表情(P3): ${parsedTag.expression}，使用回退图片`);
+              warnWithTag('立绘', `未找到L3表情(P3): ${parsedTag.expression}，使用回退图片`);
             }
           }
         }
@@ -11026,7 +10006,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           // 如果找不到Bath，使用第一张
           layers.L4 = getFirstImageFromObject(tolinaSprites.L4_cloth);
           if (layers.L4) {
-            console.warn(`[立绘] 未找到L4衣服: Bath，使用回退图片`);
+            warnWithTag('立绘', `未找到L4衣服: Bath，使用回退图片`);
           }
         }
       } else {
@@ -11051,7 +10031,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           // 如果找不到指定衣服，使用第一张
           layers.L4 = getFirstImageFromObject(tolinaSprites.L4_cloth);
           if (layers.L4) {
-            console.warn(`[立绘] 未找到L4衣服: ${clothKey}，使用回退图片`);
+            warnWithTag('立绘', `未找到L4衣服: ${clothKey}，使用回退图片`);
           }
         }
       }
@@ -11065,7 +10045,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           // 如果找不到指定杂项，使用第一张
           layers.L5 = getFirstImageFromObject(tolinaSprites.L5_special);
           if (layers.L5) {
-            console.warn(`[立绘] 未找到L5杂项: ${parsedTag.special}，使用回退图片`);
+            warnWithTag('立绘', `未找到L5杂项: ${parsedTag.special}，使用回退图片`);
           }
         }
       }
@@ -11102,7 +10082,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           // 如果找不到指定阴影，使用第一张
           layers.L6 = getFirstImageFromObject(tolinaSprites.L6_shadow);
           if (layers.L6) {
-            console.warn(`[立绘] 未找到L6阴影: ${shadowKey}，使用回退图片`);
+            warnWithTag('立绘', `未找到L6阴影: ${shadowKey}，使用回退图片`);
           }
         }
       }
@@ -11283,13 +10263,12 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 存储待显示的分支文本（在点击完最后一句对话后才显示）
     let pendingBranchesText = null;
 
-    // 从 allResources 获取背景URL（根据背景名称）
+    // 获取背景URL（根据背景名称，走统一资源 API）
     function getBackgroundUrl(backgroundName) {
-      // 从 allResources 中查找背景资源
-      const backgroundResource = allResources.find(r =>
-        r.category === '背景' && r.name === backgroundName
-      );
-      return backgroundResource ? backgroundResource.url : null;
+      const ga = window.妹神官_gameAssets;
+      if (ga && typeof ga.getBackground === 'function') return ga.getBackground(backgroundName);
+      const bg = allResources.find(r => r.category === '背景' && r.name === backgroundName);
+      return bg ? bg.url : null;
     }
 
     // 解析背景标签
@@ -11313,7 +10292,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         stage.style.backgroundPosition = 'center center';
         stage.style.backgroundRepeat = 'no-repeat';
       } else {
-        console.warn(`未找到背景: ${backgroundName}`);
+        warnWithTag('WARN', `未找到背景: ${backgroundName}`);
       }
     }
 
@@ -11321,31 +10300,23 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // CG状态管理：记录每个CG组当前显示的CG
     const cgState = {};
 
-    // 从 allResources 获取CG资源URL（根据CG组名和CG名称）
+    // 获取CG资源URL（根据CG组名和CG名称，走统一资源 API，含组内回退）
     function getCGUrl(groupName, cgName) {
-      // 构建完整的资源名称：组名-CG名称
-      const fullName = `${groupName}-${cgName}`;
-      // 从 allResources 中查找CG资源
-      const cgResource = allResources.find(r =>
-        r.category === 'CG' && r.name === fullName
-      );
-
-      if (cgResource) {
-        return cgResource.url;
+      const ga = window.妹神官_gameAssets;
+      if (ga && typeof ga.getCG === 'function') {
+        const url = ga.getCG(groupName, cgName);
+        if (!url) warnWithTag('CG', `未找到CG: ${groupName}-${cgName}`);
+        return url;
       }
-
-      // 如果找不到指定的CG，查找该CG组的第一张图片
-      const groupResources = allResources.filter(r =>
-        r.category === 'CG' && r.name.startsWith(`${groupName}-`)
-      );
-
+      const fullName = `${groupName}-${cgName}`;
+      const cgResource = allResources.find(r => r.category === 'CG' && r.name === fullName);
+      if (cgResource) return cgResource.url;
+      const groupResources = allResources.filter(r => r.category === 'CG' && r.name.startsWith(`${groupName}-`));
       if (groupResources.length > 0) {
-        // 按名称排序，获取第一张图片
         groupResources.sort((a, b) => a.name.localeCompare(b.name));
-        console.warn(`[CG] 未找到CG: ${groupName}-${cgName}，使用该组第一张图片: ${groupResources[0].name}`);
+        warnWithTag('CG', `未找到CG: ${groupName}-${cgName}，使用该组第一张图片: ${groupResources[0].name}`);
         return groupResources[0].url;
       }
-
       return null;
     }
 
@@ -11389,13 +10360,13 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       const cgImage = document.getElementById('cg-image');
 
       if (!cgLayer || !cgImage) {
-        console.warn('[CG] CG层元素不存在');
+        warnWithTag('CG', 'CG层元素不存在');
         return;
       }
 
       const cgUrl = getCGUrl(groupName, cgName);
       if (!cgUrl) {
-        console.warn(`[CG] CG组 "${groupName}" 不存在任何CG资源`);
+        warnWithTag('CG', `CG组 "${groupName}" 不存在任何CG资源`);
         return;
       }
 
@@ -11414,11 +10385,11 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         const sprite = document.querySelector('.sprite');
         if (sprite) {
           sprite.style.display = 'none';
-          console.log(`[CG] 隐藏立绘（因为显示${groupName} CG）`);
+          logWithTag('CG', `隐藏立绘（因为显示${groupName} CG）`);
         }
       }
 
-      console.log(`[CG] 显示CG组 "${groupName}" 的CG: ${cgName}`);
+      logWithTag('CG', `显示CG组 "${groupName}" 的CG: ${cgName}`);
     }
 
     // 隐藏指定CG组的CG
@@ -11474,12 +10445,12 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           const sprite = document.querySelector('.sprite');
           if (sprite) {
             sprite.style.display = 'block';
-            console.log(`[CG] 恢复立绘显示（因为隐藏${groupName} CG且没有其他需要隐藏立绘的CG）`);
+            logWithTag('CG', `恢复立绘显示（因为隐藏${groupName} CG且没有其他需要隐藏立绘的CG）`);
           }
         }
       }
 
-      console.log(`[CG] 隐藏CG组 "${groupName}" 的CG`);
+      logWithTag('CG', `隐藏CG组 "${groupName}" 的CG`);
     }
 
     // 应用当前所有CG组的状态（用于恢复CG显示，例如读档后）
@@ -11516,11 +10487,11 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             const sprite = document.querySelector('.sprite');
             if (sprite) {
               sprite.style.display = 'none';
-              console.log(`[CG] 恢复CG时隐藏立绘（因为${firstCGGroup} CG）`);
+              logWithTag('CG', `恢复CG时隐藏立绘（因为${firstCGGroup} CG）`);
             }
           }
 
-          console.log(`[CG] 恢复CG显示: ${firstCGGroup} - ${firstCGName}`);
+          logWithTag('CG', `恢复CG显示: ${firstCGGroup} - ${firstCGName}`);
         }
       } else {
         // 没有CG需要显示，确保隐藏
@@ -11867,7 +10838,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
       // 如果正在读档，阻止更新（防止覆盖读档的对话）
       if (window._isLoadingArchiveDialogue) {
-        console.log('[LOAD] ⚠️ 阻止 updateMainText 覆盖读档对话');
+        logWithTag('LOAD', '⚠️ 阻止 updateMainText 覆盖读档对话');
         return;
       }
 
@@ -12177,7 +11148,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           return result;
         }
       } catch (error) {
-        console.warn('添加时间到snapshots失败:', error);
+        warnWithTag('WARN', '添加时间到snapshots失败:', error);
         return snapshotsText; // 失败时返回原始文本
       }
     }
@@ -12330,8 +11301,8 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
               const lastLayer = getLastDialogueLayer();
               let currentVars = null;
 
-              if (lastLayer && lastLayer.varsSnapshot) {
-                currentVars = lastLayer.varsSnapshot;
+              if (lastLayer && getLayerVars(lastLayer)) {
+                currentVars = getLayerVars(lastLayer);
               } else if (ERA.currentVars) {
                 currentVars = ERA.currentVars;
               } else if (ERA.cache.vars) {
@@ -12391,7 +11362,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         ERA.updateByObject(parsedVars);
         logWithTag('ERA', `变量更新已通过 ERA 发送 (${Object.keys(parsedVars).length} 个变量):`, parsedVars);
 
-        // 立即在本地合并 parsedVars，否则 getvar / 体力条 / 同步 仍会读到旧值（不依赖 era:writeDone 回包）
+        // 立即在本地合并 parsedVars，否则 getvar / 体力条 / 同步 仍会读到旧值
         (function applyParsedVarsLocally() {
           const lastLayer = getLastDialogueLayer();
           const targets = [];
@@ -12405,10 +11376,14 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             ERA.cache.vars = ERA.currentVars ? JSON.parse(JSON.stringify(ERA.currentVars)) : {};
             targets.push(ERA.cache.vars);
           }
-          if (lastLayer && lastLayer.varsSnapshot) targets.push(lastLayer.varsSnapshot);
+          if (lastLayer && getLayerVars(lastLayer)) targets.push(getLayerVars(lastLayer));
           variablePaths.forEach(path => {
             const val = getNestedValue(parsedVars, path);
-            if (val !== undefined) targets.forEach(t => setNestedValue(t, path, val));
+            if (val !== undefined) {
+              targets.forEach(t => setNestedValue(t, path, val));
+              // 记录增量到本层 delta
+              if (lastLayer) recordLayerDelta(lastLayer, path, val);
+            }
           });
           addIncrements.forEach(({ path, delta }) => {
             targets.forEach(t => applyNormalInnerSemenSyncFromAdd(t, path, delta));
@@ -12420,9 +11395,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           if (ERA.cache) ERA.cache.timestamp = Date.now();
         })();
 
-        // 同步到 ST 聊天变量，供下次生成时 prompt 中 {{get_chat_variable::stat_data.xxx}} 使用（必须 await 确保在下次生成前已写入）
-        await syncVariablesToST().catch(e => { console.warn('[VAR] 同步变量到 ST 失败', e); });
-
         // 等待变量更新完成后，从 ERA 系统读取当前值并显示在变量区域
         // 延迟一下确保变量已更新
         setTimeout(async () => {
@@ -12431,8 +11403,8 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             const lastLayer = getLastDialogueLayer();
             let varsSnapshot = null;
 
-            if (lastLayer && lastLayer.varsSnapshot) {
-              varsSnapshot = lastLayer.varsSnapshot;
+            if (lastLayer && getLayerVars(lastLayer)) {
+              varsSnapshot = getLayerVars(lastLayer);
             } else if (ERA.currentVars) {
               varsSnapshot = ERA.currentVars;
             } else {
@@ -12463,6 +11435,131 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       }
     }
 
+    // ==================== 增量快照（delta snapshot）====================
+    // 设计：每层只存「相对上一层的变量变动」varsDelta（{路径: 节点}），
+    // 完整变量树 = 基准(defaultVars) + 逐层 delta 累加。
+    // - 玩家层（偶数）作为该轮的增量容器：setvar/updatevar 的变动记入最后玩家层 varsDelta。
+    // - AI 层（奇数）记录该轮 AI 输出的变量更新。
+    // - 层上可缓存完整树 layer.varsSnapshot（内部用，存档时剥离，读档后重建）。
+
+    // 把一条「点路径 -> 值」合并进 delta 树
+    function applyDeltaEntry(deltaTree, path, value) {
+      setNestedValue(deltaTree, path, (value && typeof value === 'object') ? JSON.parse(JSON.stringify(value)) : value);
+    }
+
+    // 把 src 的所有叶子路径以「点路径」形式展开并入 delta（用于整树差异）
+    function flattenToDelta(src, prefix, out) {
+      out = out || {};
+      if (!src || typeof src !== 'object') return out;
+      for (const key of Object.keys(src)) {
+        const v = src[key];
+        const p = prefix ? prefix + '.' + key : key;
+        if (v && typeof v === 'object' && !Array.isArray(v)) {
+          flattenToDelta(v, p, out);
+        } else {
+          out[p] = v;
+        }
+      }
+      return out;
+    }
+
+    // 计算两个变量树的差异（newTree 相对 oldTree 的变动），返回 delta 树
+    function diffVars(oldTree, newTree) {
+      const oldFlat = flattenToDelta(oldTree || {});
+      const newFlat = flattenToDelta(newTree || {});
+      const delta = {};
+      for (const p of Object.keys(newFlat)) {
+        if (oldFlat[p] !== newFlat[p]) {
+          applyDeltaEntry(delta, p, newFlat[p]);
+        }
+      }
+      return delta;
+    }
+
+    // 判断 delta 是否为空
+    function isEmptyDelta(delta) {
+      return !delta || typeof delta !== 'object' || Object.keys(delta).length === 0;
+    }
+
+    // 记录一条变量变动到指定层的 varsDelta
+    function recordLayerDelta(layer, path, value) {
+      if (!layer) return;
+      if (!layer.varsDelta) layer.varsDelta = {};
+      applyDeltaEntry(layer.varsDelta, path, value);
+    }
+
+    // 获取某层的完整变量树（惰性重建 + 缓存）
+    function getLayerVars(layer) {
+      if (!layer) return ERA.currentVars || ERA.defaultVars;
+      if (layer.varsSnapshot) return layer.varsSnapshot; // 已缓存完整树
+      // 增量层：重建
+      const idx = dialogueLayers.indexOf(layer);
+      if (idx >= 0) {
+        return rebuildLayerSnapshot(idx);
+      }
+      // 不在序列里（新层）：基于上一完整树 + 自身 delta
+      const base = ERA.currentVars || ERA.defaultVars;
+      const merged = JSON.parse(JSON.stringify(base));
+      if (layer.varsDelta) deepMerge(merged, layer.varsDelta);
+      layer.varsSnapshot = merged;
+      return merged;
+    }
+
+    // 从基准累加 delta，重建第 index 层的完整变量树（并缓存到该层）
+    function rebuildLayerSnapshot(index) {
+      // 基准：defaultVars
+      let tree = JSON.parse(JSON.stringify(ERA.defaultVars));
+      for (let i = 0; i <= index && i < dialogueLayers.length; i++) {
+        const l = dialogueLayers[i];
+        if (l.varsDelta && !isEmptyDelta(l.varsDelta)) {
+          deepMerge(tree, l.varsDelta);
+        }
+      }
+      const layer = dialogueLayers[index];
+      if (layer) layer.varsSnapshot = tree;
+      return tree;
+    }
+
+    // 清空从某层起的快照缓存（回溯/截断后调用，强制下次重建）
+    function invalidateSnapshotCacheFrom(index) {
+      for (let i = index; i < dialogueLayers.length; i++) {
+        if (dialogueLayers[i]) delete dialogueLayers[i].varsSnapshot;
+      }
+    }
+
+    // 读档迁移：把旧格式（整树 varsSnapshot、无 varsDelta）的对话层转为增量格式。
+    // 逐层计算 diff(上一层完整树, 本层完整树) 作为本层 varsDelta，并保留最后一层完整树作为运行时缓存。
+    function migrateLegacySnapshotsToDelta() {
+      if (!dialogueLayers || dialogueLayers.length === 0) return;
+      let prevTree = JSON.parse(JSON.stringify(ERA.defaultVars));
+      let migrated = 0;
+      for (let i = 0; i < dialogueLayers.length; i++) {
+        const layer = dialogueLayers[i];
+        if (!layer) continue;
+        // 已是增量格式（有 varsDelta）则只更新 prevTree
+        if (layer.varsDelta && !isEmptyDelta(layer.varsDelta)) {
+          const t = JSON.parse(JSON.stringify(prevTree));
+          deepMerge(t, layer.varsDelta);
+          prevTree = t;
+          continue;
+        }
+        // 旧格式：有整树 varsSnapshot
+        const full = layer.varsSnapshot || layer.mvuData?.stat_data || layer.mvuData;
+        if (full && typeof full === 'object') {
+          migrateLegacyHstateTree(full);
+          layer.varsDelta = diffVars(prevTree, full);
+          prevTree = JSON.parse(JSON.stringify(full));
+          migrated++;
+        }
+        // 本层完整树缓存（最后一层作为运行时值，其余清空以省内存）
+        layer.varsSnapshot = (i === dialogueLayers.length - 1) ? prevTree : undefined;
+        if (layer.varsSnapshot === undefined) delete layer.varsSnapshot;
+      }
+      if (migrated > 0) {
+        logWithTag('LOAD', `旧存档迁移为增量快照：${migrated} 层已转换`);
+      }
+    }
+
     // 记录对话层（AI回复，奇数层）- 集成 ERA
     async function recordDialogueLayer(parsed) {
       try {
@@ -12486,34 +11583,20 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           currentDialogueLayer = currentDialogueLayer + 1; // 修正为奇数
         }
 
-        // 获取当前变量快照
-        // 当前运行时值就是最后对话层快照，所以新对话层应该基于当前的 ERA.currentVars
-        let currentVarsSnapshot = null;
+        // ============ 增量快照：计算本轮 delta，而非整树写出 ============
+        // 本轮 AI 层的完整树 = 上一轮 + 本轮变动。
+        // ERA.currentVars 此刻保存的是「应用了本轮所有变量更新后」的运行时树（由 setvar/updatevar 维护）。
+        // 因此：本层 delta = diff(上一轮完整树, 当前 ERA.currentVars)；本层完整树 = 当前 ERA.currentVars。
+        const runtimeTree = ERA.currentVars
+          ? JSON.parse(JSON.stringify(ERA.currentVars))
+          : JSON.parse(JSON.stringify(ERA.defaultVars));
 
-        // 第一层使用默认变量
-        if (currentDialogueLayer === 1) {
-          currentVarsSnapshot = JSON.parse(JSON.stringify(ERA.defaultVars));
-          logWithTag('HIST', '第一层使用默认变量数据');
-        } else if (ERA.currentVars) {
-          // 其他层：优先使用 ERA.currentVars（它应该就是最后对话层的快照）
-          currentVarsSnapshot = JSON.parse(JSON.stringify(ERA.currentVars));
-          logWithTag('HIST', '使用当前运行时值（最后对话层快照）作为新对话层快照');
-        } else {
-          // 如果 ERA.currentVars 不存在，尝试从 ERA 获取
-          try {
-            currentVarsSnapshot = await ERA.getCurrentVars();
-            if (!currentVarsSnapshot) {
-              // 如果 ERA 获取失败，使用默认值
-              currentVarsSnapshot = JSON.parse(JSON.stringify(ERA.defaultVars));
-            }
-          } catch (e) {
-            errorWithTag('HIST', '获取变量快照失败', e);
-            currentVarsSnapshot = JSON.parse(JSON.stringify(ERA.defaultVars));
-          }
-        }
+        // 找到上一轮（最后一个已有层）的完整树作为 diff 基准
+        const prevLayer = dialogueLayers.length > 0 ? dialogueLayers[dialogueLayers.length - 1] : null;
+        const prevTree = prevLayer ? getLayerVars(prevLayer) : JSON.parse(JSON.stringify(ERA.defaultVars));
 
-        // 创建新对话层后，更新 ERA.currentVars 使其指向新对话层的快照
-        // 这样当前运行时值就始终等于最后对话层快照
+        // 计算本轮 delta（第一层相对默认变量的全量差异；后续层相对上一轮）
+        const layerDelta = diffVars(prevTree, runtimeTree);
 
         const dialogueLayer = {
           id: crypto.randomUUID(),
@@ -12524,7 +11607,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           branches: parsed.branches || '',
           snapshots: parsed.snapshots || '',
           variables: parsed.variables || '',
-          varsSnapshot: currentVarsSnapshot ? JSON.parse(JSON.stringify(currentVarsSnapshot)) : null,
+          // 增量：本轮相对上一轮的变量变动
+          varsDelta: layerDelta,
+          // 完整树（当前层缓存，也是当前运行时值）
+          varsSnapshot: runtimeTree,
           requestFlags: Object.assign(emptyRequestFlags(), requestFlags),
         };
         if (dialogueLayer.varsSnapshot) stripSystemRequest(dialogueLayer.varsSnapshot);
@@ -12713,16 +11799,16 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 处理接收到的消息内容
     async function processMessage(content) {
       // 在控制台输出解析信息（无论通过什么方式调用）
-      console.log('═══════════════════════════════════════════════════════');
-      console.log('📥 processMessage 被调用');
-      console.log('═══════════════════════════════════════════════════════');
-      console.log('原始内容:', content);
-      console.log('───────────────────────────────────────────────────────');
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '📥 processMessage 被调用');
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '原始内容:', content);
+      logWithTag('DEBUG', '───────────────────────────────────────────────────────');
 
       const parsed = parseTags(content);
-      console.log('解析结果:', parsed);
+      logWithTag('DEBUG', '解析结果:', parsed);
       if (!APPLY_STORY_HOOKS) {
-        console.warn('[MSG] hook 解析已禁用：忽略 hook / 额外视角 / 选项 / 总结 / 数据变化，仅应用正文');
+        warnWithTag('MSG', 'hook 解析已禁用：忽略 hook / 额外视角 / 选项 / 总结 / 数据变化，仅应用正文');
         parsed.hook = '';
         parsed.otherpov = '';
         parsed.branches = '';
@@ -12731,19 +11817,19 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         pendingBranchesText = null;
       }
       warnIfTorinaPovLeakedInMaintext(parsed.maintext, parsed.otherpov);
-      console.log('───────────────────────────────────────────────────────');
+      logWithTag('DEBUG', '───────────────────────────────────────────────────────');
 
       // 如果正在读档，阻止 processMessage 覆盖读档对话
       if (window._isLoadingArchiveDialogue) {
-        console.log('[LOAD] ⚠️ 阻止 processMessage 覆盖读档对话');
+        logWithTag('LOAD', '⚠️ 阻止 processMessage 覆盖读档对话');
         return;
       }
 
       if (parsed.maintext) {
         const dialogues = parseTolinaDialogues(parsed.maintext);
-        console.log(`✅ 解析到 ${dialogues.length} 段对话:`);
+        logWithTag('DEBUG', `✅ 解析到 ${dialogues.length} 段对话:`);
         dialogues.forEach((dialogue, index) => {
-          console.log(`  对话 ${index + 1}:`, {
+          logWithTag('DEBUG', `  对话 ${index + 1}:`, {
             角色: dialogue.character,
             表情: dialogue.expression,
             对话: dialogue.dialogue,
@@ -12752,22 +11838,22 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           });
         });
       } else {
-        console.log('⚠️ 没有对话文本 (maintext)');
+        logWithTag('DEBUG', '⚠️ 没有对话文本 (maintext)');
       }
 
       if (parsed.branches) {
-        console.log('✅ 分支选项:', parsed.branches);
+        logWithTag('DEBUG', '✅ 分支选项:', parsed.branches);
       }
 
       if (parsed.variables) {
-        console.log('✅ 变量更新:', parsed.variables);
+        logWithTag('DEBUG', '✅ 变量更新:', parsed.variables);
       }
 
       if (parsed.snapshots) {
-        console.log('✅ 快照:', parsed.snapshots);
+        logWithTag('DEBUG', '✅ 快照:', parsed.snapshots);
       }
 
-      console.log('═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
 
       // 捕获到AI回复后，检测并控制 UID
       await checkAndControlUIDs();
@@ -12829,13 +11915,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         errorWithTag('AUTOSAVE', '自动存档失败', e);
       }
 
-      // 变量更新后，更新体力条和时间天气系统
-      try {
-        await updateStaminaBar();
-        await updateTimeWeatherSystem();
-      } catch (e) {
-        errorWithTag('MSG', '更新体力条和时间系统失败', e);
-      }
+      // 变量更新后的体力条/时间天气刷新，已由 refreshUIByVariablePath 批量合并统一处理，无需在此重复直调
 
       updateOtherPovToggleVisibility();
 
@@ -13124,15 +12204,17 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     function patchRuntimeVarsSnapshot(mutator) {
       const lastLayer = getLastDialogueLayer();
       if (lastLayer) {
-        if (!lastLayer.varsSnapshot) {
-          lastLayer.varsSnapshot = JSON.parse(JSON.stringify(ERA.currentVars || ERA.defaultVars));
+        const tree = getLayerVars(lastLayer);
+        const before = JSON.parse(JSON.stringify(tree));
+        mutator(tree);
+        // 记录整树差异到本层 delta
+        const d = diffVars(before, tree);
+        if (!isEmptyDelta(d)) {
+          if (!lastLayer.varsDelta) lastLayer.varsDelta = {};
+          deepMerge(lastLayer.varsDelta, d);
         }
-        mutator(lastLayer.varsSnapshot);
-        ERA.currentVars = lastLayer.varsSnapshot;
-        ERA.cache.vars = lastLayer.varsSnapshot;
-        if (typeof ERA.insertByObject === 'function') {
-          ERA.insertByObject(lastLayer.varsSnapshot);
-        }
+        ERA.currentVars = tree;
+        ERA.cache.vars = tree;
         return;
       }
       if (!ERA.currentVars) {
@@ -13194,7 +12276,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       patchRuntimeVarsSnapshot(stripSystemRequest);
 
       if (tags.length) {
-        console.log('[REQUEST] 自动注入:', tags.join(' '));
+        logWithTag('REQUEST', '自动注入:', tags.join(' '));
       }
       return tags;
     }
@@ -13210,22 +12292,22 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 变量说明已移除，不再在 RP 时注入提示词（避免把整块变量列表输出给 AI）
     function logPromptBuild(built) {
       const prefix = (built && built.text) || '';
-      console.log('═══════════════════════════════════════════════════════');
-      console.log('📤 Chat Completion 提示词');
-      console.log('═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '📤 Chat Completion 提示词');
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
       if (built && built.diag) {
-        console.log('顺序', built.diag.order);
-        console.log('预设', built.preset || '(默认)');
-        console.log('世界书', built.diag.worldbook);
+        logWithTag('DEBUG', '顺序', built.diag.order);
+        logWithTag('DEBUG', '预设', built.preset || '(默认)');
+        logWithTag('DEBUG', '世界书', built.diag.worldbook);
       }
       if (built && built.messages) {
         built.messages.forEach(function (m, i) {
-          console.log('[' + i + '] ' + m.role + ' (' + String(m.content || '').length + ')');
+          logWithTag('' + i + '', '' + m.role + ' (' + String(m.content || '').length + ')');
         });
       }
-      console.log('───────────────────────────────────────────────────────');
-      console.log(prefix);
-      console.log('═══════════════════════════════════════════════════════');
+      logWithTag('DEBUG', '───────────────────────────────────────────────────────');
+      logWithTag('DEBUG', prefix);
+      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
       return prefix;
     }
 
@@ -13266,104 +12348,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         return String(currentStreamingContent || text || '').trim();
       } finally {
         setGalBusy(false);
-      }
-    }
-
-    // 监听来自SillyTavern的消息
-    function setupMessageListener() {
-      // 监听流式消息事件
-      if (window.eventOn && typeof window.eventOn === 'function') {
-        let accumulatedContent = '';
-
-        window.eventOn('js_stream_token_received_incrementally', async (chunk) => {
-          accumulatedContent += chunk;
-          // 流式传输时不更新UI，只累积内容（等待完整消息）
-        });
-
-        // 监听消息完成事件（如果有）
-        if (window.eventOn) {
-          window.eventOn('js_message_complete', async (fullContent) => {
-            accumulatedContent = fullContent || '';
-
-            // 在控制台输出捕获到的AI回复（展开显示）
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('📥 捕获到AI回复');
-            console.log('═══════════════════════════════════════════════════════');
-            console.log('原始内容:', accumulatedContent);
-            console.log('───────────────────────────────────────────────────────');
-
-            // 解析标签
-            const parsed = parseTags(accumulatedContent);
-            console.log('解析结果:', parsed);
-            console.log('───────────────────────────────────────────────────────');
-
-            if (parsed.maintext) {
-              const dialogues = parseTolinaDialogues(parsed.maintext);
-              console.log(`✅ 解析到 ${dialogues.length} 段对话:`);
-              dialogues.forEach((dialogue, index) => {
-                console.log(`  对话 ${index + 1}:`, {
-                  角色: dialogue.character,
-                  表情: dialogue.expression,
-                  对话: dialogue.dialogue,
-                  背景: dialogue.background,
-                  立绘标签: dialogue.baseKey
-                });
-              });
-            } else {
-              console.log('⚠️ 没有对话文本 (maintext)');
-            }
-
-            if (parsed.branches) {
-              console.log('✅ 分支选项:', parsed.branches);
-            }
-
-            if (parsed.variables) {
-              console.log('✅ 变量更新:', parsed.variables);
-            }
-
-            if (parsed.snapshots) {
-              console.log('✅ 快照:', parsed.snapshots);
-            }
-
-            console.log('═══════════════════════════════════════════════════════');
-
-            try {
-              // 使用processMessage处理完整消息（会输出详细的捕获信息）
-              await processMessage(accumulatedContent);
-            } catch (e) {
-                errorWithTag('MSG', '处理完整消息失败', e);
-            }
-            accumulatedContent = ''; // 重置
-          });
-        }
-      }
-
-      // 监听发送消息前的事件，注入变量说明和对话历史
-      if (window.eventOn && typeof window.eventOn === 'function') {
-        console.log('[INIT] 正在注册 js_before_send_message 事件监听器...');
-        window.eventOn('js_before_send_message', async (message) => {
-          console.log('[EVENT] ⚡ js_before_send_message 事件被触发！');
-          console.log('[EVENT] 消息对象:', message);
-
-          try {
-            // 发送给AI之前，检测并控制 UID
-            await checkAndControlUIDs();
-            if (message && message.text) {
-              const originalText = message.text;
-              message.text = buildPromptPrefix(originalText);
-              logWithTag('PROMPT', '已注入正文提示词');
-            } else {
-              console.warn('[EVENT] ⚠️ 消息对象中没有 text 字段:', message);
-            }
-          } catch (e) {
-            console.error('[EVENT] ❌ 处理消息失败:', e);
-            errorWithTag('PROMPT', '注入提示词前缀失败', e);
-          }
-          return message;
-        });
-        console.log('[INIT] ✅ js_before_send_message 事件监听器已注册');
-      } else {
-        console.warn('[INIT] ⚠️ window.eventOn 不可用，无法注册 js_before_send_message 事件监听器');
       }
     }
 
@@ -13413,9 +12397,9 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     /** @param {string[]} paths */
     function readStatFromPaths(paths) {
       const lastLayer = getLastDialogueLayer();
-      if (lastLayer?.varsSnapshot) {
+      if (lastLayer) {
         for (const p of paths) {
-          const v = getNestedValue(lastLayer.varsSnapshot, p);
+          const v = getNestedValue(getLayerVars(lastLayer), p);
           if (v != null && String(v).trim()) return v;
         }
       }
@@ -13461,7 +12445,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       try {
         await checkAndControlUIDs();
       } catch (e) {
-        console.warn('[UID] setGameMode 后同步世界书（UID33/43）失败:', e);
+        warnWithTag('UID', 'setGameMode 后同步世界书（UID33/43）失败:', e);
       }
       return normalized;
     }
@@ -13474,7 +12458,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       }
       if (!mode) mode = GAME_MODE_NORMAL;
       await setGameMode(mode);
-      console.log('[LOAD] 游戏模式:', mode);
+      logWithTag('LOAD', '游戏模式:', mode);
     }
 
     // 地图：选中地点后写变量并自动 generate
@@ -13517,18 +12501,14 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     // 页面加载时初始化
     window.addEventListener('DOMContentLoaded', async () => {
-      console.log('[INIT] DOMContentLoaded 事件触发，开始初始化...');
+      logWithTag('INIT', 'DOMContentLoaded 事件触发，开始初始化...');
       if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
         window.妹神官_settings_variable.init();
       }
-      setupStreamListener();
-      console.log('[INIT] setupStreamListener 完成');
-      setupMessageListener();
-      console.log('[INIT] setupMessageListener 完成');
       setupDialogueClickListeners();
-      console.log('[INIT] setupDialogueClickListeners 完成');
+      logWithTag('INIT', 'setupDialogueClickListeners 完成');
       setupSaveFunctionality();
-      console.log('[INIT] setupSaveFunctionality 完成');
+      logWithTag('INIT', 'setupSaveFunctionality 完成');
       ensureOtherPovToggle();
 
       if (typeof MeishinkanWorldMap !== 'undefined') {
@@ -13547,8 +12527,8 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           },
           getCorruptionStage: () => {
             const lastLayer = getLastDialogueLayer();
-            if (lastLayer?.varsSnapshot) {
-              const v = getNestedValue(lastLayer.varsSnapshot, '托莉娜.基础.堕落阶段');
+            if (lastLayer) {
+              const v = getNestedValue(getLayerVars(lastLayer), '托莉娜.基础.堕落阶段');
               if (v != null) return Number(v);
             }
             const vars = ERA.currentVars || ERA.cache.vars;
@@ -13559,12 +12539,12 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             return getvar('stat_data.托莉娜.基础.堕落阶段');
           },
         });
-        console.log('[INIT] MeishinkanWorldMap 已初始化');
+        logWithTag('INIT', 'MeishinkanWorldMap 已初始化');
 
         if (DEBUG_SKIP_TO_WORLD_MAP) {
           hideBootScreens();
           await MeishinkanWorldMap.open();
-          console.log('[DEBUG] 已直接打开世界地图');
+          logWithTag('DEBUG', '已直接打开世界地图');
         }
       }
     });
