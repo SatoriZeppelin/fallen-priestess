@@ -6,6 +6,7 @@
 (function (global) {
   const STORE_KEY = 'meishinkan_worldbook';
   const CG_OFF_KEY = 'meishinkan_worldbook_cg_off_v1';
+  const BEFORE_TO_D2_KEY = 'meishinkan_wb_before_to_d2_v1';
   const SCAN_KEY = 'meishinkan_worldbook_scan';
   const TIMED_KEY = 'meishinkan_worldbook_timed';
   const FOLDERS = ['托莉娜', '其他角色', '主要地点', '核心设定'];
@@ -26,6 +27,23 @@
       });
     });
     return st;
+  }
+
+  function migrateBeforeCharToDepth2(st) {
+    if (!st || !Array.isArray(st.folders)) return false;
+    const names = { 更新规则: 1, '资源列表-起始': 1 };
+    let changed = false;
+    st.folders.forEach(function (folder) {
+      (folder.entries || []).forEach(function (e) {
+        if (!names[e.comment]) return;
+        if (Number(e.position) === 4 && Number(e.depth) === 2) return;
+        e.position = 4;
+        e.depth = 2;
+        syncExtensions(e);
+        changed = true;
+      });
+    });
+    return changed;
   }
   const expanded = Object.create(null);
   let activeFolder = FOLDERS[0];
@@ -418,6 +436,10 @@
       if (raw) st = normalize(JSON.parse(raw));
     } catch (e) {}
     if (!st) st = normalize(cloneDefault());
+    if (!localStorage.getItem(BEFORE_TO_D2_KEY)) {
+      if (migrateBeforeCharToDepth2(st)) saveStore(st);
+      localStorage.setItem(BEFORE_TO_D2_KEY, '1');
+    }
     if (!localStorage.getItem(CG_OFF_KEY)) {
       disableCgEntries(st);
       localStorage.setItem(CG_OFF_KEY, '1');
@@ -911,7 +933,6 @@
     if (title) title.textContent = e.comment || '未命名条目';
     const sub = card.querySelector('.sys-api-card-sub');
     if (sub) sub.textContent = 'UID ' + e.uid + ' · ' + keysLabel(e) + ' · 顺序 ' + (e.insertion_order || 0);
-    renderNav(st);
   }
 
   function moveEntry(uid, dir) {
@@ -1104,7 +1125,13 @@
       });
       list.addEventListener('change', function (e) {
         const card = e.target.closest('.sys-api-card');
-        if (card) saveCard(card);
+        if (!card) return;
+        try {
+          saveCard(card);
+        } catch (err) {
+          console.error('[worldbook] saveCard failed', err);
+          render();
+        }
       });
       list.addEventListener('input', function (e) {
         const card = e.target.closest('.sys-api-card');
@@ -1317,9 +1344,17 @@
     return secondaryOk(e, haystack, g);
   }
 
-  function extrasHaystack(e, extras) {
+  function locationHaystack(extras) {
     extras = extras || {};
     let t = '';
+    if (extras.scenario) t += '\n' + extras.scenario;
+    if (extras.torinaLocation) t += '\n' + extras.torinaLocation;
+    return t;
+  }
+
+  function extrasHaystack(e, extras) {
+    extras = extras || {};
+    let t = locationHaystack(extras);
     if (e.match_persona_description && extras.persona) t += '\n' + extras.persona;
     if (e.match_character_description && extras.character) t += '\n' + extras.character;
     if (e.match_character_personality && extras.personality) t += '\n' + extras.personality;

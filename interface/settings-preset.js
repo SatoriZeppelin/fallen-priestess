@@ -98,6 +98,7 @@
       marker: src.marker === true || !!MARKER_IDS[ident] || !!MARKER_IDS[id],
       injection_position: Number(src.injection_position) || 0,
       depth: Number(src.injection_depth != null ? src.injection_depth : src.depth) || 0,
+      injection_order: Number(src.injection_order != null ? src.injection_order : src.order) || 100,
     };
   }
 
@@ -727,8 +728,12 @@
 
   function getPreset(route) {
     const st = loadStore();
+    const profiles = st.profiles || [];
     const id = (st.routes && st.routes[route]) || st.defaultPresetId;
-    return st.profiles.find((p) => p.id === id) || st.profiles[0] || null;
+    let p = profiles.find((x) => x.id === id);
+    if (p && p.enabled === false) p = profiles.find((x) => x.id === st.defaultPresetId);
+    if (p && p.enabled === false) p = profiles.find((x) => x.enabled !== false);
+    return p || null;
   }
 
   function init() {

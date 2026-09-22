@@ -1,10 +1,10 @@
-/* GAL 工具栏 + 正在生成：右对齐独立堆叠，贴文本区上沿 */
+/* GAL 工具栏 + 正在生成：生成提示在画面顶栏正中 */
 
 #gal-generating {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 40;
+  top: 18px;
+  left: 50%;
+  z-index: 120;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -19,13 +19,13 @@
   pointer-events: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
   opacity: 0;
-  transform: translateY(-4px) scale(0.98);
+  transform: translateX(-50%) translateY(-4px) scale(0.98);
   transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
 #gal-generating.is-on {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 #gal-generating[hidden] {

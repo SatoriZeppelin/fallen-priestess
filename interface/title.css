@@ -13,7 +13,7 @@
       z-index: 51;
       pointer-events: none;
       opacity: 0;
-      animation: fadeInIntro 1.2s ease-out 0.3s forwards;
+      animation: fadeInVideo 1.2s ease-out 0.3s forwards;
     }
 
     @keyframes fadeInVideo {

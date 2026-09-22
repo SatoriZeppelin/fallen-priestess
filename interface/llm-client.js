@@ -286,55 +286,197 @@
     });
   }
 
-  function chatBody(trial) {
-    const protocol = protocolOf(trial);
-    const model = String(trial.model || '').trim();
-    if (protocol === 'claude') {
-      return {
-        model: model,
-        max_tokens: 16,
-        messages: [{ role: 'user', content: 'ping' }],
-      };
-    }
-    if (protocol === 'gemini') {
-      return {
-        contents: [{ role: 'user', parts: [{ text: 'ping' }] }],
-        generationConfig: { maxOutputTokens: 16 },
-      };
-    }
+  function splitClaude(messages) {
+    const system = [];
+    const rest = [];
+    (messages || []).forEach((m) => {
+      const content = m && m.content != null ? String(m.content) : '';
+      if (!content) return;
+      if (m.role === 'system') system.push(content);
+      else rest.push({ role: m.role === 'assistant' ? 'assistant' : 'user', content: content });
+    });
+    return { system: system.join('\n\n'), messages: rest };
+  }
+
+  function splitGemini(messages) {
+    const system = [];
+    const contents = [];
+    (messages || []).forEach((m) => {
+      const content = m && m.content != null ? String(m.content) : '';
+      if (!content) return;
+      if (m.role === 'system') system.push(content);
+      else {
+        contents.push({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: content }],
+        });
+      }
+    });
     return {
-      model: model,
-      messages: [{ role: 'user', content: 'ping' }],
-      max_tokens: 16,
+      systemInstruction: system.length ? { parts: [{ text: system.join('\n\n') }] } : null,
+      contents: contents,
     };
   }
 
-  async function testMessage(cfg) {
+  function numOrNull(v) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function buildChatPayload(trial, opts) {
+    opts = opts || {};
+    const protocol = protocolOf(trial);
+    const model = String((trial && trial.model) || '').trim();
+    const messages = opts.messages || [];
+    const maxTokens = Math.max(16, Math.round(numOrNull(opts.maxTokens) || 2048));
+    const stream = !!opts.stream && protocol !== 'gemini';
+    const temperature = numOrNull(opts.temperature);
+    const topP = numOrNull(opts.topP);
+    const topK = numOrNull(opts.topK);
+    if (protocol === 'claude') {
+      const cl = splitClaude(messages);
+      const body = { model: model, max_tokens: maxTokens, messages: cl.messages };
+      if (cl.system) body.system = cl.system;
+      if (stream) body.stream = true;
+      if (temperature != null) body.temperature = temperature;
+      if (topP != null) body.top_p = topP;
+      if (topK != null && topK > 0) body.top_k = Math.round(topK);
+      return { body: body, stream: stream };
+    }
+    if (protocol === 'gemini') {
+      const ge = splitGemini(messages);
+      const body = {
+        contents: ge.contents,
+        generationConfig: { maxOutputTokens: maxTokens },
+      };
+      if (ge.systemInstruction) body.systemInstruction = ge.systemInstruction;
+      if (temperature != null) body.generationConfig.temperature = temperature;
+      if (topP != null) body.generationConfig.topP = topP;
+      if (topK != null && topK > 0) body.generationConfig.topK = Math.round(topK);
+      return { body: body, stream: false };
+    }
+    const body = { model: model, messages: messages, max_tokens: maxTokens, stream: stream };
+    if (temperature != null) body.temperature = temperature;
+    if (topP != null) body.top_p = topP;
+    if (topK != null && topK > 0) body.top_k = Math.round(topK);
+    return { body: body, stream: stream };
+  }
+
+  function extractStreamDelta(data, protocol) {
+    if (!data || typeof data !== 'object') return '';
+    if (protocol === 'claude') {
+      if (data.type === 'content_block_delta' && data.delta && data.delta.text) {
+        return String(data.delta.text);
+      }
+      if (data.type === 'content_block_start' && data.content_block && data.content_block.text) {
+        return String(data.content_block.text);
+      }
+      return '';
+    }
+    const delta = data.choices && data.choices[0] && data.choices[0].delta;
+    if (delta && delta.content != null) return String(delta.content);
+    if (data.choices && data.choices[0] && data.choices[0].text) {
+      return String(data.choices[0].text);
+    }
+    return '';
+  }
+
+  async function readChatStream(res, onDelta, protocol) {
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buf = '';
+    let content = '';
+    const consume = (line) => {
+      line = String(line || '').replace(/\r$/, '');
+      if (!line) return false;
+      if (line.indexOf('event:') === 0) return /message_stop/i.test(line.slice(6));
+      if (line.indexOf('data:') !== 0) return false;
+      const payload = line.slice(5).trim();
+      if (!payload) return false;
+      if (payload === '[DONE]') return true;
+      try {
+        const json = JSON.parse(payload);
+        if (json && json.type === 'message_stop') return true;
+        const delta = extractStreamDelta(json, protocol);
+        if (delta) {
+          content += delta;
+          if (onDelta) onDelta(content, delta);
+        }
+      } catch (e) {}
+      return false;
+    };
+    try {
+      while (true) {
+        const chunk = await reader.read();
+        if (!chunk || chunk.done) break;
+        buf += decoder.decode(chunk.value, { stream: true });
+        const parts = buf.split('\n');
+        buf = parts.pop() || '';
+        let ended = false;
+        for (let i = 0; i < parts.length; i++) {
+          if (consume(parts[i])) {
+            ended = true;
+            break;
+          }
+        }
+        if (ended) break;
+      }
+    } finally {
+      try {
+        buf += decoder.decode();
+      } catch (e) {}
+      if (buf) consume(buf);
+    }
+    return content;
+  }
+
+  async function chat(cfg, opts) {
+    opts = opts || {};
     const trial = assertCfg(cfg);
     if (!String(trial.model || '').trim()) throw new Error('请填写模型');
+    const messages = Array.isArray(opts.messages) ? opts.messages : [];
+    if (!messages.length) throw new Error('消息为空');
+    const packed = buildChatPayload(trial, opts);
     const urls = chatUrlCandidates(trial);
     if (!urls.length) throw new Error('请填写接口地址');
     return tryUrls(urls, async (url) => {
-      const got = await fetchText(withGeminiKeyQuery(url, trial), {
+      const res = await fetch(withGeminiKeyQuery(url, trial), {
         method: 'POST',
         headers: authHeaders(trial),
-        body: JSON.stringify(chatBody(trial)),
+        body: JSON.stringify(packed.body),
+        signal: opts.signal,
       });
-      if (!got.res.ok) throw makeApiError(got.res.status, got.text, got.res.statusText);
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw makeApiError(res.status, text, res.statusText);
+      }
+      if (packed.stream && res.body && typeof res.body.getReader === 'function') {
+        const content = await readChatStream(res, opts.onDelta, protocolOf(trial));
+        if (!content) throw new Error('API 返回空内容');
+        return content;
+      }
+      const text = await res.text().catch(() => '');
       let data;
       try {
-        data = JSON.parse(got.text || '{}');
+        data = JSON.parse(text || '{}');
       } catch (e) {
         throw new Error('返回非 JSON');
       }
-      if (data && data.error) {
-        throw makeApiError(got.res.status, got.text, 'API error');
-      }
-      const text = extractAssistantText(data);
-      if (!text) throw new Error('API 返回空内容');
-      return text;
+      if (data && data.error) throw makeApiError(res.status, text, 'API error');
+      const full = extractAssistantText(data);
+      if (!full) throw new Error('API 返回空内容');
+      if (opts.onDelta) opts.onDelta(full, full);
+      return full;
     });
   }
 
-  global.妹神官_llm = { listModels: listModels, testMessage: testMessage };
+  async function testMessage(cfg) {
+    return chat(cfg, {
+      messages: [{ role: 'user', content: 'ping' }],
+      maxTokens: 16,
+      stream: false,
+    });
+  }
+
+  global.妹神官_llm = { listModels: listModels, testMessage: testMessage, chat: chat };
 })(window);

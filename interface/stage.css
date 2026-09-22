@@ -996,6 +996,12 @@
       border-top: 1px solid rgba(212, 175, 106, 0.16);
     }
 
+    .branch-action-input-row.is-solo {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
     .branch-action-input {
       flex: 1;
       min-width: 0;

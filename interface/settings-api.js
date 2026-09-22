@@ -112,8 +112,11 @@
       '    引子规则:',
       '        仅限以下格式:<名称|本回合该分段应该生成什么的简略描写>',
       '        参考案例:<额外视角|托莉娜正在门后面被马蒂亚斯隐奸，努力控制自己不发出声音和{{user}}对话>',
-      '        名称白名单:额外视角/数据变化/额外视角/总结/选项',
+      '        参考案例:<地点变化|庄园书库>',
+      '        名称白名单:额外视角/地点变化',
       '        要求:当存在多个hook的时候换行',
+      '        当托莉娜与{{user}}分头行动、不在同一地点时，必须用<额外视角|...>写出托莉娜所遭遇的事情',
+      '        当托莉娜本回合的移动目的地与{{user}}不同的时，用<地点变化|地点名称>声明',
     ].join('\n');
   }
 
@@ -331,6 +334,20 @@
     const st = loadStore();
     if (route === 'story') return normalizeStoryParams(st.routeParams && st.routeParams.story);
     return null;
+  }
+
+  function resolveProfile(route) {
+    const st = loadStore();
+    const profiles = st.profiles || [];
+    const routeId = route && st.routes ? st.routes[route] : '';
+    const pick = (id) => profiles.find((p) => p && p.id === id && p.enabled !== false);
+    return (
+      pick(routeId) ||
+      pick(st.defaultProfileId) ||
+      profiles.find((p) => p && p.enabled !== false) ||
+      profiles[0] ||
+      null
+    );
   }
 
   function bindStorySampler() {
@@ -882,5 +899,5 @@
     maybeAutoConnect();
   }
 
-  global.妹神官_settings_api = { init, render, loadStore, saveStore, getRouteParams };
+  global.妹神官_settings_api = { init, render, loadStore, saveStore, getRouteParams, resolveProfile };
 })(window);

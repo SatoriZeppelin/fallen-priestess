@@ -799,13 +799,23 @@
 }
 
 .branch-action-input-row {
+  display: flex;
+  align-items: center;
   gap: 14px;
   margin-top: 6px;
   padding-top: 16px;
   border-top: 1px solid rgba(214, 176, 104, 0.16);
 }
 
+.branch-action-input-row.is-solo {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
 .branch-action-input {
+  flex: 1;
+  min-width: 0;
   padding: 8px 0;
   font: 400 14px/1.5 var(--fp-serif);
   color: #f3ead4;

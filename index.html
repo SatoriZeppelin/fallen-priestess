@@ -68,6 +68,9 @@
         if (doc.documentElement) ro.observe(doc.documentElement);
       }
     })();
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(new URL('sw.js', document.baseURI || location.href).href).catch(function () {});
+    }
   </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -1517,6 +1520,7 @@
   <script src="interface/settings-preset.js"></script>
   <script src="interface/settings-worldbook.js"></script>
   <script src="interface/settings-variable.js"></script>
+  <script src="interface/prompt-builder.js"></script>
   <script src="interface/toolbar.js"></script>
   <script src="interface/opening-select.js"></script>
   <script src="interface/app.js"></script>

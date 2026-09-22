@@ -180,72 +180,56 @@
         return url.toLowerCase().endsWith('.svg') || url.toLowerCase().includes('.svg?');
       },
 
-      // 将图片转换为base64并存储到IndexedDB
-      async saveImageToStorage(url, key) {
+      async readCachedDataUrl(key) {
         try {
-          // SVG文件有CORS限制，直接返回原始URL，不缓存
-          if (this.isSVG(url)) {
-            console.log('SVG文件跳过缓存，使用原始URL:', url);
-            return url;
-          }
-
           const db = await this.initDB();
-
-          // 检查是否已存在
-          const cached = await new Promise((resolve) => {
+          return await new Promise((resolve) => {
             const transaction = db.transaction([this.storeName], 'readonly');
             const store = transaction.objectStore(this.storeName);
             const request = store.get(key);
-            request.onsuccess = () => resolve(request.result);
+            request.onsuccess = () => resolve(request.result || null);
             request.onerror = () => resolve(null);
           });
+        } catch (e) {
+          return null;
+        }
+      },
 
-          if (cached && cached.startsWith('data:')) {
-            return cached; // 返回缓存的base64
+      // Cache Storage 优先；旧 IndexedDB data URL 仅作迁移，不再把整包写成 base64
+      async saveImageToStorage(url, key) {
+        try {
+          if (this.isSVG(url)) return url;
+
+          if (typeof MeishinkanAssets?.matchAssetCache === 'function') {
+            const hit = await MeishinkanAssets.matchAssetCache(url);
+            if (hit) return typeof resolveAssetUrl === 'function' ? resolveAssetUrl(url) : url;
           }
 
-          // 方法1：尝试使用fetch（优先 Hugging Face，失败回退 catbox）
-          try {
-            const response =
-              typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
-                ? await fetchAsset(url, { mode: 'cors' })
-                : await fetch(url, { mode: 'cors' });
-            if (response.ok) {
-              const blob = await response.blob();
-              // 转换为base64
-              return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                  const base64 = reader.result;
-                  try {
-                    // 存储到IndexedDB
-                    const transaction = db.transaction([this.storeName], 'readwrite');
-                    const store = transaction.objectStore(this.storeName);
-                    await new Promise((res, rej) => {
-                      const putRequest = store.put(base64, key);
-                      putRequest.onsuccess = () => res();
-                      putRequest.onerror = () => rej(putRequest.error);
-                    });
-                    resolve(base64);
-                  } catch (e) {
-                    console.warn('IndexedDB存储失败，使用原始URL:', e);
-                    resolve(url);
-                  }
-                };
-                reader.onerror = () => {
-                  resolve(storageUtils.saveImageViaCanvas(url, key));
-                };
-                reader.readAsDataURL(blob);
-              });
+          const cached = await this.readCachedDataUrl(key);
+          if (cached && typeof cached === 'string' && cached.startsWith('data:')) {
+            if (typeof MeishinkanAssets?.seedAssetCacheFromDataUrl === 'function') {
+              MeishinkanAssets.seedAssetCacheFromDataUrl(url, cached);
             }
-          } catch (fetchError) {
-            // fetch失败（可能是CORS问题），尝试方法2
-            console.log('fetch失败，尝试使用canvas方法:', fetchError.message);
-            return storageUtils.saveImageViaCanvas(url, key);
+            return cached;
           }
+
+          const response =
+            typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
+              ? await fetchAsset(url, { mode: 'cors' })
+              : await fetch(url, { mode: 'cors' });
+          if (response && response.ok) {
+            if (typeof MeishinkanAssets?.putAssetCache === 'function') {
+              await MeishinkanAssets.putAssetCache(
+                typeof resolveAssetUrl === 'function' ? resolveAssetUrl(url) : url,
+                response
+              );
+            }
+            return typeof resolveAssetUrl === 'function' ? resolveAssetUrl(url) : url;
+          }
+          return url;
         } catch (error) {
-          console.warn('保存图片到IndexedDB失败:', error);
-          return url; // 失败时返回原始URL
+          console.warn('保存图片到缓存失败:', error);
+          return url;
         }
       },
 
@@ -1235,48 +1219,78 @@
       console.log(`资源列表已初始化，共 ${allResources.length} 个资源`);
     }
 
+    function applyResolvedImageSrc(img, originalUrl, imageSrc) {
+      if (imageSrc && (imageSrc.startsWith('data:') || imageSrc.startsWith('blob:'))) {
+        img.src = imageSrc;
+        return;
+      }
+      if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(originalUrl)) {
+        setMediaSrcWithFallback(img, originalUrl);
+        return;
+      }
+      img.src = imageSrc || originalUrl;
+    }
+
+    function isUsableImageDataUrl(cached) {
+      if (typeof cached !== 'string' || !cached.startsWith('data:image/')) return false;
+      const comma = cached.indexOf(',');
+      if (comma < 0) return false;
+      return cached.length - comma > 64;
+    }
+
+    async function resolveCachedImageSrc(url, storageKey) {
+      if (storageUtils.isSVG(url)) {
+        return { imageSrc: url, measured: 0, blobUrl: null };
+      }
+
+      if (typeof MeishinkanAssets?.blobUrlFromCache === 'function') {
+        const fromCache = await MeishinkanAssets.blobUrlFromCache(url);
+        if (fromCache) {
+          return { imageSrc: fromCache.url, measured: fromCache.size, blobUrl: fromCache.url };
+        }
+      }
+
+      try {
+        const cached = await storageUtils.readCachedDataUrl(storageKey);
+        if (isUsableImageDataUrl(cached)) {
+          if (typeof MeishinkanAssets?.seedAssetCacheFromDataUrl === 'function') {
+            MeishinkanAssets.seedAssetCacheFromDataUrl(url, cached);
+          }
+          return { imageSrc: cached, measured: 0, blobUrl: null };
+        }
+      } catch (e) { /* ignore */ }
+
+      try {
+        const response =
+          typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
+            ? await fetchAsset(url, { mode: 'cors' })
+            : await fetch(url, { mode: 'cors' });
+        if (response && response.ok) {
+          const blob = await response.blob();
+          if (blob && blob.size >= 32) {
+            const blobUrl = URL.createObjectURL(blob);
+            return { imageSrc: blobUrl, measured: blob.size, blobUrl };
+          }
+        }
+      } catch (e) { /* ignore */ }
+
+      return { imageSrc: url, measured: 0, blobUrl: null };
+    }
+
     // 全局loadImage函数（供设置界面使用）
     async function loadImageGlobal(url, assetName, assetId) {
       try {
         const storageKey = `img_${assetId}`;
-        let imageSrc = url;
-
-        // SVG文件跳过IndexedDB缓存，直接使用原始URL
-        if (storageUtils.isSVG(url)) {
-          imageSrc = url;
-        } else {
-          // 尝试从IndexedDB加载
-          try {
-            const db = await storageUtils.initDB();
-            const transaction = db.transaction([storageUtils.storeName], 'readonly');
-            const store = transaction.objectStore(storageUtils.storeName);
-            const cached = await new Promise((resolve) => {
-              const request = store.get(storageKey);
-              request.onsuccess = () => resolve(request.result);
-              request.onerror = () => resolve(null);
-            });
-
-            if (cached && cached.startsWith('data:')) {
-              imageSrc = cached;
-            } else {
-              // 保存到IndexedDB
-              imageSrc = await storageUtils.saveImageToStorage(url, storageKey);
-            }
-          } catch (error) {
-            console.warn('从IndexedDB加载失败，使用原始URL:', error);
-            imageSrc = url;
-          }
-        }
+        const resolved = await resolveCachedImageSrc(url, storageKey);
 
         return new Promise((resolve) => {
           const img = new Image();
-          // SVG文件不设置crossOrigin，避免CORS错误
           if (!storageUtils.isSVG(url)) {
             img.crossOrigin = 'anonymous';
           }
 
           img.onload = () => {
-            // 更新资源状态
+            if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
             const resource = allResources.find(r => r.id === assetId);
             if (resource) {
               resource.loaded = true;
@@ -1285,6 +1299,7 @@
             resolve(true);
           };
           img.onerror = () => {
+            if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
             console.warn(`图片资源加载失败: ${url}`);
             const resource = allResources.find(r => r.id === assetId);
             if (resource) {
@@ -1293,18 +1308,7 @@
             }
             resolve(false);
           };
-          if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
-            setMediaSrcWithFallback(img, url);
-          } else if (imageSrc.startsWith('data:') || !/^https?:/i.test(imageSrc)) {
-            img.src = imageSrc;
-          } else if (typeof setMediaSrcWithFallback === 'function') {
-            const catbox = MeishinkanAssets.toCatboxUrl(imageSrc);
-            MeishinkanAssets.isCatboxUrl(catbox)
-              ? setMediaSrcWithFallback(img, catbox)
-              : (img.src = imageSrc);
-          } else {
-            img.src = imageSrc;
-          }
+          applyResolvedImageSrc(img, url, resolved.imageSrc);
         });
       } catch (error) {
         console.warn(`加载图片失败: ${url}`, error);
@@ -1407,36 +1411,13 @@
           downloadedBytes += bytes;
         };
 
-        const probeContentLength = async (url) => {
-          if (!url) return 0;
-          const fetchFn = (init) => (
-            typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
-              ? fetchAsset(url, init)
-              : fetch(url, init)
-          );
+        const probeCachedLength = async (url) => {
+          if (!url || typeof MeishinkanAssets?.cachedAssetSize !== 'function') return 0;
           try {
-            const head = await fetchFn({ method: 'HEAD', mode: 'cors' });
-            const headLen = parseInt(head.headers.get('content-length') || '', 10);
-            if (head.ok && Number.isFinite(headLen) && headLen > 0) return headLen;
-          } catch (_) { /* HEAD 不可用时改试 Range */ }
-          const controller = new AbortController();
-          try {
-            const ranged = await fetchFn({
-              method: 'GET',
-              mode: 'cors',
-              headers: { Range: 'bytes=0-0' },
-              signal: controller.signal
-            });
-            const cr = ranged.headers.get('content-range');
-            const m = cr && /\/(\d+)\s*$/.exec(cr);
-            if (m) return parseInt(m[1], 10);
-            const len = parseInt(ranged.headers.get('content-length') || '', 10);
-            if (Number.isFinite(len) && len > 0) return len;
-          } catch (_) { /* 探测失败则交给实际下载体积 */ }
-          finally {
-            controller.abort();
+            return await MeishinkanAssets.cachedAssetSize(url);
+          } catch (_) {
+            return 0;
           }
-          return 0;
         };
 
         (async () => {
@@ -1445,7 +1426,7 @@
             while (queue.length) {
               const asset = queue.shift();
               if (!asset || sizeByUrl.has(asset.url)) continue;
-              const n = await probeContentLength(asset.url);
+              const n = await probeCachedLength(asset.url);
               if (n > 0 && !sizeByUrl.has(asset.url)) {
                 sizeByUrl.set(asset.url, n);
                 renderSize();
@@ -1507,18 +1488,45 @@
           }
         };
 
-        // 加载视频资源
-        const loadVideo = (url, assetName) => {
-          return new Promise((resolve, reject) => {
+        const loadVideo = async (url, assetName) => {
+          let blobUrl = null;
+          let measured = sizeByUrl.get(url) || 0;
+          if (typeof MeishinkanAssets?.blobUrlFromCache === 'function') {
+            const fromCache = await MeishinkanAssets.blobUrlFromCache(url);
+            if (fromCache) {
+              blobUrl = fromCache.url;
+              measured = fromCache.size || measured;
+            }
+          }
+          if (!blobUrl) {
+            try {
+              const response =
+                typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
+                  ? await fetchAsset(url, { mode: 'cors' })
+                  : await fetch(url, { mode: 'cors' });
+              if (response && response.ok) {
+                const blob = await response.blob();
+                blobUrl = URL.createObjectURL(blob);
+                measured = blob.size || measured;
+              }
+            } catch (e) { /* 回退到元素加载 */ }
+          }
+          return new Promise((resolve) => {
             const video = document.createElement('video');
             video.preload = 'auto';
-            video.oncanplaythrough = () => resolve({ ok: true, bytes: sizeByUrl.get(url) || 0 });
+            video.oncanplaythrough = () => {
+              if (blobUrl) URL.revokeObjectURL(blobUrl);
+              resolve({ ok: true, bytes: measured });
+            };
             video.onerror = () => {
+              if (blobUrl) URL.revokeObjectURL(blobUrl);
               console.warn(`视频资源加载失败: ${url}`);
               failedAssets.push(assetName);
               resolve({ ok: false, bytes: 0 });
             };
-            if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
+            if (blobUrl) {
+              video.src = blobUrl;
+            } else if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
               setMediaSrcWithFallback(video, url);
             } else {
               video.src = url;
@@ -1526,56 +1534,44 @@
           });
         };
 
-        // 加载图片资源（使用IndexedDB）
         const loadImage = async (url, assetName, assetId) => {
           try {
             const storageKey = `img_${assetId}`;
-            let imageSrc = url;
-            let measured = 0;
-
-            // SVG文件跳过IndexedDB缓存，直接使用原始URL
-            if (storageUtils.isSVG(url)) {
-              imageSrc = url;
-            } else {
-              // 尝试从IndexedDB加载
-              try {
-                const db = await storageUtils.initDB();
-                const transaction = db.transaction([storageUtils.storeName], 'readonly');
-                const store = transaction.objectStore(storageUtils.storeName);
-                const cached = await new Promise((resolve) => {
-                  const request = store.get(storageKey);
-                  request.onsuccess = () => resolve(request.result);
-                  request.onerror = () => resolve(null);
-                });
-
-                if (cached && cached.startsWith('data:')) {
-                  imageSrc = cached;
-                  measured = dataUrlBytes(cached);
-                } else {
-                  // 保存到IndexedDB
-                  imageSrc = await storageUtils.saveImageToStorage(url, storageKey);
-                  measured = dataUrlBytes(imageSrc);
-                }
-              } catch (error) {
-                console.warn('从IndexedDB加载失败，使用原始URL:', error);
-                imageSrc = url;
-              }
+            const resolved = await resolveCachedImageSrc(url, storageKey);
+            let measured = resolved.measured;
+            if (!measured && resolved.imageSrc && resolved.imageSrc.startsWith('data:')) {
+              measured = dataUrlBytes(resolved.imageSrc);
             }
 
             return new Promise((resolve) => {
               const img = new Image();
-              // SVG文件不设置crossOrigin，避免CORS错误
               if (!storageUtils.isSVG(url)) {
                 img.crossOrigin = 'anonymous';
               }
+              let retried = false;
 
               img.onload = () => {
-                // 更新资源状态
+                if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
                 const resource = allResources.find(r => r.id === assetId);
                 if (resource) resource.loaded = true;
                 resolve({ ok: true, bytes: measured || sizeByUrl.get(url) || 0 });
               };
               img.onerror = () => {
+                if (!retried) {
+                  retried = true;
+                  if (resolved.blobUrl) {
+                    URL.revokeObjectURL(resolved.blobUrl);
+                    resolved.blobUrl = null;
+                  }
+                  if (typeof MeishinkanAssets?.deleteAssetCache === 'function') {
+                    MeishinkanAssets.deleteAssetCache(url);
+                  }
+                  if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
+                    setMediaSrcWithFallback(img, url);
+                    return;
+                  }
+                }
+                if (resolved.blobUrl) URL.revokeObjectURL(resolved.blobUrl);
                 console.warn(`图片资源加载失败: ${url}`);
                 failedAssets.push(assetName);
                 const resource = allResources.find(r => r.id === assetId);
@@ -1585,18 +1581,7 @@
                 }
                 resolve({ ok: false, bytes: 0 });
               };
-              if (typeof setMediaSrcWithFallback === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)) {
-                setMediaSrcWithFallback(img, url);
-              } else if (imageSrc.startsWith('data:') || !/^https?:/i.test(imageSrc)) {
-                img.src = imageSrc;
-              } else if (typeof setMediaSrcWithFallback === 'function') {
-                const catbox = MeishinkanAssets.toCatboxUrl(imageSrc);
-                MeishinkanAssets.isCatboxUrl(catbox)
-                  ? setMediaSrcWithFallback(img, catbox)
-                  : (img.src = imageSrc);
-              } else {
-                img.src = imageSrc;
-              }
+              applyResolvedImageSrc(img, url, resolved.imageSrc);
             });
           } catch (error) {
             console.warn(`加载图片失败: ${url}`, error);
@@ -1610,36 +1595,37 @@
           }
         };
 
-        // 依次加载资源
         (async () => {
-          for (const asset of assets) {
-            updateProgress(asset);
-
-            let result = { ok: false, bytes: 0 };
-            const resource = allResources.find(r => r.url === asset.url && r.name === asset.name);
-            const assetId = resource ? resource.id : `resource_${assets.indexOf(asset)}`;
-
-            if (asset.url.endsWith('.webm') || asset.type === 'video') {
-              result = await loadVideo(asset.url, asset.name);
-            } else {
-              result = await loadImage(asset.url, asset.name, assetId);
+          const queue = assets.slice();
+          const workers = Array.from({ length: Math.min(6, Math.max(1, queue.length)) }, async () => {
+            while (queue.length) {
+              const asset = queue.shift();
+              if (!asset) continue;
+              updateProgress(asset);
+              let result = { ok: false, bytes: 0 };
+              const resource = allResources.find(r => r.url === asset.url && r.name === asset.name);
+              const assetId = resource ? resource.id : `resource_${assets.indexOf(asset)}`;
+              if (asset.url.endsWith('.webm') || asset.type === 'video') {
+                result = await loadVideo(asset.url, asset.name);
+              } else {
+                result = await loadImage(asset.url, asset.name, assetId);
+              }
+              loaded++;
+              creditDownload(asset.url, result.bytes);
+              updateProgress(asset);
+              checkComplete();
             }
-
-            loaded++;
-            creditDownload(asset.url, result.bytes);
-            updateProgress(asset);
-            checkComplete();
-          }
+          });
+          await Promise.all(workers);
         })();
 
-        // 超时保护（30秒）
         setTimeout(() => {
           if (loaded < total) {
             console.warn('部分资源加载超时，继续进入游戏');
             loadingScreen.classList.add('hidden');
             resolve();
           }
-        }, 30000);
+        }, 120000);
       });
     }
 
@@ -4240,10 +4226,6 @@
 
           const sendChoiceToAI = async (choiceText) => {
             try {
-              if (!checkIfInIframe() || !checkTavernHelper()) {
-                throw new Error('SillyTavern环境检查失败');
-              }
-
               recordPlayerInput(choiceText);
 
               const overlay = document.getElementById('current-dialogue-overlay');
@@ -4272,7 +4254,7 @@
             } catch (error) {
               setGalBusy(false);
               errorWithTag('BRANCH', '发送分支选择时出错', error);
-              await updateMainText(`发送失败：${error.message}\n请重试或检查SillyTavern连接。`);
+              await updateMainText(`发送失败：${error.message}\n请重试或检查接口设置。`);
             }
           };
 
@@ -4280,16 +4262,10 @@
           if (!branchesText || !branchesText.trim()) {
             if (typeof pendingBranchesText !== 'undefined' && pendingBranchesText && pendingBranchesText.trim()) {
               branchesText = pendingBranchesText;
-            } else {
-              const emptyMessage = document.createElement('div');
-              emptyMessage.className = 'quest-empty-msg';
-              emptyMessage.textContent = '当前没有行动选项';
-              contentContainer.appendChild(emptyMessage);
-              return;
             }
           }
 
-          mountBranchActionUI(contentContainer, branchesText, sendChoiceToAI);
+          mountBranchActionUI(contentContainer, branchesText || '', sendChoiceToAI);
         };
 
         // 创建标题（左上角显示"当前对话轮消息"）
@@ -8928,25 +8904,6 @@ _.set('stat_data.系统.模式', '${mode}')
     });
 
     // ============================================
-    // SillyTavern交互功能（参考简单示例）
-    // ============================================
-
-    // 检查是否在iframe中
-    function checkIfInIframe() {
-      return window.self !== window.top;
-    }
-
-    // 检查父窗口是否有TavernHelper
-    function checkTavernHelper() {
-      if (window.parent && window.parent.TavernHelper) {
-        if (typeof window.parent.TavernHelper.generate === 'function') {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    // ============================================
     // 日志工具函数（带分类标签和错误样式）
     // ============================================
     const errorCache = new Set(); // 错误缓存，防止重复输出
@@ -8999,6 +8956,8 @@ _.set('stat_data.系统.模式', '${mode}')
       }
     }
 
+    const APPLY_STORY_HOOKS = false;
+
     /**
      * 模型常把托莉娜视角误写入 maintext；按标记尝试拆分到 otherpov
      * @param {string} maintext
@@ -9048,7 +9007,8 @@ _.set('stat_data.系统.模式', '${mode}')
         otherpov: '',
         branches: '',
         snapshots: '',
-        variables: ''
+        variables: '',
+        hook: ''
       };
 
       const wrapMatch = content.match(/<imotoshinkan>([\s\S]*?)<\/imotoshinkan>/i);
@@ -9082,7 +9042,7 @@ _.set('stat_data.系统.模式', '${mode}')
             .replace(/<IMOTOSHINKANOTHERPOV>[\s\S]*?<\/IMOTOSHINKANOTHERPOV>/gi, '')
             .trim();
         }
-        if (!result.otherpov) {
+        if (!result.otherpov && APPLY_STORY_HOOKS) {
           const split = trySplitLeakedOtherpov(result.maintext);
           if (split) {
             result.maintext = split.maintext;
@@ -9163,6 +9123,9 @@ _.set('stat_data.系统.模式', '${mode}')
           if (extracted) result.variables = extracted;
         }
       }
+
+      const hookMatch = content.match(/<imotoshinkan_hook>([\s\S]*?)<\/imotoshinkan_hook>/i);
+      if (hookMatch && hookMatch[1].trim()) result.hook = hookMatch[1].trim();
 
       return result;
     }
@@ -9345,23 +9308,9 @@ _.set('stat_data.系统.模式', '${mode}')
     /** @param {HTMLElement} container @param {string} branchesText @param {(text: string) => void|Promise<void>} onSelect */
     function mountBranchActionUI(container, branchesText, onSelect) {
       const options = parseBranchesOptions(branchesText);
-      if (options.length === 0) {
-        const empty = document.createElement('div');
-        empty.className = 'quest-empty-msg';
-        empty.textContent = '当前没有行动选项';
-        container.appendChild(empty);
-        return;
-      }
 
       const panel = document.createElement('div');
       panel.className = 'branch-action-panel';
-
-      const hint = document.createElement('div');
-      hint.className = 'branch-action-hint';
-      hint.textContent = '点选即行 · 右键或长按可改写后再落笔';
-
-      const list = document.createElement('div');
-      list.className = 'branch-action-list';
 
       const inputRow = document.createElement('div');
       inputRow.className = 'branch-action-input-row';
@@ -9374,23 +9323,6 @@ _.set('stat_data.系统.模式', '${mode}')
       sendBtn.type = 'button';
       sendBtn.className = 'branch-action-send-btn';
       sendBtn.textContent = '落笔';
-
-      const grouped = groupBranchOptionsByCategory(options);
-      BRANCH_CATEGORIES.forEach(category => {
-        const items = grouped.get(category);
-        if (!items || items.length === 0) return;
-        const section = document.createElement('section');
-        section.className = 'branch-action-section';
-        const sectionTitle = document.createElement('h3');
-        sectionTitle.className = 'branch-action-section-title';
-        sectionTitle.textContent = category;
-        section.appendChild(sectionTitle);
-        items.forEach(option => {
-          section.appendChild(createBranchActionCard(option, () => onSelect(option.text), inputBox));
-        });
-        list.appendChild(section);
-      });
-
       sendBtn.addEventListener('click', () => {
         const value = inputBox.value.trim();
         if (value) onSelect(value);
@@ -9401,9 +9333,35 @@ _.set('stat_data.系统.模式', '${mode}')
           sendBtn.click();
         }
       });
-
       inputRow.append(inputBox, sendBtn);
-      panel.append(hint, list, inputRow);
+
+      if (options.length > 0) {
+        const hint = document.createElement('div');
+        hint.className = 'branch-action-hint';
+        hint.textContent = '点选即行 · 右键或长按可改写后再落笔';
+        const list = document.createElement('div');
+        list.className = 'branch-action-list';
+        const grouped = groupBranchOptionsByCategory(options);
+        BRANCH_CATEGORIES.forEach(category => {
+          const items = grouped.get(category);
+          if (!items || items.length === 0) return;
+          const section = document.createElement('section');
+          section.className = 'branch-action-section';
+          const sectionTitle = document.createElement('h3');
+          sectionTitle.className = 'branch-action-section-title';
+          sectionTitle.textContent = category;
+          section.appendChild(sectionTitle);
+          items.forEach(option => {
+            section.appendChild(createBranchActionCard(option, () => onSelect(option.text), inputBox));
+          });
+          list.appendChild(section);
+        });
+        panel.append(hint, list, inputRow);
+      } else {
+        inputRow.classList.add('is-solo');
+        panel.append(inputRow);
+      }
+
       container.appendChild(panel);
     }
 
@@ -10018,16 +9976,6 @@ _.set('stat_data.系统.模式', '${mode}')
     /** 堕落阶段相关世界书 UID（3/4 规则组 + 纯爱人设 12–15 + 正常人设 44–47） */
     const CORRUPTION_STAGE_LORE_UIDS = [3, 4, 12, 13, 14, 15, 44, 45, 46, 47];
 
-    /** @param {boolean} pureLoveMode */
-    async function applyGameModeLoreUids(pureLoveMode, executeSlash) {
-      await executeSlash(
-        `/setpromptentry identifier=${GAME_MODE_LORE_UID.PURE_LOVE} ${pureLoveMode ? 'on' : 'off'}`,
-      );
-      await executeSlash(
-        `/setpromptentry identifier=${GAME_MODE_LORE_UID.NORMAL} ${pureLoveMode ? 'off' : 'on'}`,
-      );
-    }
-
     /** @param {boolean} pureLoveMode @param {Array<{uid:number,enabled:boolean}>|undefined} entries */
     function collectGameModeLoreUidUpdates(pureLoveMode, entries) {
       const updates = [];
@@ -10091,54 +10039,7 @@ _.set('stat_data.系统.模式', '${mode}')
         const pureLoveModeEarly = isPureLoveMode();
         syncLocalWorldbookUids(stage, outfitValue, pureLoveModeEarly);
 
-        // 检查是否有可用的世界书 API
         if (typeof getCurrentCharPrimaryLorebook !== 'function' || typeof setLorebookEntries !== 'function') {
-          console.warn('[UID] 世界书 API 不可用，尝试使用 slash command');
-          // 回退到 slash command 方式
-          const executeSlash = async (command) => {
-            if (typeof triggerSlash === 'function') {
-              try {
-                await triggerSlash(command);
-                console.log('[UID] 执行命令:', command);
-              } catch (e) {
-                console.warn('[UID] 执行命令失败:', command, e);
-              }
-            } else {
-              console.warn('[UID] triggerSlash 函数不可用，无法执行:', command);
-            }
-          };
-
-          const pureLoveMode = isPureLoveMode();
-          const enabledStageUids = getCorruptionStageEnabledUIDs(stage, pureLoveMode);
-
-          for (const uid of CORRUPTION_STAGE_LORE_UIDS) {
-            await executeSlash(
-              `/setpromptentry identifier=${uid} ${enabledStageUids.has(uid) ? 'on' : 'off'}`,
-            );
-          }
-
-          const outfitUIDs = [8, 10, 9, 18, 17, 2];
-          let targetUID = null;
-          if (outfitValue === '常服') targetUID = 8;
-          else if (outfitValue === '暴露常服') targetUID = 10;
-          else if (outfitValue === '魅魔常服') targetUID = 9;
-          else if (outfitValue === '魔王服') targetUID = 18;
-          else if (outfitValue === '浴巾') targetUID = 17;
-          else if (outfitValue === '女仆装') targetUID = 2;
-
-          for (const uid of outfitUIDs) {
-            if (uid === targetUID) {
-              await executeSlash(`/setpromptentry identifier=${uid} on`);
-            } else {
-              await executeSlash(`/setpromptentry identifier=${uid} off`);
-            }
-          }
-
-          await applyGameModeLoreUids(pureLoveMode, executeSlash);
-          const stageHint = pureLoveMode
-            ? `纯爱 阶段${stage}→${[...enabledStageUids].sort((a, b) => a - b).join('+')}`
-            : `正常 阶段${stage}→${[...enabledStageUids].sort((a, b) => a - b).join('+')}`;
-          console.log('[UID] 已根据堕落阶段', stage, '和服装', outfitValue, `（${stageHint}）`, '更新 UID（slash）');
           return;
         }
 
@@ -11407,7 +11308,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
       const backgroundUrl = getBackgroundUrl(backgroundName);
       if (backgroundUrl) {
-        stage.style.backgroundImage = `url('${backgroundUrl}')`;
+        stage.style.backgroundImage = typeof cssUrl === 'function' ? cssUrl(backgroundUrl) : `url('${backgroundUrl}')`;
         stage.style.backgroundSize = 'cover';
         stage.style.backgroundPosition = 'center center';
         stage.style.backgroundRepeat = 'no-repeat';
@@ -11838,10 +11739,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         galToast('正在生成中…');
         return;
       }
-      if (!checkIfInIframe() || !checkTavernHelper()) {
-        galToast('酒馆未连接，无法重新生成');
-        return;
-      }
       const lastAi = getLastDialogueLayer();
       const players = dialogueLayers.filter(l => l && l.type === 'player' && l.playerInput);
       const lastPlayer = players.length ? players[players.length - 1] : null;
@@ -11899,9 +11796,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     async function sendBranchChoiceAndGenerate(choiceText, closeOverlay) {
       try {
-        if (!checkIfInIframe() || !checkTavernHelper()) {
-          throw new Error('SillyTavern环境检查失败');
-        }
         recordPlayerInput(choiceText);
         closeOverlay?.();
         await updateMainText(choiceText);
@@ -11924,12 +11818,11 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       } catch (error) {
         setGalBusy(false);
         errorWithTag('BRANCH', '发送分支选择时出错', error);
-        await updateMainText(`发送失败：${error.message}\n请重试或检查SillyTavern连接。`);
+        await updateMainText(`发送失败：${error.message}\n请重试或检查接口设置。`);
       }
     }
 
     function showBranchesFromText(branchesText) {
-      if (!branchesText || !branchesText.trim()) return;
       document.getElementById('branches-overlay')?.remove();
 
       const overlay = document.createElement('div');
@@ -11947,7 +11840,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       body.className = 'branch-action-overlay-body';
 
       const closeOverlay = () => overlay.remove();
-      mountBranchActionUI(body, branchesText, choiceText => sendBranchChoiceAndGenerate(choiceText, closeOverlay));
+      mountBranchActionUI(body, branchesText || '', choiceText => sendBranchChoiceAndGenerate(choiceText, closeOverlay));
 
       panelWrap.append(titleRow, body);
       overlay.appendChild(panelWrap);
@@ -12828,6 +12721,15 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
       const parsed = parseTags(content);
       console.log('解析结果:', parsed);
+      if (!APPLY_STORY_HOOKS) {
+        console.warn('[MSG] hook 解析已禁用：忽略 hook / 额外视角 / 选项 / 总结 / 数据变化，仅应用正文');
+        parsed.hook = '';
+        parsed.otherpov = '';
+        parsed.branches = '';
+        parsed.snapshots = '';
+        parsed.variables = '';
+        pendingBranchesText = null;
+      }
       warnIfTorinaPovLeakedInMaintext(parsed.maintext, parsed.otherpov);
       console.log('───────────────────────────────────────────────────────');
 
@@ -13070,52 +12972,55 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       return msgs;
     }
 
-    function collectActivatedWorldbookText(userInput) {
-      const wb = window.妹神官_settings_worldbook;
-      if (!wb) return '';
-      const loc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '';
-      const ctx = {
-        userInput: userInput || '',
-        userName: '{{user}}',
-        messages: buildWorldbookScanMessages(),
-        extras: { scenario: loc },
-        trigger: 'normal',
-      };
-      let entries = [];
-      if (typeof wb.scanAndActivate === 'function') {
-        const result = wb.scanAndActivate(ctx);
-        entries = (result && result.entries) || [];
-      } else if (typeof wb.collectActivatedEntries === 'function') {
-        entries = wb.collectActivatedEntries(ctx) || [];
+    function buildChatTurns() {
+      sanitizeDialogueLayers();
+      const pairs = getDialogueRoundPairs();
+      const keepFull = Math.max(1, Math.round(Number(getStoryParams().summaryAfter) || 3));
+      const total = pairs.length;
+      const turns = [];
+      for (let i = 0; i < pairs.length; i++) {
+        const { player, ai } = pairs[i];
+        const fromNewest = total - i;
+        if (player && String(player.playerInput || '').trim()) {
+          turns.push({ role: 'user', content: String(player.playerInput).trim() });
+        }
+        if (ai) {
+          if (fromNewest > keepFull) {
+            const snap = String(ai.snapshots || '').trim();
+            if (snap) turns.push({ role: 'assistant', content: snap });
+          } else {
+            const parts = [];
+            if (ai.maintext) parts.push(String(ai.maintext).trim());
+            if (ai.snapshots) parts.push(String(ai.snapshots).trim());
+            const text = parts.filter(Boolean).join('\n\n');
+            if (text) turns.push({ role: 'assistant', content: text });
+          }
+        }
       }
-      if (!entries.length) return '';
-      if (typeof wb.formatActivatedText === 'function') return wb.formatActivatedText(entries);
-      return (
-        '## 世界书\n' +
-        entries
-          .map((e) => '### ' + (e.comment || '条目') + '\n' + String(e.content || '').trim())
-          .join('\n\n') +
-        '\n\n'
-      );
+      return turns;
     }
 
-    async function generateStoryRound(userInput) {
-      await checkAndControlUIDs();
-      const fullUserInput = buildPromptPrefix(userInput);
-      currentStreamingContent = '';
-      setGalBusy(true, '正在生成正文');
-      try {
-        const tavernGenerateFunc = window.parent.TavernHelper.generate;
-        const aiResponse = await tavernGenerateFunc({
-          user_input: fullUserInput,
-          should_stream: true,
-          disable_extras: true,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        return currentStreamingContent.trim() || aiResponse || '';
-      } finally {
-        setGalBusy(false);
+    function buildPromptMessages(userInput) {
+      const userInputWithRequests = appendAutoRequestTags(userInput);
+      const story = getStoryParams();
+      const builder = window.妹神官_prompt_builder;
+      if (!builder || typeof builder.build !== 'function') {
+        return { text: userInputWithRequests, messages: [] };
       }
+      return builder.build({
+        route: 'story',
+        userInput: userInputWithRequests,
+        userName: '{{user}}',
+        history: buildChatTurns(),
+        scanMessages: buildWorldbookScanMessages(),
+        storyPrompt: String(story.prompt || '').trim(),
+        targetChars: Math.round(Number(story.targetChars) || 0),
+        extras: {
+          scenario: readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '',
+          torinaLocation: readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || '',
+        },
+        trigger: 'normal',
+      });
     }
 
     function buildDialogueHistory() {
@@ -13303,55 +13208,65 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     // 构建完整的提示词（按照优先级顺序：user input -> 对话历史）
     // 变量说明已移除，不再在 RP 时注入提示词（避免把整块变量列表输出给 AI）
-    function buildPromptPrefix(userInput = '') {
-      const userInputWithRequests = appendAutoRequestTags(userInput);
-      const dialogueHistory = buildDialogueHistory();
-      const story = getStoryParams();
-      const targetChars = Math.round(Number(story.targetChars) || 0);
-      const storyPrompt = String(story.prompt || '').trim();
-
-      let prefix = '';
-
-      if (storyPrompt) {
-        prefix += storyPrompt + '\n\n';
-      }
-
-      prefix += collectActivatedWorldbookText(userInput);
-
-      // 1. 用户输入（D0位置，第一优先）
-      if (userInputWithRequests && userInputWithRequests.trim()) {
-        prefix += `## 用户输入（第一优先）\n\n${userInputWithRequests}\n\n`;
-      }
-
-      if (targetChars > 0) {
-        prefix += `正文目标字数：${targetChars}\n\n`;
-      }
-
-      // 2. 对话历史
-      prefix += dialogueHistory + '\n';
-
-      // 如果已经有用户输入，就不需要"请继续对话"提示
-      if (!userInputWithRequests || !userInputWithRequests.trim()) {
-        prefix += '## 请继续对话\n\n';
-      }
-
-      // 在控制台输出构建的提示词（用于调试）
+    function logPromptBuild(built) {
+      const prefix = (built && built.text) || '';
       console.log('═══════════════════════════════════════════════════════');
-      console.log('📤 buildPromptPrefix 被调用 - 构建发送给AI的提示词');
+      console.log('📤 Chat Completion 提示词');
       console.log('═══════════════════════════════════════════════════════');
-      if (userInputWithRequests && userInputWithRequests.trim()) {
-        console.log('【用户输入（第一优先，D0位置）】');
-        console.log(userInputWithRequests);
-        console.log('───────────────────────────────────────────────────────');
+      if (built && built.diag) {
+        console.log('顺序', built.diag.order);
+        console.log('预设', built.preset || '(默认)');
+        console.log('世界书', built.diag.worldbook);
       }
-      console.log('【对话历史】');
-      console.log(dialogueHistory);
+      if (built && built.messages) {
+        built.messages.forEach(function (m, i) {
+          console.log('[' + i + '] ' + m.role + ' (' + String(m.content || '').length + ')');
+        });
+      }
       console.log('───────────────────────────────────────────────────────');
-      console.log('【完整提示词（发送给AI的完整内容）】');
       console.log(prefix);
       console.log('═══════════════════════════════════════════════════════');
-
       return prefix;
+    }
+
+    function buildPromptPrefix(userInput = '') {
+      return logPromptBuild(buildPromptMessages(userInput));
+    }
+
+    async function generateStoryRound(userInput) {
+      await checkAndControlUIDs();
+      const built = buildPromptMessages(userInput);
+      logPromptBuild(built);
+      currentStreamingContent = '';
+      setGalBusy(true, '正在生成正文');
+      try {
+        const llm = window.妹神官_llm;
+        const api = window.妹神官_settings_api;
+        if (!llm || typeof llm.chat !== 'function') {
+          throw new Error('接口未就绪');
+        }
+        const profile = api && typeof api.resolveProfile === 'function' ? api.resolveProfile('story') : null;
+        if (!profile) throw new Error('请先配置接口');
+        const story = getStoryParams();
+        const messages =
+          built && Array.isArray(built.messages) && built.messages.length
+            ? built.messages
+            : [{ role: 'user', content: (built && built.text) || String(userInput || '') }];
+        const text = await llm.chat(profile, {
+          messages: messages,
+          maxTokens: story.maxTokens,
+          temperature: story.temperature,
+          topP: story.topP,
+          topK: story.topK,
+          stream: !!profile.stream,
+          onDelta: function (full) {
+            currentStreamingContent = full;
+          },
+        });
+        return String(currentStreamingContent || text || '').trim();
+      } finally {
+        setGalBusy(false);
+      }
     }
 
     // 监听来自SillyTavern的消息
@@ -13421,13 +13336,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             accumulatedContent = ''; // 重置
           });
         }
-      }
-
-      // 如果可以直接访问父窗口的消息，也可以在这里监听
-      if (checkIfInIframe() && checkTavernHelper()) {
-        logWithTag('INIT', '✅ SillyTavern环境检测通过，已设置消息监听器');
-      } else {
-        warnWithTag('INIT', '⚠️ 警告：不在SillyTavern iframe环境中，消息监听器可能无法正常工作');
       }
 
       // 监听发送消息前的事件，注入变量说明和对话历史
@@ -13582,11 +13490,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         await MeishinkanWorldMap.refreshActorMarkers();
       }
 
-      if (!checkTavernHelper()) {
-        console.warn('[world-map] TavernHelper 不可用，已仅更新地点变量');
-        return;
-      }
-
       const torinaLoc =
         readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || '未知';
       let userInput;
@@ -13664,20 +13567,6 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           console.log('[DEBUG] 已直接打开世界地图');
         }
       }
-
-      // 延迟检查环境
-      setTimeout(() => {
-        if (checkIfInIframe()) {
-          logWithTag('INIT', '✅ 检测到在iframe中运行');
-          if (checkTavernHelper()) {
-            logWithTag('INIT', '✅ TavernHelper可用');
-          } else {
-            warnWithTag('INIT', '⚠️ TavernHelper不可用');
-          }
-        } else {
-          warnWithTag('INIT', '⚠️ 不在iframe中运行');
-        }
-      }, 500);
     });
 
   

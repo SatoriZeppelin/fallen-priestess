@@ -287,7 +287,9 @@
 
       var face = document.createElement('div');
       face.className = 'opening-card-face';
-      if (op.cover) face.style.backgroundImage = 'url("' + op.cover + '")';
+      if (op.cover) {
+        face.style.backgroundImage = typeof cssUrl === 'function' ? cssUrl(op.cover) : 'url("' + op.cover + '")';
+      }
 
       var label = document.createElement('div');
       label.className = 'opening-card-label';
