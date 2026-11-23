@@ -57,9 +57,200 @@
     const p = String((cfg && cfg.protocol) || '')
       .trim()
       .toLowerCase();
+    if (p === 'tavern' || p === 'sillytavern') return 'tavern';
     if (p === 'claude' || p === 'anthropic') return 'claude';
     if (p === 'gemini' || p === 'google') return 'gemini';
     return 'openai';
+  }
+
+  function getTavernEnv() {
+    const wins = [global];
+    try {
+      if (global.parent && global.parent !== global) wins.push(global.parent);
+    } catch (e) {}
+    try {
+      if (global.top && global.top !== global && wins.indexOf(global.top) < 0) wins.push(global.top);
+    } catch (e) {}
+
+    let th = null;
+    let st = null;
+    let ejs = null;
+    let stDom = false;
+    for (let i = 0; i < wins.length; i++) {
+      const w = wins[i];
+      try {
+        if (!th && w.TavernHelper) th = w.TavernHelper;
+        if (!st && w.SillyTavern) st = w.SillyTavern;
+        if (!ejs && w.EjsTemplate) ejs = w.EjsTemplate;
+        if (!stDom && w.document && (w.document.getElementById('sheld') || w.document.getElementById('chat') || w.document.getElementById('form_sheld'))) {
+          stDom = true;
+        }
+      } catch (e) {}
+    }
+    let ctx = null;
+    try {
+      ctx = st && typeof st.getContext === 'function' ? st.getContext() : null;
+    } catch (e) {}
+    const isTavern = !!(
+      global.__FP_TAVERN_BOOT__ ||
+      th ||
+      st ||
+      ctx ||
+      ejs ||
+      (global.frameElement && stDom)
+    );
+    return { isTavern: isTavern, th: th, st: st, ctx: ctx };
+  }
+
+  function isTavernEnv() {
+    return getTavernEnv().isTavern;
+  }
+
+  function readTavernApiInfo() {
+    const env = getTavernEnv();
+    const out = {
+      source: 'SillyTavern',
+      model: '酒馆当前模型',
+      maxTokens: 2048,
+      contextLength: 8192,
+      temperature: 1,
+      presetName: '',
+      presetRaw: null,
+    };
+    if (!env.isTavern) return out;
+
+    try {
+      if (env.th && typeof env.th.getPreset === 'function') {
+        let pName = 'in_use';
+        if (typeof env.th.getLoadedPresetName === 'function') {
+          pName = env.th.getLoadedPresetName() || 'in_use';
+          out.presetName = pName;
+        }
+        let p = null;
+        try {
+          p = env.th.getPreset('in_use');
+        } catch (e) {}
+        if (!p && pName) {
+          try {
+            p = env.th.getPreset(pName);
+          } catch (e) {}
+        }
+        if (p && typeof p === 'object') {
+          out.presetRaw = p;
+          const settings = p.settings && typeof p.settings === 'object' ? p.settings : p;
+          if (settings.max_tokens || settings.openai_max_tokens) {
+            out.maxTokens = Number(settings.max_tokens || settings.openai_max_tokens) || out.maxTokens;
+          }
+          if (settings.max_context || settings.openai_max_context) {
+            out.contextLength = Number(settings.max_context || settings.openai_max_context) || out.contextLength;
+          }
+          if (settings.temperature != null) out.temperature = Number(settings.temperature);
+          if (settings.openai_model || settings.model) out.model = String(settings.openai_model || settings.model);
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const ctx = env.ctx;
+      if (ctx) {
+        const oai = ctx.chatCompletionSettings || (ctx.extensionSettings && ctx.extensionSettings.openai) || null;
+        if (oai && typeof oai === 'object') {
+          if (!out.presetRaw && (oai.prompts || oai.prompt_order)) out.presetRaw = oai;
+          const src = String(oai.chat_completion_source || ctx.mainApi || 'SillyTavern');
+          out.source = src;
+          const modelKey =
+            src === 'claude'
+              ? oai.claude_model
+              : src === 'makersuite' || src === 'vertexai'
+              ? oai.google_model || oai.vertexai_model
+              : src === 'openrouter'
+              ? oai.openrouter_model
+              : src === 'custom'
+              ? oai.custom_model
+              : src === 'deepseek'
+              ? oai.deepseek_model
+              : oai.openai_model || oai.model;
+          if (modelKey) out.model = String(modelKey);
+          if (oai.openai_max_tokens) out.maxTokens = Number(oai.openai_max_tokens) || out.maxTokens;
+          if (oai.openai_max_context) out.contextLength = Number(oai.openai_max_context) || out.contextLength;
+          if (oai.temperature != null) out.temperature = Number(oai.temperature);
+        }
+        if (!out.presetName && typeof ctx.getPresetManager === 'function') {
+          const pm = ctx.getPresetManager();
+          if (pm && typeof pm.getSelectedPresetName === 'function') {
+            out.presetName = pm.getSelectedPresetName() || '';
+          }
+          if (!out.presetRaw && pm && typeof pm.getCompletionPresetByName === 'function' && out.presetName) {
+            out.presetRaw = pm.getCompletionPresetByName(out.presetName) || null;
+          }
+        }
+      }
+    } catch (e) {}
+
+    return out;
+  }
+
+  async function chatViaTavern(cfg, opts) {
+    opts = opts || {};
+    const env = getTavernEnv();
+    if (!env.isTavern) throw new Error('当前不在酒馆环境中');
+    const messages = Array.isArray(opts.messages) ? opts.messages : [];
+    if (!messages.length) throw new Error('消息为空');
+
+    const orderedPrompts = messages
+      .map(function (m) {
+        if (!m) return null;
+        const content = m.content != null ? String(m.content) : '';
+        if (!content) return null;
+        const role = m.role === 'assistant' ? 'assistant' : m.role === 'user' ? 'user' : 'system';
+        return { role: role, content: content };
+      })
+      .filter(Boolean);
+
+    if (env.th && typeof env.th.generateRaw === 'function') {
+      const text = await env.th.generateRaw({
+        ordered_prompts: orderedPrompts,
+        should_stream: !!(opts.stream && opts.onDelta),
+      });
+      const full = String(text || '');
+      if (!full) throw new Error('酒馆 API 返回空内容');
+      if (opts.onDelta) opts.onDelta(full, full);
+      return full;
+    }
+
+    if (env.ctx && typeof env.ctx.generateRaw === 'function') {
+      let res = await env.ctx.generateRaw({
+        prompt: orderedPrompts,
+        ordered_prompts: orderedPrompts,
+        quietToLoud: false,
+      });
+      if (!res && orderedPrompts.length) {
+        const flat = orderedPrompts
+          .map(function (m) {
+            return '[' + m.role + ']\n' + m.content;
+          })
+          .join('\n\n');
+        res = await env.ctx.generateRaw(flat);
+      }
+      const full = String(res || '');
+      if (!full) throw new Error('酒馆 API 返回空内容');
+      if (opts.onDelta) opts.onDelta(full, full);
+      return full;
+    }
+
+    if (env.ctx && typeof env.ctx.generateQuietPrompt === 'function') {
+      const flat = orderedPrompts
+        .map(function (m) {
+          return '[' + m.role + ']\n' + m.content;
+        })
+        .join('\n\n');
+      const full = String((await env.ctx.generateQuietPrompt(flat, false, false)) || '');
+      if (!full) throw new Error('酒馆 API 返回空内容');
+      if (opts.onDelta) opts.onDelta(full, full);
+      return full;
+    }
+
+    throw new Error('未找到可用的酒馆生成接口 (TavernHelper.generateRaw / SillyTavern.generateRaw)');
   }
 
   function defaultRoot(protocol) {
@@ -257,6 +448,16 @@
 
   function assertCfg(cfg) {
     const protocol = protocolOf(cfg);
+    if (protocol === 'tavern') {
+      if (!isTavernEnv()) throw new Error('当前不在酒馆环境中');
+      const info = readTavernApiInfo();
+      return Object.assign({}, cfg, {
+        protocol: 'tavern',
+        baseUrl: info.source || 'SillyTavern',
+        apiKey: 'tavern',
+        model: String((cfg && cfg.model) || info.model || '酒馆当前模型').trim(),
+      });
+    }
     const key = String((cfg && cfg.apiKey) || '').trim();
     const baseUrl = String((cfg && cfg.baseUrl) || '').trim() || defaultRoot(protocol);
     if (!baseUrl) throw new Error('请填写接口地址');
@@ -265,6 +466,11 @@
   }
 
   async function listModels(cfg) {
+    if (protocolOf(cfg) === 'tavern') {
+      if (!isTavernEnv()) throw new Error('当前不在酒馆环境中');
+      const info = readTavernApiInfo();
+      return [info.model || '酒馆当前模型'];
+    }
     const trial = assertCfg(cfg);
     const urls = modelsUrlCandidates(trial);
     if (!urls.length) throw new Error('请填写接口地址');
@@ -432,6 +638,9 @@
 
   async function chat(cfg, opts) {
     opts = opts || {};
+    if (protocolOf(cfg) === 'tavern') {
+      return chatViaTavern(cfg, opts);
+    }
     const trial = assertCfg(cfg);
     if (!String(trial.model || '').trim()) throw new Error('请填写模型');
     const messages = Array.isArray(opts.messages) ? opts.messages : [];
@@ -478,5 +687,11 @@
     });
   }
 
-  global.妹神官_llm = { listModels: listModels, testMessage: testMessage, chat: chat };
+  global.妹神官_llm = {
+    listModels: listModels,
+    testMessage: testMessage,
+    chat: chat,
+    isTavernEnv: isTavernEnv,
+    readTavernApiInfo: readTavernApiInfo,
+  };
 })(window);

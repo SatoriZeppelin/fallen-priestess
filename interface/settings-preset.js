@@ -243,14 +243,71 @@
     return out;
   }
 
+  const TAVERN_PRESET_ID = 'ps_tavern_builtin';
+
+  function isTavernEnv() {
+    return !!(window.妹神官_llm && typeof window.妹神官_llm.isTavernEnv === 'function' && window.妹神官_llm.isTavernEnv());
+  }
+
+  function buildTavernPresetProfile() {
+    const info =
+      window.妹神官_llm && typeof window.妹神官_llm.readTavernApiInfo === 'function'
+        ? window.妹神官_llm.readTavernApiInfo()
+        : {};
+    const raw = info && info.presetRaw;
+    const prompts = raw ? extractPrompts(raw) : [];
+    return {
+      id: TAVERN_PRESET_ID,
+      name: '酒馆预设',
+      enabled: true,
+      isTavern: true,
+      prompts: prompts.length ? prompts : extractPrompts({ prompts: [] }),
+    };
+  }
+
   function normalizeProfile(p) {
     const src = p && typeof p === 'object' ? p : {};
     return {
       id: src.id || uid(),
       name: String(src.name || src.preset_name || '未命名预设').trim() || '未命名预设',
       enabled: src.enabled !== false,
-      prompts: extractPrompts(src),
+      isTavern: !!src.isTavern || src.id === TAVERN_PRESET_ID,
+      prompts: Array.isArray(src.prompts) && !src.prompt_order ? src.prompts.map((e, i) => normalizeEntry(e, i)) : extractPrompts(src),
     };
+  }
+
+  function ensurePresetStoreForEnv(st) {
+    const inTavern = isTavernEnv();
+    let changed = false;
+    if (inTavern) {
+      const idx = st.profiles.findIndex((p) => p && (p.id === TAVERN_PRESET_ID || p.isTavern));
+      if (idx < 0) {
+        const tav = buildTavernPresetProfile();
+        st.profiles.unshift(tav);
+        if (!st.defaultPresetId) st.defaultPresetId = tav.id;
+        changed = true;
+      } else if (!st.profiles[idx].prompts || !st.profiles[idx].prompts.length) {
+        const fresh = buildTavernPresetProfile();
+        if (fresh.prompts && fresh.prompts.length) {
+          st.profiles[idx].prompts = fresh.prompts;
+          changed = true;
+        }
+      }
+    } else {
+      const hadTavern = st.profiles.some((p) => p && (p.id === TAVERN_PRESET_ID || p.isTavern));
+      if (hadTavern) {
+        st.profiles = st.profiles.filter((p) => p && p.id !== TAVERN_PRESET_ID && !p.isTavern);
+        if (!st.profiles.some((p) => p.id === st.defaultPresetId)) {
+          st.defaultPresetId = (st.profiles[0] && st.profiles[0].id) || '';
+        }
+        ROUTES.forEach((route) => {
+          if (st.routes && st.routes[route] === TAVERN_PRESET_ID) st.routes[route] = '';
+        });
+        changed = true;
+      }
+    }
+    if (changed) saveStore(st);
+    return st;
   }
 
   function loadStore() {
@@ -263,18 +320,45 @@
           st = data;
           st.profiles = st.profiles.map(normalizeProfile);
           st.routes = normalizeRoutes(st.routes);
-          if (st.profiles.length && (!st.defaultPresetId || !st.profiles.some((p) => p.id === st.defaultPresetId))) {
-            st.defaultPresetId = st.profiles[0].id;
-          }
-          if (!st.profiles.length) st.defaultPresetId = '';
         }
       }
     } catch (e) {}
     if (!st) {
       st = emptyStore();
+    }
+    ensurePresetStoreForEnv(st);
+    if (st.profiles.length && (!st.defaultPresetId || !st.profiles.some((p) => p.id === st.defaultPresetId))) {
+      st.defaultPresetId = st.profiles[0].id;
+      saveStore(st);
+    }
+    if (!st.profiles.length && st.defaultPresetId) {
+      st.defaultPresetId = '';
       saveStore(st);
     }
     return st;
+  }
+
+  function importTavernPreset() {
+    if (!isTavernEnv()) {
+      toast('当前不在酒馆环境中');
+      return;
+    }
+    const st = loadStore();
+    const tav = buildTavernPresetProfile();
+    const idx = st.profiles.findIndex((p) => p && (p.id === TAVERN_PRESET_ID || p.isTavern));
+    if (idx >= 0) {
+      st.profiles[idx] = tav;
+    } else {
+      st.profiles.unshift(tav);
+    }
+    st.defaultPresetId = tav.id;
+    saveStore(st);
+    Object.keys(expanded).forEach((k) => {
+      expanded[k] = false;
+    });
+    expanded[tav.id] = true;
+    render();
+    toast('已导入酒馆预设（' + (tav.prompts ? tav.prompts.length : 0) + ' 条条目）');
   }
 
   function saveStore(st) {
@@ -452,6 +536,8 @@
   }
 
   function render() {
+    const tavernBtn = $('btn-preset-import-tavern');
+    if (tavernBtn) tavernBtn.hidden = !isTavernEnv();
     const list = $('preset-profiles-list');
     const empty = $('preset-empty');
     if (!list) return;
@@ -591,6 +677,14 @@
   function bind() {
     if (bound) return;
     bound = true;
+
+    const tavernImportBtn = $('btn-preset-import-tavern');
+    if (tavernImportBtn) {
+      tavernImportBtn.hidden = !isTavernEnv();
+      tavernImportBtn.addEventListener('click', () => {
+        importTavernPreset();
+      });
+    }
 
     const file = $('cfg-preset-file');
     const importBtn = $('btn-preset-import');
@@ -741,5 +835,13 @@
     render();
   }
 
-  global.妹神官_settings_preset = { init, render, loadStore, saveStore, getPreset, fillRouteSelects };
+  global.妹神官_settings_preset = {
+    init,
+    render,
+    loadStore,
+    saveStore,
+    getPreset,
+    fillRouteSelects,
+    importTavernPreset,
+  };
 })(window);

@@ -14,32 +14,54 @@
 
       var iframe = window.frameElement;
       if (!iframe) return;
-      var parentWin;
-      var doc;
+      var parentWin = null;
+      var doc = null;
       try {
         parentWin = window.parent;
         doc = parentWin.document;
-      } catch (e) {
-        return;
-      }
-      if (!doc) return;
+      } catch (e) {}
 
       var styleId = 'fp-sheld-fill';
-      if (!doc.getElementById(styleId)) {
-        var style = doc.createElement('style');
-        style.id = styleId;
-        style.textContent = [
-          '#top-bar,#form_sheld{display:none!important;}',
-          '#sheld{top:0!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;max-width:none!important;margin:0!important;}',
-          '#chat{max-width:none!important;width:100%!important;height:100%!important;}'
-        ].join('');
-        doc.head.appendChild(style);
+
+      function applyEmbedStyle() {
+        if (doc) {
+          var oldStyle = doc.getElementById(styleId);
+          if (oldStyle && oldStyle.parentNode) oldStyle.parentNode.removeChild(oldStyle);
+        }
+        iframe.removeAttribute('data-fp-pinned');
+        iframe.style.setProperty('position', 'relative', 'important');
+        iframe.style.setProperty('top', 'auto', 'important');
+        iframe.style.setProperty('left', 'auto', 'important');
+        iframe.style.setProperty('right', 'auto', 'important');
+        iframe.style.setProperty('bottom', 'auto', 'important');
+        iframe.style.setProperty('width', '100%', 'important');
+        iframe.style.setProperty('max-width', '100%', 'important');
+        iframe.style.setProperty('aspect-ratio', '16 / 9', 'important');
+        iframe.style.setProperty('height', 'auto', 'important');
+        iframe.style.setProperty('min-height', '480px', 'important');
+        iframe.style.setProperty('max-height', '85vh', 'important');
+        iframe.style.setProperty('border', '0', 'important');
+        iframe.style.setProperty('border-radius', '8px', 'important');
+        iframe.style.setProperty('margin', '0', 'important');
+        iframe.style.setProperty('padding', '0', 'important');
+        iframe.style.setProperty('z-index', 'auto', 'important');
+        iframe.style.setProperty('overflow', 'hidden', 'important');
+        iframe.style.setProperty('background', '#000', 'important');
+        iframe.style.setProperty('display', 'block', 'important');
       }
 
-      var applying = false;
-      function apply() {
-        if (applying) return;
-        applying = true;
+      function applyPinnedFullscreenStyle() {
+        if (doc && !doc.getElementById(styleId)) {
+          var style = doc.createElement('style');
+          style.id = styleId;
+          style.textContent = [
+            '#top-bar,#form_sheld{display:none!important;}',
+            '#sheld{top:0!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;max-width:none!important;margin:0!important;}',
+            '#chat{max-width:none!important;width:100%!important;height:100%!important;}'
+          ].join('');
+          doc.head.appendChild(style);
+        }
+        iframe.setAttribute('data-fp-pinned', '1');
         iframe.style.setProperty('position', 'fixed', 'important');
         iframe.style.setProperty('top', '0', 'important');
         iframe.style.setProperty('left', '0', 'important');
@@ -51,22 +73,55 @@
         iframe.style.setProperty('max-height', 'none', 'important');
         iframe.style.setProperty('min-width', '0', 'important');
         iframe.style.setProperty('min-height', '0', 'important');
+        iframe.style.setProperty('aspect-ratio', 'auto', 'important');
         iframe.style.setProperty('border', '0', 'important');
+        iframe.style.setProperty('border-radius', '0', 'important');
         iframe.style.setProperty('margin', '0', 'important');
         iframe.style.setProperty('padding', '0', 'important');
         iframe.style.setProperty('z-index', '2147483646', 'important');
         iframe.style.setProperty('background', '#000', 'important');
         iframe.style.setProperty('display', 'block', 'important');
-        applying = false;
       }
 
-      apply();
-      parentWin.addEventListener('resize', apply);
-      doc.addEventListener('scroll', apply, true);
-      if (parentWin.ResizeObserver) {
-        var ro = new parentWin.ResizeObserver(apply);
-        if (doc.documentElement) ro.observe(doc.documentElement);
-      }
+      applyEmbedStyle();
+
+      window.妹神官_frameFullscreen = {
+        isFullscreen: function () {
+          return !!(document.fullscreenElement || (doc && doc.fullscreenElement) || iframe.getAttribute('data-fp-pinned') === '1');
+        },
+        enter: function () {
+          applyPinnedFullscreenStyle();
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(function () {});
+          }
+          window.dispatchEvent(new Event('fp-fullscreenchange'));
+        },
+        exit: function () {
+          applyEmbedStyle();
+          if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(function () {});
+          } else if (doc && doc.fullscreenElement && doc.exitFullscreen) {
+            doc.exitFullscreen().catch(function () {});
+          }
+          window.dispatchEvent(new Event('fp-fullscreenchange'));
+        },
+        toggle: function () {
+          if (this.isFullscreen()) this.exit();
+          else this.enter();
+        }
+      };
+
+      document.addEventListener('fullscreenchange', function () {
+        if (!document.fullscreenElement && iframe.getAttribute('data-fp-pinned') === '1') {
+          applyEmbedStyle();
+        }
+        window.dispatchEvent(new Event('fp-fullscreenchange'));
+      });
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && iframe.getAttribute('data-fp-pinned') === '1' && !document.fullscreenElement) {
+          window.妹神官_frameFullscreen.exit();
+        }
+      });
     })();
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(new URL('sw.js', document.baseURI || location.href).href).catch(function () {});
@@ -1116,7 +1171,10 @@
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">API 接口</h3>
-                    <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-api-import-tavern" hidden>导入酒馆API</button>
+                      <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
+                    </div>
                   </div>
                   <div class="sys-api-profiles" id="api-profiles-list"></div>
                 </section>
@@ -1127,6 +1185,7 @@
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">预设</h3>
                     <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-preset-import-tavern" hidden>导入酒馆预设</button>
                       <button type="button" class="settings-control-btn" id="btn-preset-import">导入预设</button>
                       <button type="button" class="settings-control-btn" id="btn-preset-export">导出预设</button>
                     </div>
@@ -1331,8 +1390,7 @@
                       </label>
                       <label class="sys-sampler-item">
                         <span class="sys-sampler-label">正文目标字数</span>
-                        <input type="range" class="sys-sampler-range" data-p="targetChars" min="100" max="5000" step="50" value="5000" />
-                        <input type="text" class="sys-sampler-val" data-p-num="targetChars" inputmode="numeric" value="5000" />
+                        <input type="text" class="sys-input" data-p-num="targetChars" inputmode="numeric" value="5000" />
                       </label>
                     </div>
                     <div class="sys-l4 sys-story-prompt">
@@ -1355,6 +1413,48 @@
                     <div class="sys-l4">
                       <h4 class="sys-l4-title">预设</h4>
                       <select class="sys-select" id="cfg-preset-route-otherpov" data-preset-route="otherpov"></select>
+                    </div>
+                  </div>
+                  <div class="sys-sampler" id="otherpov-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-op="maxTokens" min="16" max="8192" step="16" value="2500" />
+                        <input type="text" class="sys-sampler-val" data-op-num="maxTokens" inputmode="numeric" value="2500" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-op="temperature" min="0" max="2" step="0.01" value="1" />
+                        <input type="text" class="sys-sampler-val" data-op-num="temperature" inputmode="decimal" value="1.00" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-op="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-op-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-op="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-op-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">历史主线轮数（玩家输入+总结）</span>
+                        <input type="range" class="sys-sampler-range" data-op="mainHistoryRounds" min="0" max="20" step="1" value="5" />
+                        <input type="text" class="sys-sampler-val" data-op-num="mainHistoryRounds" inputmode="numeric" value="5" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">历史托莉娜视角轮数（连续）</span>
+                        <input type="range" class="sys-sampler-range" data-op="otherpovHistoryRounds" min="0" max="20" step="1" value="5" />
+                        <input type="text" class="sys-sampler-val" data-op-num="otherpovHistoryRounds" inputmode="numeric" value="5" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">额外视角提示词</h4>
+                      <textarea class="sys-textarea" data-op="prompt" spellcheck="false" autocomplete="off"></textarea>
                     </div>
                   </div>
                 </section>

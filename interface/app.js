@@ -70,10 +70,10 @@
             return cached;
           }
 
-          const response =
-            typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
-              ? await fetchAsset(url, { mode: 'cors' })
-              : await fetch(url, { mode: 'cors' });
+            const response =
+              typeof fetchAsset === 'function' && MeishinkanAssets?.isCatboxUrl?.(url)
+                ? await fetchAsset(url, { mode: 'cors' })
+                : await fetch(url, { mode: 'cors' });
           if (response && response.ok) {
             if (typeof MeishinkanAssets?.putAssetCache === 'function') {
               await MeishinkanAssets.putAssetCache(
@@ -435,7 +435,7 @@
       // 同步缓存指针（cache.vars 与 currentVars 同树）
       _syncCache() {
         this.cache.vars = this.currentVars;
-        this.cache.timestamp = Date.now();
+              this.cache.timestamp = Date.now();
       },
 
       // 获取当前变量（本地同步，保持 async 以兼容既有 await 调用）
@@ -546,7 +546,7 @@
     }
 
     async function resolveCachedImageSrc(url, storageKey) {
-      if (storageUtils.isSVG(url)) {
+        if (storageUtils.isSVG(url)) {
         return { imageSrc: url, measured: 0, blobUrl: null };
       }
 
@@ -908,20 +908,20 @@
             while (queue.length) {
               const asset = queue.shift();
               if (!asset) continue;
-              updateProgress(asset);
+            updateProgress(asset);
               let result = { ok: false, bytes: 0 };
-              const resource = allResources.find(r => r.url === asset.url && r.name === asset.name);
-              const assetId = resource ? resource.id : `resource_${assets.indexOf(asset)}`;
-              if (asset.url.endsWith('.webm') || asset.type === 'video') {
+            const resource = allResources.find(r => r.url === asset.url && r.name === asset.name);
+            const assetId = resource ? resource.id : `resource_${assets.indexOf(asset)}`;
+            if (asset.url.endsWith('.webm') || asset.type === 'video') {
                 result = await loadVideo(asset.url, asset.name);
-              } else {
+            } else {
                 result = await loadImage(asset.url, asset.name, assetId);
-              }
-              loaded++;
-              creditDownload(asset.url, result.bytes);
-              updateProgress(asset);
-              checkComplete();
             }
+            loaded++;
+              creditDownload(asset.url, result.bytes);
+            updateProgress(asset);
+            checkComplete();
+          }
           });
           await Promise.all(workers);
         })();
@@ -1163,7 +1163,7 @@
       const actions = document.getElementById('settings-actions');
       currentMenuLevel = level === 'category' ? 'resource' : level;
       if (resourceMenu) resourceMenu.classList.remove('hidden');
-      if (actions) actions.classList.remove('hidden');
+        if (actions) actions.classList.remove('hidden');
     }
 
     function switchSettingsTab(tab) {
@@ -2127,40 +2127,40 @@
           return;
         }
 
-        if (dialogueTypewriterTimer) {
-          clearInterval(dialogueTypewriterTimer);
-          dialogueTypewriterTimer = null;
-        }
+      if (dialogueTypewriterTimer) {
+        clearInterval(dialogueTypewriterTimer);
+        dialogueTypewriterTimer = null;
+      }
         if (dialogueTypewriterResolve) {
           dialogueTypewriterResolve();
           dialogueTypewriterResolve = null;
         }
 
-        if (!textFormatSettings.typewriterEffect) {
-          targetElement.textContent = text;
+      if (!textFormatSettings.typewriterEffect) {
+        targetElement.textContent = text;
           resolve();
-          return;
-        }
+        return;
+      }
 
-        const speed = textFormatSettings.typewriterSpeed || 10;
-        targetElement.textContent = '';
-        targetElement.classList.add('typewriter-active');
+      const speed = textFormatSettings.typewriterSpeed || 10;
+      targetElement.textContent = '';
+      targetElement.classList.add('typewriter-active');
         dialogueTypewriterResolve = resolve;
 
-        let index = 0;
-        dialogueTypewriterTimer = setInterval(() => {
-          if (index < text.length) {
-            targetElement.textContent = text.substring(0, index + 1);
-            index++;
-          } else {
-            clearInterval(dialogueTypewriterTimer);
-            dialogueTypewriterTimer = null;
+      let index = 0;
+      dialogueTypewriterTimer = setInterval(() => {
+        if (index < text.length) {
+          targetElement.textContent = text.substring(0, index + 1);
+          index++;
+        } else {
+          clearInterval(dialogueTypewriterTimer);
+          dialogueTypewriterTimer = null;
             targetElement.classList.remove('typewriter-active');
             const done = dialogueTypewriterResolve;
             dialogueTypewriterResolve = null;
             if (done) done();
-          }
-        }, speed);
+        }
+      }, speed);
       });
     }
 
@@ -3661,7 +3661,7 @@
             .filter(layer => layer.type !== 'player' && layer.layer % 2 === 1)
             .sort((a, b) => b.layer - a.layer); // 从新到旧排序
 
-            if (oddLayers.length === 0) {
+          if (oddLayers.length === 0) {
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'quest-empty-msg';
             emptyMessage.textContent = '暂无历史对话记录';
@@ -3863,8 +3863,8 @@
         if (isBranchesMode) {
           title.textContent = '此刻可以做的事';
           renderBranches();
-          dialog.appendChild(title);
-          dialog.appendChild(contentContainer);
+        dialog.appendChild(title);
+        dialog.appendChild(contentContainer);
         } else {
           leftButtonGroup.appendChild(currentBtn);
           leftButtonGroup.appendChild(historyBtn);
@@ -7504,9 +7504,9 @@ _.set('stat_data.系统.模式', '${mode}')
             if (isGameMenuOpen()) closeGameMenu();
             else {
               openGameMenu();
-              setTimeout(updateButtonAndLabelPositions, 50);
-            }
-          });
+                  setTimeout(updateButtonAndLabelPositions, 50);
+              }
+            });
 
           // 窗口大小改变时也更新容器宽度和退出按钮位置
           window.addEventListener('resize', () => {
@@ -7595,7 +7595,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
           // 更新全屏按钮标题
           const updateGameFullscreenTitle = () => {
-            const isFs = !!document.fullscreenElement;
+            const isFs = isAppFullscreen();
             if (isFs) {
               gameFullscreenBtn.title = '退出全屏';
             } else {
@@ -7605,6 +7605,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
           // 监听全屏状态变化
           document.addEventListener('fullscreenchange', updateGameFullscreenTitle);
+          window.addEventListener('fp-fullscreenchange', updateGameFullscreenTitle);
 
           // 初始化提示状态
           updateGameFullscreenTitle();
@@ -7894,7 +7895,18 @@ _.set('stat_data.系统.模式', '${mode}')
     });
 
     // 全屏功能
+    function isAppFullscreen() {
+      if (window.妹神官_frameFullscreen && typeof window.妹神官_frameFullscreen.isFullscreen === 'function') {
+        return window.妹神官_frameFullscreen.isFullscreen();
+      }
+      return !!document.fullscreenElement;
+    }
+
     function toggleFullScreen() {
+      if (window.妹神官_frameFullscreen && typeof window.妹神官_frameFullscreen.toggle === 'function') {
+        window.妹神官_frameFullscreen.toggle();
+        return;
+      }
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen({ navigationUI: "hide" }).catch(err => {
           errorWithTag('FULLSCREEN', '进入全屏模式失败', err);
@@ -7925,7 +7937,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
       // 监听全屏状态变化，更新按钮提示
       const updateFullscreenTitle = () => {
-        const isFs = !!document.fullscreenElement;
+        const isFs = isAppFullscreen();
         fullscreenBtn.classList.toggle('is-fs', isFs);
         fullscreenBtn.title = isFs ? '退出全屏' : '全屏';
         fullscreenBtn.setAttribute('aria-label', fullscreenBtn.title);
@@ -7933,6 +7945,7 @@ _.set('stat_data.系统.模式', '${mode}')
 
       // 监听全屏状态变化
       document.addEventListener('fullscreenchange', updateFullscreenTitle);
+      window.addEventListener('fp-fullscreenchange', updateFullscreenTitle);
 
       // 初始化提示状态
       updateFullscreenTitle();
@@ -7984,49 +7997,49 @@ _.set('stat_data.系统.模式', '${mode}')
     });
 
     window.妹神官_onOpeningClosed = function () {
-      fadeInDecorativeElements();
+            fadeInDecorativeElements();
     };
 
     window.妹神官_onOpeningPicked = async function (routeKey) {
       const isLoveRoute = routeKey === 'love';
-      isLoveRouteStart = isLoveRoute;
-      await setGameMode(isLoveRoute ? GAME_MODE_PURE_LOVE : GAME_MODE_NORMAL);
+        isLoveRouteStart = isLoveRoute;
+        await setGameMode(isLoveRoute ? GAME_MODE_PURE_LOVE : GAME_MODE_NORMAL);
 
-      try {
-        await setvar('stat_data.系统.时间.小时', 8);
-        await setvar('stat_data.系统.时间.分钟', 0);
-        await setvar('stat_data.托莉娜.基础.服装', '常服');
-        await setvar('stat_data.托莉娜.基础.堕落阶段', 1);
-        logWithTag('GAME', '开局：已设置时间为 08:00，服装为常服，堕落阶段为1');
-      } catch (err) {
-        errorWithTag('GAME', '设置开局变量失败', err);
-      }
+        try {
+          await setvar('stat_data.系统.时间.小时', 8);
+          await setvar('stat_data.系统.时间.分钟', 0);
+          await setvar('stat_data.托莉娜.基础.服装', '常服');
+          await setvar('stat_data.托莉娜.基础.堕落阶段', 1);
+          logWithTag('GAME', '开局：已设置时间为 08:00，服装为常服，堕落阶段为1');
+        } catch (err) {
+          errorWithTag('GAME', '设置开局变量失败', err);
+        }
 
-      logWithTag('GAME', '开始游戏', isLoveRoute ? '(纯爱路线)' : '(游戏路线)');
+        logWithTag('GAME', '开始游戏', isLoveRoute ? '(纯爱路线)' : '(游戏路线)');
 
-      const introMask = document.getElementById('intro-mask');
+        const introMask = document.getElementById('intro-mask');
       const openingPanel = document.getElementById('opening-panel');
 
-      if (introMask) {
-        introMask.style.transition = 'opacity 0.5s ease-out';
-        introMask.style.opacity = '0';
-        setTimeout(() => {
+        if (introMask) {
+          introMask.style.transition = 'opacity 0.5s ease-out';
+          introMask.style.opacity = '0';
+          setTimeout(() => {
           if (introMask.parentNode) introMask.parentNode.removeChild(introMask);
-        }, 500);
-      }
+          }, 500);
+        }
 
       if (openingPanel) {
         openingPanel.classList.remove('open');
         openingPanel.style.transition = 'opacity 0.5s ease-out';
         openingPanel.style.opacity = '0';
-        setTimeout(() => {
+          setTimeout(() => {
           openingPanel.style.display = 'none';
-        }, 500);
-      }
+          }, 500);
+        }
 
-      setTimeout(async () => {
-        await initGameInterface();
-      }, 600);
+        setTimeout(async () => {
+          await initGameInterface();
+        }, 600);
     };
 
     // 继续按钮：打开存档界面
@@ -8052,15 +8065,16 @@ _.set('stat_data.系统.模式', '${mode}')
     // 所有日志经 logWithTag/warnWithTag/errorWithTag 输出，带 [TAG] 前缀与级别。
     // 可通过 window.妹神官_setLogLevel('silent'|'error'|'warn'|'info'|'debug') 控制输出级别。
     const LOG_LEVELS = { silent: 0, error: 1, warn: 2, info: 3, debug: 4 };
-    let currentLogLevel = LOG_LEVELS.info; // 默认输出 info 及以上（warn/error）
+    let currentLogLevel = LOG_LEVELS.warn; // 默认只输出 warn/error；调试时 setLogLevel('info'|'debug') 开启更多
 
     function shouldLog(level) {
       return LOG_LEVELS[level] <= currentLogLevel;
     }
 
     function logWithTag(tag, message, ...args) {
-      // 'DEBUG' 标签走 debug 通道（默认 info 级别下隐藏，调试时 setLogLevel('debug') 开启）
-      const level = (tag === 'DEBUG') ? 'debug' : 'info';
+      // 'DEBUG' 标签走 debug 通道（默认 warn 级别下隐藏，调试时 setLogLevel('debug') 开启）
+      // 'OUTPUT' 标签走 warn 通道（默认级别下可见，专用于 AI 输入提示词/输出文本）
+      const level = (tag === 'DEBUG') ? 'debug' : (tag === 'OUTPUT') ? 'warn' : 'info';
       if (!shouldLog(level)) return;
       console.log(`[${tag}] ${message}`, ...args);
     }
@@ -8107,7 +8121,7 @@ _.set('stat_data.系统.模式', '${mode}')
     let isStreamingActive = false;
 
     // 设置流式消息监听器
-    const APPLY_STORY_HOOKS = false;
+    const APPLY_STORY_HOOKS = true;
 
     /**
      * 模型常把托莉娜视角误写入 maintext；按标记尝试拆分到 otherpov
@@ -8507,7 +8521,7 @@ _.set('stat_data.系统.模式', '${mode}')
           });
           list.appendChild(section);
         });
-        panel.append(hint, list, inputRow);
+      panel.append(hint, list, inputRow);
       } else {
         inputRow.classList.add('is-solo');
         panel.append(inputRow);
@@ -9092,20 +9106,20 @@ _.set('stat_data.系统.模式', '${mode}')
     function syncLocalWorldbookUids(stage, outfitValue, pureLoveMode) {
       const wb = window.妹神官_settings_worldbook;
       if (!wb || typeof wb.applyEnabled !== 'function') return;
-      const enabledStageUids = getCorruptionStageEnabledUIDs(stage, pureLoveMode);
+          const enabledStageUids = getCorruptionStageEnabledUIDs(stage, pureLoveMode);
       const updates = [];
-      for (const uid of CORRUPTION_STAGE_LORE_UIDS) {
+          for (const uid of CORRUPTION_STAGE_LORE_UIDS) {
         updates.push({ uid, enabled: enabledStageUids.has(uid) });
-      }
-      const outfitUIDs = [8, 10, 9, 18, 17, 2];
-      let targetUID = null;
-      if (outfitValue === '常服') targetUID = 8;
-      else if (outfitValue === '暴露常服') targetUID = 10;
-      else if (outfitValue === '魅魔常服') targetUID = 9;
-      else if (outfitValue === '魔王服') targetUID = 18;
-      else if (outfitValue === '浴巾') targetUID = 17;
-      else if (outfitValue === '女仆装') targetUID = 2;
-      for (const uid of outfitUIDs) {
+          }
+          const outfitUIDs = [8, 10, 9, 18, 17, 2];
+          let targetUID = null;
+          if (outfitValue === '常服') targetUID = 8;
+          else if (outfitValue === '暴露常服') targetUID = 10;
+          else if (outfitValue === '魅魔常服') targetUID = 9;
+          else if (outfitValue === '魔王服') targetUID = 18;
+          else if (outfitValue === '浴巾') targetUID = 17;
+          else if (outfitValue === '女仆装') targetUID = 2;
+          for (const uid of outfitUIDs) {
         updates.push({ uid, enabled: uid === targetUID });
       }
       updates.push({ uid: GAME_MODE_LORE_UID.PURE_LOVE, enabled: !!pureLoveMode });
@@ -9220,14 +9234,14 @@ _.set('stat_data.系统.模式', '${mode}')
         }
         if (s.lustBar && menuOpen) await updateLustValueBar();
         if (s.cumOverlays && hstatusOpen) {
-          const lastLayer = getLastDialogueLayer();
+            const lastLayer = getLastDialogueLayer();
           const snap = (lastLayer && getLayerVars(lastLayer)) ? getLayerVars(lastLayer) : ERA.currentVars;
-          updateHstatusCumOverlays(snap);
-        }
+            updateHstatusCumOverlays(snap);
+          }
         if (s.wombPopup && hstatusOpen && hstatusViewMode === 'crotch') {
-          const lastLayer = getLastDialogueLayer();
+            const lastLayer = getLastDialogueLayer();
           const snap = (lastLayer && getLayerVars(lastLayer)) ? getLayerVars(lastLayer) : ERA.currentVars;
-          updateWombPopup(snap);
+            updateWombPopup(snap);
         }
         if (s.timeWeather) await updateTimeWeatherSystem();
         if (s.stamina) await updateStaminaBar();
@@ -11798,12 +11812,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     // 处理接收到的消息内容
     async function processMessage(content) {
-      // 在控制台输出解析信息（无论通过什么方式调用）
-      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
-      logWithTag('DEBUG', '📥 processMessage 被调用');
-      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
-      logWithTag('DEBUG', '原始内容:', content);
-      logWithTag('DEBUG', '───────────────────────────────────────────────────────');
+      logWithTag('OUTPUT', '📥 AI 返回的文本:\n' + String(content || ''));
 
       const parsed = parseTags(content);
       logWithTag('DEBUG', '解析结果:', parsed);
@@ -11815,6 +11824,25 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         parsed.snapshots = '';
         parsed.variables = '';
         pendingBranchesText = null;
+      }
+      // 额外视角独立路由：hook 中有 <额外视角|...> 引子时，发起独立请求
+      if (APPLY_STORY_HOOKS && parsed.hook) {
+        const otherpovLead = extractHookLead(parsed.hook, '额外视角');
+        if (otherpovLead) {
+          // 主输出违规内嵌的 otherpov 一律丢弃，以独立生成为准（避免与正文重复）
+          if (parsed.otherpov) {
+            warnWithTag('MSG', '主输出违规内嵌 otherpov，已丢弃并改用独立生成');
+            parsed.otherpov = '';
+          }
+          logWithTag('MSG', '检测到额外视角引子，发起独立生成:', otherpovLead);
+          const generated = await generateOtherpovRound(otherpovLead, parsed.maintext);
+          if (generated) {
+            parsed.otherpov = stripAiHtmlComments(generated);
+            logWithTag('MSG', `额外视角独立生成完成（${parsed.otherpov.length} 字）`);
+          } else {
+            warnWithTag('MSG', '额外视角独立生成失败或为空，本层无额外视角');
+          }
+        }
       }
       warnIfTorinaPovLeakedInMaintext(parsed.maintext, parsed.otherpov);
       logWithTag('DEBUG', '───────────────────────────────────────────────────────');
@@ -12137,11 +12165,11 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
               history += `**总结：**\n${ai.snapshots}\n\n`;
             }
           } else {
-            if (ai.maintext) {
-              history += `**AI回复：**\n${ai.maintext}\n\n`;
-            }
-            if (ai.snapshots) {
-              history += `**快照：**\n${ai.snapshots}\n\n`;
+          if (ai.maintext) {
+            history += `**AI回复：**\n${ai.maintext}\n\n`;
+          }
+          if (ai.snapshots) {
+            history += `**快照：**\n${ai.snapshots}\n\n`;
             }
           }
         }
@@ -12175,12 +12203,12 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     function emptyRequestFlags() {
       return {
-        晚安亲亲天数: -1,
-        回家请求天数: -1,
-        越过性欲50: false,
-        越过性欲80: false,
-      };
-    }
+          晚安亲亲天数: -1,
+          回家请求天数: -1,
+          越过性欲50: false,
+          越过性欲80: false,
+        };
+      }
 
     let requestFlags = emptyRequestFlags();
 
@@ -12244,33 +12272,33 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       if (lastLayer && lastLayer.requestFlags) adoptRequestFlags(lastLayer.requestFlags);
       const req = requestFlags;
 
-      if (lust < 50) req.越过性欲50 = false;
-      if (lust < 80) req.越过性欲80 = false;
+        if (lust < 50) req.越过性欲50 = false;
+        if (lust < 80) req.越过性欲80 = false;
 
-      if (Number(req.晚安亲亲天数) !== day) {
-        if (atOrAfter20) {
-          tags.push('<request: 托莉娜请求今天的晚安亲亲>');
-          req.晚安亲亲天数 = day;
-        } else if (atOrAfter18 && atHome) {
-          tags.push('<request: 托莉娜请求今天的晚安亲亲>');
-          req.晚安亲亲天数 = day;
+        if (Number(req.晚安亲亲天数) !== day) {
+          if (atOrAfter20) {
+            tags.push('<request: 托莉娜请求今天的晚安亲亲>');
+            req.晚安亲亲天数 = day;
+          } else if (atOrAfter18 && atHome) {
+            tags.push('<request: 托莉娜请求今天的晚安亲亲>');
+            req.晚安亲亲天数 = day;
+          }
         }
-      }
 
-      if (Number(req.回家请求天数) !== day && atOrAfter18 && !atHome) {
-        tags.push('<request: 托莉娜因为时间过晚，请求回家>');
-        req.回家请求天数 = day;
-      }
+        if (Number(req.回家请求天数) !== day && atOrAfter18 && !atHome) {
+          tags.push('<request: 托莉娜因为时间过晚，请求回家>');
+          req.回家请求天数 = day;
+        }
 
-      if (atHome && lust >= 50 && !req.越过性欲50) {
-        tags.push('<request: 托莉娜请求立刻亲亲>');
-        req.越过性欲50 = true;
-      }
+        if (atHome && lust >= 50 && !req.越过性欲50) {
+          tags.push('<request: 托莉娜请求立刻亲亲>');
+          req.越过性欲50 = true;
+        }
 
-      if (!atHome && lust >= 80 && !req.越过性欲80) {
-        tags.push('<request: 托莉娜请求立刻亲亲>');
-        req.越过性欲80 = true;
-      }
+        if (!atHome && lust >= 80 && !req.越过性欲80) {
+          tags.push('<request: 托莉娜请求立刻亲亲>');
+          req.越过性欲80 = true;
+        }
 
       persistRequestFlags();
       patchRuntimeVarsSnapshot(stripSystemRequest);
@@ -12292,9 +12320,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 变量说明已移除，不再在 RP 时注入提示词（避免把整块变量列表输出给 AI）
     function logPromptBuild(built) {
       const prefix = (built && built.text) || '';
-      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
-      logWithTag('DEBUG', '📤 Chat Completion 提示词');
-      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
+      logWithTag('OUTPUT', '📤 发送给 AI 的提示词:\n' + prefix);
       if (built && built.diag) {
         logWithTag('DEBUG', '顺序', built.diag.order);
         logWithTag('DEBUG', '预设', built.preset || '(默认)');
@@ -12302,12 +12328,9 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       }
       if (built && built.messages) {
         built.messages.forEach(function (m, i) {
-          logWithTag('' + i + '', '' + m.role + ' (' + String(m.content || '').length + ')');
+          logWithTag('DEBUG', '[' + i + '] ' + m.role + ' (' + String(m.content || '').length + ')');
         });
       }
-      logWithTag('DEBUG', '───────────────────────────────────────────────────────');
-      logWithTag('DEBUG', prefix);
-      logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
       return prefix;
     }
 
@@ -12346,6 +12369,168 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           },
         });
         return String(currentStreamingContent || text || '').trim();
+      } finally {
+        setGalBusy(false);
+      }
+    }
+
+    /** 从 hook 文本中提取指定名称的引子内容，如 extractHookLead(hook, '额外视角') */
+    function extractHookLead(hookText, name) {
+      if (!hookText || !name) return '';
+      const re = new RegExp('<' + name + '\\|([\\s\\S]*?)>', 'i');
+      const m = String(hookText).match(re);
+      return m && m[1] ? m[1].trim() : '';
+    }
+
+    /** 截断文本到指定字数（按字符粗截，保留开头） */
+    function truncateChars(text, maxChars) {
+      const s = String(text || '');
+      const limit = Math.max(0, Math.round(Number(maxChars) || 0));
+      if (limit <= 0 || s.length <= limit) return s;
+      return s.slice(0, limit) + '…';
+    }
+
+    /**
+     * 组装 otherpov 上下文文本（独立于对话历史，全部塞进 userInput，XML 标签包裹）：
+     *   1. 本回合主线（玩家输入 + 正文完整）
+     *   2. 上一轮托莉娜视角完整（紧接本回合主线）
+     *   3. 往前 N 轮历史主线（玩家输入 + snapshots 总结）
+     *   4. 从上一轮连续往前 M 轮 otherpov 总结（遇空轮即断）
+     */
+    function buildOtherpovContext(params, maintext) {
+      const pairs = getDialogueRoundPairs();
+      const p = params || {};
+      const mainHistoryRounds = Math.max(0, Math.round(Number(p.mainHistoryRounds) || 0));
+      const otherpovHistoryRounds = Math.max(0, Math.round(Number(p.otherpovHistoryRounds) || 0));
+      const sections = [];
+
+      // 1. 本回合主线：maintext 参数即本回合正文（尚未入层），玩家输入取最后一对
+      const lastPair = pairs.length ? pairs[pairs.length - 1] : null;
+      if (maintext || (lastPair && lastPair.player)) {
+        const parts = [];
+        if (lastPair && lastPair.player && lastPair.player.playerInput) {
+          parts.push(`<player_input>${lastPair.player.playerInput}</player_input>`);
+        }
+        if (maintext) parts.push(`<maintext>\n${maintext}\n</maintext>`);
+        sections.push(
+          `<current_round note="{{user}}视角，仅供时间线参照，禁止复述">\n${parts.join('\n\n')}\n</current_round>`
+        );
+      }
+
+      // 2. otherpov 连续链：仅看紧邻上一轮有无 otherpov——有则输出完整内容（紧接本回合主线）
+      // 并继续往前推总结，没有则整条链跳过（不再往前找最近非空轮）
+      const aiRounds = pairs.filter((pair) => pair.ai);
+      const lastAiIdx = aiRounds.length - 1;
+      const lastOp = lastAiIdx >= 0 ? String(aiRounds[lastAiIdx].ai.otherpov || '').trim() : '';
+      if (lastOp) {
+        sections.push(`<previous_otherpov>\n${lastOp}\n</previous_otherpov>`);
+      }
+
+      // 3. 往前 N 轮历史主线（跳过最后一对——那是本回合的玩家输入，已在上面列出）
+      if (mainHistoryRounds > 0) {
+        const historyPairs = pairs.slice(0, -1).slice(-mainHistoryRounds);
+        const blocks = [];
+        historyPairs.forEach((pair, idx) => {
+          const segs = [];
+          if (pair.player && pair.player.playerInput) {
+            segs.push(`<player_input>${pair.player.playerInput}</player_input>`);
+          }
+          const snap = pair.ai && pair.ai.snapshots ? String(pair.ai.snapshots).trim() : '';
+          if (snap) segs.push(`<main_summary>${snap}</main_summary>`);
+          if (segs.length) blocks.push(`<round index="${idx + 1}">\n${segs.join('\n')}\n</round>`);
+        });
+        if (blocks.length) {
+          sections.push(`<main_history rounds="${blocks.length}">\n${blocks.join('\n\n')}\n</main_history>`);
+        }
+      }
+
+      // 4. 历史 otherpov 总结：从上一轮严格按轮次倒推，遇无 otherpov 的轮即断
+      if (lastOp && otherpovHistoryRounds > 0) {
+        const summaries = [];
+        for (let i = lastAiIdx - 1; i >= 0 && summaries.length < otherpovHistoryRounds; i--) {
+          const op = String(aiRounds[i].ai.otherpov || '').trim();
+          if (!op) break; // 连续中断
+          const summary = String(aiRounds[i].ai.otherpovSummary || '').trim();
+          summaries.unshift(summary || truncateChars(op, 300));
+        }
+        if (summaries.length) {
+          const blocks = summaries.map((s, idx) => `<round index="${idx + 1}">\n${s}\n</round>`);
+          sections.push(
+            `<otherpov_history rounds="${summaries.length}">\n${blocks.join('\n\n')}\n</otherpov_history>`
+          );
+        }
+      }
+
+      return sections.join('\n\n');
+    }
+
+    /** 构建 otherpov 独立请求的消息列表 */
+    function buildOtherpovMessages(lead, maintext) {
+      const api = window.妹神官_settings_api;
+      const params = api && typeof api.getRouteParams === 'function' ? api.getRouteParams('otherpov') : null;
+      const builder = window.妹神官_prompt_builder;
+      const torinaLoc = readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || '未知';
+      const userLoc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '未知';
+      const context = buildOtherpovContext(params, maintext);
+      const userInput = [
+        `<lead>${lead}</lead>`,
+        `<locations><torina>${torinaLoc}</torina><user>${userLoc}</user></locations>`,
+        context,
+        '请根据 <lead> 中的剧情引子，输出托莉娜视角的正文内容。',
+      ].filter(Boolean).join('\n\n');
+
+      if (builder && typeof builder.build === 'function') {
+        return builder.build({
+          route: 'otherpov',
+          userInput: userInput,
+          userName: '{{user}}',
+          history: [],
+          scanMessages: buildWorldbookScanMessages(),
+          storyPrompt: String((params && params.prompt) || '').trim(),
+          targetChars: 0,
+          extras: {
+            scenario: torinaLoc,
+            torinaLocation: torinaLoc,
+          },
+          trigger: 'normal',
+        });
+      }
+      return { text: userInput, messages: [{ role: 'user', content: userInput }] };
+    }
+
+    /** 独立请求生成额外视角内容；失败返回空串（调用方兜底） */
+    async function generateOtherpovRound(lead, maintext) {
+      const llm = window.妹神官_llm;
+      const api = window.妹神官_settings_api;
+      if (!llm || typeof llm.chat !== 'function') return '';
+      if (!api || typeof api.resolveProfile !== 'function') return '';
+      const profile = api.resolveProfile('otherpov');
+      if (!profile) {
+        warnWithTag('MSG', '额外视角：未配置可用接口，跳过独立生成');
+        return '';
+      }
+      const params = typeof api.getRouteParams === 'function' ? api.getRouteParams('otherpov') : null;
+      const built = buildOtherpovMessages(lead, maintext);
+      const messages =
+        built && Array.isArray(built.messages) && built.messages.length
+          ? built.messages
+          : [{ role: 'user', content: (built && built.text) || lead }];
+      logWithTag('OUTPUT', '📤 发送给 AI 的提示词（额外视角）:\n' + ((built && built.text) || lead));
+      try {
+        setGalBusy(true, '正在生成额外视角');
+        const text = await llm.chat(profile, {
+          messages: messages,
+          maxTokens: (params && params.maxTokens) || 2500,
+          temperature: params ? params.temperature : 1,
+          topP: params ? params.topP : 0.95,
+          topK: params ? params.topK : 0,
+          stream: false,
+        });
+        logWithTag('OUTPUT', '📥 AI 返回的文本（额外视角）:\n' + String(text || ''));
+        return String(text || '').trim();
+          } catch (e) {
+        errorWithTag('MSG', '额外视角独立生成失败', e);
+        return '';
       } finally {
         setGalBusy(false);
       }
@@ -12482,10 +12667,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           `【系统】{{user}}与托莉娜一同移动到了：${loc.name}。请描写二人到达后的情景；场景须符合「${loc.name}」。maintext 仅限{{user}}视角。`;
       } else if (companion === '分开') {
         userInput =
-          `【系统】{{user}}移动到了：${loc.name}。托莉娜当前在：${torinaLoc}（同行状态：分开）。请描写{{user}}到达后的情景；托莉娜不在场，勿让她凭空出现在 maintext。托莉娜独立戏份须写 <imotoshinkan_otherpov>，禁止写在 maintext。仅当有叙事重量的独立事件时才写 otherpov。`;
+          `【系统】{{user}}移动到了：${loc.name}。托莉娜当前在：${torinaLoc}（同行状态：分开）。请描写{{user}}到达后的情景；托莉娜不在场，勿让她凭空出现在 maintext。若托莉娜一侧存在有叙事重量的独立事件，在 hook 中用 <额外视角|...> 写简略引子（系统会单独生成详细内容），禁止把托莉娜视角写入 maintext。`;
       } else {
         userInput =
-          `【系统】{{user}}移动到了：${loc.name}（同行状态：待定）。请描写到达情景，并决定是否与托莉娜同行或分开，更新 托莉娜.行程.同行状态 与两地地点。maintext 仅限{{user}}视角；托莉娜独立戏份用 otherpov。`;
+          `【系统】{{user}}移动到了：${loc.name}（同行状态：待定）。请描写到达情景，并决定是否与托莉娜同行或分开，更新 托莉娜.行程.同行状态 与两地地点。maintext 仅限{{user}}视角；托莉娜独立事件在 hook 中用 <额外视角|...> 声明。`;
       }
       try {
         const content = await generateStoryRound(userInput);

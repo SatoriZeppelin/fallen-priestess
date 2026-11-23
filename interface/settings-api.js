@@ -52,6 +52,37 @@
     }
   }
 
+  const TAVERN_PROFILE_ID = 'api_tavern_builtin';
+
+  function isTavernEnv() {
+    return !!(window.妹神官_llm && typeof window.妹神官_llm.isTavernEnv === 'function' && window.妹神官_llm.isTavernEnv());
+  }
+
+  function buildTavernProfile(existing) {
+    const info =
+      window.妹神官_llm && typeof window.妹神官_llm.readTavernApiInfo === 'function'
+        ? window.妹神官_llm.readTavernApiInfo()
+        : {};
+    const prev = existing && typeof existing === 'object' ? existing : {};
+    return {
+      id: TAVERN_PROFILE_ID,
+      name: prev.name || '酒馆API',
+      enabled: prev.enabled !== false,
+      protocol: 'tavern',
+      baseUrl: info.source || 'SillyTavern',
+      apiKey: '',
+      model: info.model || prev.model || '酒馆当前模型',
+      autoConnect: false,
+      stream: prev.stream != null ? !!prev.stream : false,
+      streamDisplay: prev.streamDisplay !== false,
+      contextLength: Number(info.contextLength) || Number(prev.contextLength) || 8192,
+      maxTokens: Number(info.maxTokens) || Number(prev.maxTokens) || 2048,
+      temperature: info.temperature != null ? Number(info.temperature) : prev.temperature != null ? Number(prev.temperature) : 0.8,
+      models: info.model ? [info.model] : prev.models || [],
+      isTavern: true,
+    };
+  }
+
   function defaultProfile(name) {
     return {
       id: uid(),
@@ -102,20 +133,26 @@
       '        - 生成钩子标签: <imotoshinkan_hook></imotoshinkan_hook>',
       '',
       '',
-      '    正文规则:',
+      '    正文定位（{{user}}镜头）:',
+      '        正文的镜头永远跟着{{user}}：只写{{user}}所在地点发生的、{{user}}亲眼所见/亲耳所闻的内容',
+      '        托莉娜在场时：写她在{{user}}面前的言行、表情、可被察觉的异样（如脸红、喘息、声音发颤），但不得写她的内心独白和{{user}}看不到的细节',
+      '        托莉娜不在场时：正文中不得出现托莉娜的台词与行动描写；她那一侧的遭遇只能写进<额外视角|...>引子，由系统另行生成',
+      '        禁止：在正文中切换镜头到托莉娜身边，或使用「与此同时，托莉娜……」之类的旁白',
+      '    正文格式:',
       '        仅限以下格式：',
-      '            - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>',
+      '            - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>（仅限托莉娜在{{user}}身边时）',
       '            - 其他人对话标签:<角色名|对话内容>',
-      '            - 背景标签:<背景|背景名称>',
+      '            - 背景标签:<背景|背景名称>（{{user}}所在地点）',
       '            - CG标签:<CG|组名|CG名称>',
-      '        必须为{{user}}为视角的托莉娜台本，禁止出现{{user}}的对话标签',
+      '        禁止出现{{user}}的对话标签',
       '    引子规则:',
       '        仅限以下格式:<名称|本回合该分段应该生成什么的简略描写>',
       '        参考案例:<额外视角|托莉娜正在门后面被马蒂亚斯隐奸，努力控制自己不发出声音和{{user}}对话>',
       '        参考案例:<地点变化|庄园书库>',
       '        名称白名单:额外视角/地点变化',
       '        要求:当存在多个hook的时候换行',
-      '        当托莉娜与{{user}}分头行动、不在同一地点时，必须用<额外视角|...>写出托莉娜所遭遇的事情',
+      '        当托莉娜与{{user}}分头行动、不在同一地点时，必须用<额外视角|...>写出托莉娜所遭遇的事情（仅写简略引子，具体内容由系统单独生成，禁止把托莉娜视角写入正文）',
+      '        当托莉娜与{{user}}在同一地点时，禁止使用<额外视角|...>；此时托莉娜的一切遭遇都必须写在正文里（以{{user}}视角呈现），系统不会生成额外视角',
       '        当托莉娜本回合的移动目的地与{{user}}不同的时，用<地点变化|地点名称>声明',
     ].join('\n');
   }
@@ -131,6 +168,43 @@
       summaryAfter: 3,
       targetChars: 5000,
       prompt: defaultStoryPrompt(),
+    };
+  }
+
+  function defaultOtherpovPrompt() {
+    return [
+      '你是「额外视角」叙事者。镜头只跟着托莉娜，写她与{{user}}分头行动期间，在{{user}}看不到的地方发生的事。',
+      '与正文的分工:',
+      '    正文 = {{user}}的镜头（已由<current_round>给出，仅作时间线参照）',
+      '    额外视角 = 托莉娜的镜头（你负责的部分），二者是同一时间段的两条平行线',
+      '    禁止：复述、改写或续写<current_round>中的任何场景、台词与事件',
+      '    禁止：让{{user}}出场、说话或被直接描写；{{user}}只能以托莉娜的回忆/念头/远处传来的声音出现',
+      '镜头规则:',
+      '    地点: 只写托莉娜所在地点；开头第一行必须是<背景|托莉娜所在地点>，且不得与{{user}}当前地点相同',
+      '    内心: 这里是唯一允许写托莉娜内心独白、真实感受、隐瞒之事的地方，应着重展现她在{{user}}面前藏起来的一面',
+      '    衔接: 若有<previous_otherpov>，从其结尾状态直接接续；按<lead>给出的引子展开本回合事件',
+      '    时间: 事件时长与正文同步，结尾停在与正文结尾相同的时间点，不得提前写到二人汇合之后',
+      '格式（仅限以下标签）:',
+      '    - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>（心理独白也用此标签，内容用（）包裹）',
+      '    - 其他人对话标签:<角色名|对话内容>',
+      '    - 背景标签:<背景|背景名称>',
+      '    - CG标签:<CG|组名|CG名称>',
+      '    禁止出现{{user}}的对话标签',
+      '篇幅: 充分展开引子中的事件，不得一句话敷衍',
+      '输出: 直接输出台本内容，不要包裹任何 XML 标签，不要输出解释',
+    ].join('\n');
+  }
+
+  function defaultOtherpovParams() {
+    return {
+      maxTokens: 2500,
+      temperature: 1,
+      topK: 0,
+      topP: 0.95,
+      rpm: 0,
+      mainHistoryRounds: 5,
+      otherpovHistoryRounds: 5,
+      prompt: defaultOtherpovPrompt(),
     };
   }
 
@@ -153,7 +227,22 @@
       topP: clampNum(s.topP, 0, 1, d.topP),
       rpm: Math.round(clampNum(s.rpm, 0, 1000, d.rpm)),
       summaryAfter: Math.round(clampNum(migratingOldDefaults ? d.summaryAfter : s.summaryAfter, 1, 100, d.summaryAfter)),
-      targetChars: Math.round(clampNum(migratingOldDefaults ? d.targetChars : s.targetChars, 100, 5000, d.targetChars)),
+      targetChars: Math.max(0, Math.round(Number(migratingOldDefaults ? d.targetChars : s.targetChars) || d.targetChars)),
+      prompt: typeof s.prompt === 'string' ? s.prompt : d.prompt,
+    };
+  }
+
+  function normalizeOtherpovParams(src) {
+    const d = defaultOtherpovParams();
+    const s = src && typeof src === 'object' ? src : {};
+    return {
+      maxTokens: clampNum(s.maxTokens, 16, 8192, d.maxTokens),
+      temperature: clampNum(s.temperature, 0, 2, d.temperature),
+      topK: Math.round(clampNum(s.topK, 0, 200, d.topK)),
+      topP: clampNum(s.topP, 0, 1, d.topP),
+      rpm: Math.round(clampNum(s.rpm, 0, 1000, d.rpm)),
+      mainHistoryRounds: Math.round(clampNum(s.mainHistoryRounds, 0, 20, d.mainHistoryRounds)),
+      otherpovHistoryRounds: Math.round(clampNum(s.otherpovHistoryRounds, 0, 20, d.otherpovHistoryRounds)),
       prompt: typeof s.prompt === 'string' ? s.prompt : d.prompt,
     };
   }
@@ -161,6 +250,7 @@
   function emptyRouteParams() {
     return {
       story: defaultStoryParams(),
+      otherpov: defaultOtherpovParams(),
     };
   }
 
@@ -168,6 +258,7 @@
     const s = src && typeof src === 'object' ? src : {};
     return {
       story: normalizeStoryParams(s.story),
+      otherpov: normalizeOtherpovParams(s.otherpov),
     };
   }
 
@@ -183,6 +274,15 @@
   }
 
   function emptyStore() {
+    if (isTavernEnv()) {
+      const tav = buildTavernProfile();
+      return {
+        profiles: [tav],
+        defaultProfileId: tav.id,
+        routes: emptyRoutes(),
+        routeParams: emptyRouteParams(),
+      };
+    }
     const first = defaultProfile('接口 1');
     return {
       profiles: [first],
@@ -192,18 +292,93 @@
     };
   }
 
+  function ensureStoreForEnv(data) {
+    const inTavern = isTavernEnv();
+    let changed = false;
+    if (inTavern) {
+      const idx = data.profiles.findIndex((p) => p && (p.id === TAVERN_PROFILE_ID || p.protocol === 'tavern'));
+      if (idx < 0) {
+        const tav = buildTavernProfile();
+        data.profiles.unshift(tav);
+        const firstNonTav = data.profiles[1];
+        const firstIsUnconfigured =
+          firstNonTav && !String(firstNonTav.baseUrl || '').trim() && !String(firstNonTav.apiKey || '').trim();
+        if (!data.defaultProfileId || firstIsUnconfigured) {
+          data.defaultProfileId = tav.id;
+        }
+        changed = true;
+      } else {
+        const refreshed = buildTavernProfile(data.profiles[idx]);
+        if (data.profiles[idx].model !== refreshed.model || data.profiles[idx].baseUrl !== refreshed.baseUrl) {
+          data.profiles[idx] = refreshed;
+          changed = true;
+        }
+      }
+    } else {
+      const hadTavern = data.profiles.some((p) => p && (p.id === TAVERN_PROFILE_ID || p.protocol === 'tavern'));
+      if (hadTavern) {
+        data.profiles = data.profiles.filter((p) => p && p.id !== TAVERN_PROFILE_ID && p.protocol !== 'tavern');
+        if (!data.profiles.length) {
+          data.profiles.push(defaultProfile('接口 1'));
+        }
+        if (!data.profiles.some((p) => p.id === data.defaultProfileId)) {
+          data.defaultProfileId = data.profiles[0].id;
+        }
+        ROUTES.forEach((route) => {
+          if (data.routes && data.routes[route] === TAVERN_PROFILE_ID) data.routes[route] = '';
+        });
+        changed = true;
+      }
+    }
+    if (changed) saveStore(data);
+    return data;
+  }
+
   function loadStore() {
     try {
       const raw = localStorage.getItem(STORE_KEY);
-      if (!raw) return emptyStore();
+      if (!raw) {
+        const initSt = emptyStore();
+        saveStore(initSt);
+        return initSt;
+      }
       const data = JSON.parse(raw);
-      if (!data || !Array.isArray(data.profiles) || !data.profiles.length) return emptyStore();
+      if (!data || !Array.isArray(data.profiles) || !data.profiles.length) {
+        const initSt = emptyStore();
+        saveStore(initSt);
+        return initSt;
+      }
       data.routes = normalizeRoutes(data.routes);
       data.routeParams = normalizeRouteParams(data.routeParams);
-      return data;
+      return ensureStoreForEnv(data);
     } catch (e) {
       return emptyStore();
     }
+  }
+
+  function importTavernApi() {
+    if (!isTavernEnv()) {
+      toast('当前不在酒馆环境中');
+      return;
+    }
+    const st = loadStore();
+    const idx = st.profiles.findIndex((p) => p && (p.id === TAVERN_PROFILE_ID || p.protocol === 'tavern'));
+    const tav = buildTavernProfile(idx >= 0 ? st.profiles[idx] : null);
+    tav.name = '酒馆API';
+    tav.enabled = true;
+    if (idx >= 0) {
+      st.profiles[idx] = tav;
+    } else {
+      st.profiles.unshift(tav);
+    }
+    st.defaultProfileId = tav.id;
+    saveStore(st);
+    Object.keys(expanded).forEach((k) => {
+      expanded[k] = false;
+    });
+    expanded[tav.id] = true;
+    render();
+    toast('已导入并同步酒馆API（' + (tav.model || '当前模型') + '）');
   }
 
   function saveStore(st) {
@@ -211,6 +386,7 @@
   }
 
   function protocolPlaceholder(protocol) {
+    if (protocol === 'tavern') return '由酒馆 (SillyTavern) 托管连接';
     if (protocol === 'claude') return 'https://api.anthropic.com';
     if (protocol === 'gemini') return 'https://generativelanguage.googleapis.com';
     return 'https://api.openai.com/v1';
@@ -246,6 +422,7 @@
       sel.value = cur;
     });
     fillStorySampler(st.routeParams && st.routeParams.story);
+    fillOtherpovSampler(st.routeParams && st.routeParams.otherpov);
   }
 
   function storySamplerRoot() {
@@ -262,7 +439,9 @@
       key === 'topK' ||
       key === 'rpm' ||
       key === 'summaryAfter' ||
-      key === 'targetChars'
+      key === 'targetChars' ||
+      key === 'mainHistoryRounds' ||
+      key === 'otherpovHistoryRounds'
     ) {
       return String(Math.round(n));
     }
@@ -330,10 +509,105 @@
     if (!(opts && opts.silent)) fillStorySampler(st.routeParams.story);
   }
 
+  function otherpovSamplerRoot() {
+    return $('otherpov-sampler');
+  }
+
+  function fillOtherpovSampler(src) {
+    const root = otherpovSamplerRoot();
+    if (!root) return;
+    const p = normalizeOtherpovParams(src);
+    Object.keys(p).forEach((key) => {
+      const range = root.querySelector('[data-op="' + key + '"]');
+      const num = root.querySelector('[data-op-num="' + key + '"]');
+      if (range) {
+        range.value = String(p[key] == null ? '' : p[key]);
+        if (range.type === 'range') setRangePct(range);
+      }
+      if (num) num.value = fmtStoryVal(key, p[key]);
+    });
+  }
+
+  function readOtherpovSampler() {
+    const root = otherpovSamplerRoot();
+    const d = defaultOtherpovParams();
+    if (!root) return d;
+    const num = (key) => {
+      const el = root.querySelector('[data-op="' + key + '"]');
+      return el ? el.value : d[key];
+    };
+    return normalizeOtherpovParams({
+      maxTokens: num('maxTokens'),
+      temperature: num('temperature'),
+      topK: num('topK'),
+      topP: num('topP'),
+      rpm: d.rpm,
+      mainHistoryRounds: num('mainHistoryRounds'),
+      otherpovHistoryRounds: num('otherpovHistoryRounds'),
+      prompt: num('prompt'),
+    });
+  }
+
+  function saveOtherpovSampler(opts) {
+    const st = loadStore();
+    st.routeParams = st.routeParams || {};
+    st.routeParams.otherpov = readOtherpovSampler();
+    saveStore(st);
+    if (!(opts && opts.silent)) fillOtherpovSampler(st.routeParams.otherpov);
+  }
+
+  let otherpovSamplerBound = false;
+  function bindOtherpovSampler() {
+    const root = otherpovSamplerRoot();
+    if (!root || otherpovSamplerBound) return;
+    otherpovSamplerBound = true;
+    root.addEventListener('input', (e) => {
+      const t = e.target;
+      if (!t) return;
+      if (t.matches('[data-op]') && t.type === 'range') {
+        const key = t.getAttribute('data-op');
+        const num = root.querySelector('[data-op-num="' + key + '"]');
+        if (num) num.value = fmtStoryVal(key, parseFloat(t.value));
+        setRangePct(t);
+        saveOtherpovSampler();
+        return;
+      }
+      if (t.matches('[data-op-num]')) {
+        const key = t.getAttribute('data-op-num');
+        const range = root.querySelector('[data-op="' + key + '"]');
+        const n = parseFloat(t.value);
+        if (range && Number.isFinite(n)) {
+          range.value = String(n);
+          setRangePct(range);
+        }
+        saveOtherpovSampler();
+        return;
+      }
+      if (t.matches('textarea[data-op]')) {
+        saveOtherpovSampler({ silent: true });
+      }
+    });
+    root.addEventListener('change', (e) => {
+      const t = e.target;
+      if (!t) return;
+      if (t.matches('[data-op], [data-op-num]')) saveOtherpovSampler();
+    });
+  }
+
   function getRouteParams(route) {
     const st = loadStore();
     if (route === 'story') return normalizeStoryParams(st.routeParams && st.routeParams.story);
+    if (route === 'otherpov') return normalizeOtherpovParams(st.routeParams && st.routeParams.otherpov);
     return null;
+  }
+
+  function saveRouteParams(route, params) {
+    const st = loadStore();
+    st.routeParams = st.routeParams || {};
+    if (route === 'story') st.routeParams.story = normalizeStoryParams(params);
+    else if (route === 'otherpov') st.routeParams.otherpov = normalizeOtherpovParams(params);
+    else return;
+    saveStore(st);
   }
 
   function resolveProfile(route) {
@@ -372,6 +646,8 @@
         if (range && Number.isFinite(n)) {
           range.value = String(n);
           setRangePct(range);
+        } else if (!range) {
+          saveStorySampler();
         }
         return;
       }
@@ -443,7 +719,10 @@
 
   function cardHtml(p, isExpanded, index, total) {
     const protocol = p.protocol || 'openai';
-    const sub = [p.model, hostOf(p.baseUrl)].filter(Boolean).join(' · ') || '未配置';
+    const isTavernCard = protocol === 'tavern' || p.id === TAVERN_PROFILE_ID;
+    const sub = isTavernCard
+      ? [p.model || '酒馆当前模型', 'SillyTavern'].filter(Boolean).join(' · ')
+      : [p.model, hostOf(p.baseUrl)].filter(Boolean).join(' · ') || '未配置';
     const adv = !!advancedOpen[p.id];
     const only = total <= 1;
     const ph = protocolPlaceholder(protocol);
@@ -498,6 +777,11 @@
       ' /><span class="sys-check-box" aria-hidden="true"></span><span>启用接口</span></label>' +
       '<div class="sys-l4"><h4 class="sys-l4-title">协议</h4>' +
       '<select class="sys-select" data-f="protocol">' +
+      (isTavernEnv() || isTavernCard
+        ? '<option value="tavern"' +
+          (protocol === 'tavern' ? ' selected' : '') +
+          '>酒馆 API（SillyTavern 当前连接）</option>'
+        : '') +
       '<option value="openai"' +
       (protocol === 'openai' ? ' selected' : '') +
       '>OpenAI（Chat Completions）</option>' +
@@ -568,6 +852,8 @@
   }
 
   function render() {
+    const tavernBtn = $('btn-api-import-tavern');
+    if (tavernBtn) tavernBtn.hidden = !isTavernEnv();
     const list = $('api-profiles-list');
     if (!list) return;
     const st = loadStore();
@@ -594,6 +880,14 @@
   function bind() {
     if (bound) return;
     bound = true;
+
+    const tavernImportBtn = $('btn-api-import-tavern');
+    if (tavernImportBtn) {
+      tavernImportBtn.hidden = !isTavernEnv();
+      tavernImportBtn.addEventListener('click', () => {
+        importTavernApi();
+      });
+    }
 
     const addBtn = $('btn-api-add');
     if (addBtn) {
@@ -759,6 +1053,7 @@
     });
 
     bindStorySampler();
+    bindOtherpovSampler();
   }
 
   let busyId = '';
@@ -899,5 +1194,14 @@
     maybeAutoConnect();
   }
 
-  global.妹神官_settings_api = { init, render, loadStore, saveStore, getRouteParams, resolveProfile };
+  global.妹神官_settings_api = {
+    init,
+    render,
+    loadStore,
+    saveStore,
+    getRouteParams,
+    saveRouteParams,
+    resolveProfile,
+    importTavernApi,
+  };
 })(window);
