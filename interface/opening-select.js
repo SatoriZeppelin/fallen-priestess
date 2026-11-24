@@ -95,12 +95,22 @@
     return out || 'I';
   }
 
+  function resolveDesc(text) {
+    var s = String(text || '');
+    if (window.妹神官_settings_user && typeof window.妹神官_settings_user.resolveUserMacro === 'function') {
+      return window.妹神官_settings_user.resolveUserMacro(s);
+    }
+    return s;
+  }
+
   function updateChrome() {
     var items = list();
     var idx = drag ? nearestIndex() : selectedIndex;
     var op = items[idx];
     var caption = $('opening-caption');
     if (caption) caption.textContent = op ? op.title : '暂无可用开局';
+    var descEl = $('opening-desc');
+    if (descEl) descEl.textContent = op ? resolveDesc(op.desc || op.subtitle || '') : '';
 
     var dots = $('opening-dots');
     if (dots) {

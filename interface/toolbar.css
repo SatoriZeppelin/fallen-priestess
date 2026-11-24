@@ -148,7 +148,14 @@
   font: 700 13px/1 "Segoe UI", "Microsoft YaHei", sans-serif;
   letter-spacing: 0.06em;
   white-space: nowrap;
-  text-shadow: none;
+  -webkit-text-stroke: 0.8px rgba(0, 0, 0, 0.92);
+  paint-order: stroke fill;
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.92),
+     1px -1px 0 rgba(0, 0, 0, 0.92),
+    -1px  1px 0 rgba(0, 0, 0, 0.92),
+     1px  1px 0 rgba(0, 0, 0, 0.92),
+     0    2px 4px rgba(0, 0, 0, 0.65);
 }
 
 #gal-toolbar .gal-tb-btn:hover,
@@ -163,7 +170,12 @@
   display: block;
   overflow: visible;
   pointer-events: none;
-  filter: none;
+  filter:
+    drop-shadow(1px 0 0 rgba(0, 0, 0, 0.92))
+    drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.92))
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.92))
+    drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.92))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65));
 }
 
 #gal-toolbar #btn-gal-toolbar-lock svg {

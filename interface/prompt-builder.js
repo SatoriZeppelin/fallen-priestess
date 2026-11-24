@@ -72,12 +72,49 @@
     return String((a && a.uid) || '').localeCompare(String((b && b.uid) || ''), undefined, { numeric: true });
   }
 
+  function getUserApi() {
+    return global.妹神官_settings_user || null;
+  }
+
+  function resolveUserName(fallback) {
+    const api = getUserApi();
+    if (api && typeof api.getUserName === 'function') {
+      const n = api.getUserName();
+      if (n) return n;
+    }
+    return fallback || '{{user}}';
+  }
+
+  function getPersonaInjection(position) {
+    const api = getUserApi();
+    if (!api || typeof api.getInjection !== 'function') return '';
+    return String(api.getInjection(position) || '').trim();
+  }
+
+  function getPersonaDepthInjection() {
+    const api = getUserApi();
+    if (!api || typeof api.getDepthInjection !== 'function') return null;
+    return api.getDepthInjection();
+  }
+
   function formatEntry(e) {
     if (!e) return '';
     const title = String(e.comment || '').trim();
     const body = String(e.content || '').trim();
     if (!body) return '';
-    return title ? '### ' + title + '\n' + body : body;
+    const raw = title ? '### ' + title + '\n' + body : body;
+    return substituteMacrosOnly(raw);
+  }
+
+  function substituteMacrosOnly(text) {
+    let out = String(text || '');
+    if (!out) return out;
+    out = out.replace(/\{\{char\}\}/gi, '托莉娜');
+    const uName = resolveUserName('');
+    if (uName) {
+      out = out.replace(/\{\{user\}\}/gi, uName);
+    }
+    return out;
   }
 
   function pushJoined(messages, entries, role) {
@@ -140,7 +177,7 @@
         .filter(Boolean)
         .join('\n\n');
     });
-    return out.replace(/\{\{char\}\}/gi, '托莉娜');
+    return substituteMacrosOnly(out);
   }
 
   function applyMacros(text, outlets) {
@@ -294,15 +331,20 @@
     (history || []).forEach(function (m) {
       if (!m) return;
       if (m.role !== 'user' && m.role !== 'assistant') return;
-      const c = String(m.content || '').trim();
+      const c = substituteMacrosOnly(String(m.content || '').trim());
       if (!c) return;
       chatMsgs.push({ role: m.role, content: c });
     });
 
+    const personaAnTop = getPersonaInjection('an_top');
+    if (personaAnTop) {
+      chatMsgs.unshift({ role: 'system', content: personaAnTop });
+    }
+
     pushJoined(chatMsgs, wi.anTop);
 
     const last = chatMsgs[chatMsgs.length - 1];
-    const incoming = String(userText || '').trim();
+    const incoming = substituteMacrosOnly(String(userText || '').trim());
     if (incoming) {
       if (last && last.role === 'user' && (incoming === last.content || incoming.indexOf(last.content) === 0)) {
         last.content = incoming;
@@ -323,6 +365,10 @@
         _isPrompt: true,
       });
     });
+    const personaDepth = getPersonaDepthInjection();
+    if (personaDepth) {
+      depthItems.push(personaDepth);
+    }
     if (extras && extras.targetChars > 0) {
       depthItems.push({
         content: '正文目标字数：' + extras.targetChars,
@@ -345,6 +391,12 @@
           if (!text) return;
           chatMsgs.splice(insertAt + i, 0, { role: wiRole(e.role), content: text });
         });
+    }
+
+    const personaAnBottom = getPersonaInjection('an_bottom');
+    if (personaAnBottom) {
+      const anInsert = Math.max(0, chatMsgs.length - 1);
+      chatMsgs.splice(anInsert, 0, { role: 'system', content: personaAnBottom });
     }
 
     chatMsgs.forEach(function (m) {
@@ -380,11 +432,18 @@
     const preset = opts.preset || (presetApi && typeof presetApi.getPreset === 'function' ? presetApi.getPreset(opts.route || 'story') : null);
     const order = resolveOrder(preset, storyPrompt);
 
+    const resolvedUserName = resolveUserName(opts.userName);
+    const extraObj = Object.assign({}, opts.extras || {});
+    if (!extraObj.persona) {
+      const pDesc = getPersonaInjection('prompt') || getPersonaInjection('an_top') || getPersonaInjection('an_bottom') || getPersonaInjection('depth');
+      if (pDesc) extraObj.persona = pDesc;
+    }
+
     const scanned = scanWorldbook({
       userInput: userText,
-      userName: opts.userName || '{{user}}',
+      userName: resolvedUserName,
       messages: Array.isArray(opts.scanMessages) ? opts.scanMessages : [],
-      extras: opts.extras || {},
+      extras: extraObj,
       trigger: opts.trigger || 'normal',
       skipTick: !!opts.skipTick,
     });
@@ -405,7 +464,7 @@
     });
 
     const messages = [];
-    const flags = { chatInserted: false, wiBefore: false, wiAfter: false };
+    const flags = { chatInserted: false, wiBefore: false, wiAfter: false, personaPromptInjected: false };
     const diag = { order: [], worldbook: scanned.map(function (e) { return e.comment || e.uid; }) };
 
     relative.forEach(function (item) {
@@ -428,6 +487,13 @@
         return;
       }
       if (id === 'chatHistory') {
+        if (!flags.personaPromptInjected) {
+          const fallbackPersona = getPersonaInjection('prompt');
+          if (fallbackPersona) {
+            messages.push({ role: 'system', content: fallbackPersona });
+            flags.personaPromptInjected = true;
+          }
+        }
         appendChatHistory(messages, history, userText, wi, absolute, {
           targetChars: Number(opts.targetChars) || 0,
         });
@@ -439,7 +505,15 @@
         pushJoined(messages, wi.anBottom);
         return;
       }
-      if (id === 'personaDescription' || id === 'charDescription' || id === 'charPersonality' || id === 'scenario') {
+      if (id === 'personaDescription') {
+        const personaText = getPersonaInjection('prompt') || applyMacros(item.content, wi.outlets).trim();
+        if (personaText) {
+          messages.push({ role: normalizeRole(item.role), content: personaText });
+          flags.personaPromptInjected = true;
+        }
+        return;
+      }
+      if (id === 'charDescription' || id === 'charPersonality' || id === 'scenario') {
         const markerText = applyMacros(item.content, wi.outlets).trim();
         if (markerText) messages.push({ role: normalizeRole(item.role), content: markerText });
         return;
@@ -450,6 +524,13 @@
       messages.push({ role: normalizeRole(item.role), content: content });
     });
 
+    if (!flags.personaPromptInjected) {
+      const fallbackPersona = getPersonaInjection('prompt');
+      if (fallbackPersona) {
+        messages.push({ role: 'system', content: fallbackPersona });
+        flags.personaPromptInjected = true;
+      }
+    }
     if (!flags.wiBefore) pushJoined(messages, wi.before);
     if (!flags.wiAfter) pushJoined(messages, wi.after);
     if (!flags.chatInserted) {

@@ -1189,6 +1189,9 @@
         if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.init === 'function') {
           window.妹神官_settings_worldbook.init();
         }
+        if (window.妹神官_settings_user && typeof window.妹神官_settings_user.init === 'function') {
+          window.妹神官_settings_user.init();
+        }
         if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
           window.妹神官_settings_variable.init();
         }
@@ -1780,6 +1783,9 @@
         if (!btn) return;
         const sub = btn.getAttribute('data-sub');
         switchSystemSub(sub);
+        if (sub === 'user' && window.妹神官_settings_user && typeof window.妹神官_settings_user.render === 'function') {
+          window.妹神官_settings_user.render();
+        }
         if (sub === 'variable' && window.妹神官_settings_variable && typeof window.妹神官_settings_variable.render === 'function') {
           window.妹神官_settings_variable.render();
         }
@@ -1845,6 +1851,7 @@
       'meishinkan_worldbook',
       'meishinkan_worldbook_scan',
       'meishinkan_variables',
+      'meishinkan_user_persona',
       'textFormatSettings'
     ];
 
@@ -1918,6 +1925,7 @@
           if (window.妹神官_settings_api && typeof window.妹神官_settings_api.render === 'function') window.妹神官_settings_api.render();
           if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.render === 'function') window.妹神官_settings_preset.render();
           if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.render === 'function') window.妹神官_settings_worldbook.render();
+          if (window.妹神官_settings_user && typeof window.妹神官_settings_user.render === 'function') window.妹神官_settings_user.render();
           if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') window.妹神官_settings_variable.init();
           refreshLocalStorageUsageLabel();
           showArchiveNotification(`已成功导入并恢复 ${restored} 项全局配置`, 'success');
@@ -1931,7 +1939,7 @@
     if (dataConfigResetBtn) {
       dataConfigResetBtn.addEventListener('click', () => {
         showConfirmDialog(
-          '确定将所有全局设置（接口、路由、预设、世界书、初始变量、正文格式）恢复出厂状态？\n（注意：游戏存档不会被删除）',
+          '确定将所有全局设置（接口、路由、预设、世界书、用户设定、初始变量、正文格式）恢复出厂状态？\n（注意：游戏存档不会被删除）',
           () => {
             CONFIG_BACKUP_KEYS.forEach((k) => localStorage.removeItem(k));
             localStorage.removeItem('meishinkan_variables_seed');
@@ -1943,6 +1951,7 @@
             if (window.妹神官_settings_api && typeof window.妹神官_settings_api.render === 'function') window.妹神官_settings_api.render();
             if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.render === 'function') window.妹神官_settings_preset.render();
             if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.render === 'function') window.妹神官_settings_worldbook.render();
+            if (window.妹神官_settings_user && typeof window.妹神官_settings_user.render === 'function') window.妹神官_settings_user.render();
             if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') window.妹神官_settings_variable.init();
             refreshLocalStorageUsageLabel();
             showArchiveNotification('已恢复出厂设置', 'success');
@@ -2295,8 +2304,24 @@
 
     let dialogueTypewriterResolve = null;
 
+    function getActiveUserName(fallback) {
+      if (window.妹神官_settings_user && typeof window.妹神官_settings_user.getUserName === 'function') {
+        const n = window.妹神官_settings_user.getUserName();
+        if (n) return n;
+      }
+      return fallback !== undefined ? fallback : '{{user}}';
+    }
+
+    function resolveUserMacroText(str) {
+      const s = String(str == null ? '' : str);
+      if (!s) return s;
+      const n = getActiveUserName('');
+      return n ? s.replace(/\{\{user\}\}/gi, n) : s;
+    }
+
     // 应用打印机效果到对话文本
     function applyTypewriterToDialogue(text, targetElement) {
+      text = resolveUserMacroText(text);
       return new Promise((resolve) => {
         if (!targetElement) {
           resolve();
@@ -2770,6 +2795,8 @@
             layer: layer.layer,
             timestamp: layer.timestamp,
             maintext: layer.maintext,
+            otherpov: layer.otherpov || '',
+            otherpovSummary: layer.otherpovSummary || '',
             branches: layer.branches,
             snapshots: layer.snapshots,
             variables: layer.variables,
@@ -2844,6 +2871,8 @@
             layer: layer.layer,
             timestamp: layer.timestamp,
             maintext: layer.maintext,
+            otherpov: layer.otherpov || '',
+            otherpovSummary: layer.otherpovSummary || '',
             branches: layer.branches,
             snapshots: layer.snapshots,
             variables: layer.variables,
@@ -3258,6 +3287,8 @@
             layer: (index + 1) * 2 - 1, // 转换为奇数层：1, 3, 5, 7...
             timestamp: entry.timestamp || new Date().toISOString(),
             maintext: entry.maintext || '',
+            otherpov: entry.otherpov || '',
+            otherpovSummary: entry.otherpovSummary || '',
             branches: entry.branches || '',
             snapshots: entry.snapshots || '',
             variables: entry.variables || '',
@@ -3639,6 +3670,17 @@
         await updateMainText('');
       }
 
+      if (layer.otherpov && layer.otherpov.trim()) {
+        currentLayerOtherPov = { maintext: layer.maintext || '', otherpov: layer.otherpov.trim() };
+        showingOtherPov = false;
+        savedMainDialogueIndex = 0;
+        savedOtherPovDialogueIndex = 0;
+      } else {
+        currentLayerOtherPov = null;
+        showingOtherPov = false;
+      }
+      updateOtherPovToggleVisibility();
+
       if (layer.branches) updateBranches(layer.branches);
       else updateBranches('');
       if (layer.snapshots) updateSnapshots(layer.snapshots);
@@ -3729,7 +3771,7 @@
                   const nameplateTop = nameplate.querySelector('.np-top');
                   const nameplateBottom = nameplate.querySelector('.np-bottom');
                   if (nameplateTop) nameplateTop.textContent = '';
-                  if (nameplateBottom) nameplateBottom.textContent = '{{user}}';
+                  if (nameplateBottom) nameplateBottom.textContent = getActiveUserName('{{user}}');
                 }
               }
 
@@ -10803,7 +10845,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           const nameplateTop = nameplate.querySelector('.np-top');
           const nameplateBottom = nameplate.querySelector('.np-bottom');
           if (nameplateTop) nameplateTop.textContent = '';
-          if (nameplateBottom) nameplateBottom.textContent = dialogue.character || '托莉娜';
+          if (nameplateBottom) nameplateBottom.textContent = resolveUserMacroText(dialogue.character || '托莉娜');
         }
       }
 
@@ -11011,7 +11053,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
             const nameplateTop = nameplate.querySelector('.np-top');
             const nameplateBottom = nameplate.querySelector('.np-bottom');
             if (nameplateTop) nameplateTop.textContent = '';
-            if (nameplateBottom) nameplateBottom.textContent = '{{user}}';
+            if (nameplateBottom) nameplateBottom.textContent = getActiveUserName('{{user}}');
           }
         }
         const content = await generateStoryRound(choiceText);
@@ -12300,7 +12342,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       const msgs = [];
       pairs.forEach((pair) => {
         if (pair.player) {
-          msgs.push({ name: '{{user}}', text: String(pair.player.playerInput || '') });
+          msgs.push({ name: getActiveUserName('{{user}}'), text: String(pair.player.playerInput || '') });
         }
         if (pair.ai) {
           let text = String(pair.ai.maintext || '');
@@ -12349,7 +12391,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       return builder.build({
         route: 'story',
         userInput: userInputWithRequests,
-        userName: '{{user}}',
+        userName: getActiveUserName('{{user}}'),
         history: buildChatTurns(),
         scanMessages: buildWorldbookScanMessages(),
         storyPrompt: String(story.prompt || '').trim(),
@@ -12715,7 +12757,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         return builder.build({
           route: 'otherpov',
           userInput: userInput,
-          userName: '{{user}}',
+          userName: getActiveUserName('{{user}}'),
           history: [],
           scanMessages: buildWorldbookScanMessages(),
           storyPrompt: String((params && params.prompt) || '').trim(),
@@ -12820,7 +12862,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         const built = builder.build({
           route: route,
           userInput: userContent,
-          userName: '{{user}}',
+          userName: getActiveUserName('{{user}}'),
           history: [],
           scanMessages: [],
           storyPrompt: sysPrompt,

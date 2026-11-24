@@ -190,6 +190,84 @@
     return out;
   }
 
+  function readTavernUserInfo() {
+    const env = getTavernEnv();
+    const out = {
+      name: '',
+      description: '',
+    };
+    if (!env.isTavern) return out;
+
+    const wins = [global];
+    try {
+      if (global.parent && global.parent !== global) wins.push(global.parent);
+    } catch (e) {}
+    try {
+      if (global.top && global.top !== global && wins.indexOf(global.top) < 0) wins.push(global.top);
+    } catch (e) {}
+
+    try {
+      if (env.th) {
+        if (typeof env.th.getUserName === 'function') {
+          const n = env.th.getUserName();
+          if (n) out.name = String(n).trim();
+        }
+        if (typeof env.th.getUserPersona === 'function') {
+          const d = env.th.getUserPersona();
+          if (d != null) out.description = String(d);
+        } else if (typeof env.th.getPersonaDescription === 'function') {
+          const d = env.th.getPersonaDescription();
+          if (d != null) out.description = String(d);
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const ctx = env.ctx;
+      if (ctx) {
+        if (!out.name && ctx.name1) out.name = String(ctx.name1).trim();
+        if (!out.description) {
+          const pu = ctx.powerUserSettings || ctx.power_user;
+          if (pu && typeof pu.persona_description === 'string') {
+            out.description = pu.persona_description;
+          } else if (typeof ctx.persona_description === 'string') {
+            out.description = ctx.persona_description;
+          } else if (typeof ctx.userPersona === 'string') {
+            out.description = ctx.userPersona;
+          }
+        }
+      }
+    } catch (e) {}
+
+    for (let i = 0; i < wins.length; i++) {
+      const w = wins[i];
+      try {
+        if (!out.name && typeof w.name1 === 'string' && w.name1.trim()) {
+          out.name = w.name1.trim();
+        }
+        if (!out.description && w.power_user && typeof w.power_user.persona_description === 'string') {
+          out.description = w.power_user.persona_description;
+        }
+        if (w.document) {
+          if (!out.name) {
+            const nameEl = w.document.getElementById('your_name');
+            if (nameEl && typeof nameEl.value === 'string' && nameEl.value.trim()) {
+              out.name = nameEl.value.trim();
+            }
+          }
+          if (!out.description) {
+            const descEl = w.document.getElementById('persona_description');
+            if (descEl && typeof descEl.value === 'string') {
+              out.description = descEl.value;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    return out;
+  }
+
   async function chatViaTavern(cfg, opts) {
     opts = opts || {};
     const env = getTavernEnv();
@@ -693,5 +771,6 @@
     chat: chat,
     isTavernEnv: isTavernEnv,
     readTavernApiInfo: readTavernApiInfo,
+    readTavernUserInfo: readTavernUserInfo,
   };
 })(window);

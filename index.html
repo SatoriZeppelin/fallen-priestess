@@ -174,7 +174,7 @@
   <link rel="stylesheet" href="interface/modal.css" />
   <link rel="stylesheet" href="interface/hstatus.css" />
   <link rel="stylesheet" href="interface/map.css" />
-  <link rel="stylesheet" href="interface/toolbar.css" />
+  <link rel="stylesheet" href="interface/toolbar.css?v=20261124f" />
   <script type="application/json" id="meishinkan-map-config">{
   "stageWidth": 3456,
   "scaleReferenceMapId": "xicheng",
@@ -1202,11 +1202,68 @@
           <div class="settings-pane settings-l2-shell" id="pane-system" data-pane="system">
             <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
               <button type="button" class="settings-subtab active" data-sub="prompt"><span class="sub-label">提示词</span></button>
+              <button type="button" class="settings-subtab" data-sub="user"><span class="sub-label">用户</span></button>
               <button type="button" class="settings-subtab" data-sub="variable"><span class="sub-label">变量</span></button>
               <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
               <button type="button" class="settings-subtab" data-sub="misc"><span class="sub-label">杂项</span></button>
             </nav>
             <div class="settings-subcontent" id="settings-system-subcontent">
+              <div class="settings-subpane" data-subpane="user">
+                <section class="sys-l3 sys-user">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">用户设定</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn sys-user-sync-btn" id="btn-user-sync-tavern" aria-pressed="false" hidden>跟随酒馆User设定</button>
+                    </div>
+                  </div>
+                  <div class="sys-l4">
+                    <h4 class="sys-l4-title">用户名称</h4>
+                    <input
+                      type="text"
+                      class="sys-input"
+                      id="cfg-user-name"
+                      placeholder="用户名称（留空则保留 {{user}}）"
+                      autocomplete="off"
+                      spellcheck="false"
+                    />
+                  </div>
+                  <div class="sys-l4">
+                    <h4 class="sys-l4-title">用户设定描述</h4>
+                    <textarea
+                      id="cfg-user-desc"
+                      class="sys-textarea"
+                      spellcheck="false"
+                      autocomplete="off"
+                      placeholder="输入玩家角色的外貌、身份、性格等背景设定..."
+                    ></textarea>
+                    <p class="sys-hint" style="margin-top: 6px;">人设字符数: <span id="cfg-user-desc-count">0</span></p>
+                  </div>
+                  <div class="sys-l4">
+                    <h4 class="sys-l4-title">插入位置</h4>
+                    <select id="cfg-user-position" class="sys-select">
+                      <option value="none">无（已禁用）</option>
+                      <option value="prompt" selected>在故事字符串/提示词管理器中</option>
+                      <option value="an_top">作者注的顶部</option>
+                      <option value="an_bottom">作者注的底部</option>
+                      <option value="depth">聊天的特定深度</option>
+                    </select>
+                    <div class="sys-user-depth-wrap" id="cfg-user-depth-wrap" hidden style="margin-top: 10px;">
+                      <h4 class="sys-l4-title">插入深度</h4>
+                      <input
+                        type="number"
+                        class="sys-input"
+                        id="cfg-user-depth"
+                        min="0"
+                        max="999"
+                        step="1"
+                        value="4"
+                      />
+                      <p class="sys-hint" style="margin-top: 6px;">0 = 紧贴最新消息之前；数值越大离最新消息越远</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
               <div class="settings-subpane" data-subpane="regex">
                 <section class="sys-l3">
                   <div class="sys-toolbar">
@@ -1843,14 +1900,15 @@
   <script src="resource/default-worldbook.js?v=20261124"></script>
   <script src="resource/default-variables.js?v=20261124"></script>
   <script src="interface/map.js?v=20261124"></script>
-  <script src="interface/llm-client.js?v=20261124e"></script>
-  <script src="interface/settings-api.js?v=20261124e"></script>
-  <script src="interface/settings-preset.js?v=20261124e"></script>
-  <script src="interface/settings-worldbook.js?v=20261124e"></script>
-  <script src="interface/settings-variable.js?v=20261124e"></script>
-  <script src="interface/prompt-builder.js?v=20261124e"></script>
-  <script src="interface/toolbar.js?v=20261124e"></script>
-  <script src="interface/opening-select.js?v=20261124e"></script>
-  <script src="interface/app.js?v=20261124e"></script>
+  <script src="interface/llm-client.js?v=20261124g"></script>
+  <script src="interface/settings-api.js?v=20261124g"></script>
+  <script src="interface/settings-preset.js?v=20261124g"></script>
+  <script src="interface/settings-worldbook.js?v=20261124g"></script>
+  <script src="interface/settings-variable.js?v=20261124g"></script>
+  <script src="interface/settings-user.js?v=20261124g"></script>
+  <script src="interface/prompt-builder.js?v=20261124g"></script>
+  <script src="interface/toolbar.js?v=20261124g"></script>
+  <script src="interface/opening-select.js?v=20261124g"></script>
+  <script src="interface/app.js?v=20261124g"></script>
 </body>
 </html>

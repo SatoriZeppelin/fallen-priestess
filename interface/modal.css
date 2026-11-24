@@ -2154,6 +2154,24 @@
   border-color: #f0d78a;
 }
 
+#settings-overlay .settings-l2-shell .sys-input.is-locked,
+#settings-overlay .settings-l2-shell .sys-textarea.is-locked,
+#settings-overlay .settings-l2-shell .sys-input[readonly],
+#settings-overlay .settings-l2-shell .sys-textarea[readonly] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: rgba(12, 9, 6, 0.82);
+  border-color: rgba(214, 176, 104, 0.28);
+  color: rgba(243, 234, 212, 0.72);
+}
+
+#settings-overlay .settings-l2-shell .sys-user-sync-btn.is-active {
+  outline: 2px solid #f0d78a;
+  outline-offset: -2px;
+  box-shadow: 0 0 12px rgba(240, 215, 138, 0.55);
+  color: #ffe999;
+}
+
 #settings-overlay .settings-l2-shell .sys-input::placeholder {
   color: rgba(243, 234, 212, 0.4);
 }
