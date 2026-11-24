@@ -23,7 +23,38 @@
 
       var styleId = 'fp-sheld-fill';
 
+      function cleanDuplicateTavernFrames() {
+        if (!doc) return;
+        try {
+          var frames = doc.querySelectorAll('iframe');
+          for (var i = 0; i < frames.length; i++) {
+            var f = frames[i];
+            if (f === iframe) continue;
+            var isFp = f.getAttribute('data-fp-frame') === '1';
+            if (!isFp) {
+              try {
+                var cw = f.contentWindow;
+                var cd = f.contentDocument || (cw && cw.document);
+                if (cw && cw.__FP_TAVERN_BOOT__) isFp = true;
+                else if (cd && cd.title && cd.title.indexOf('妹神官') !== -1) isFp = true;
+              } catch (e) {}
+            }
+            if (isFp) {
+              var msgBlock = f.closest && f.closest('.mes');
+              var myBlock = iframe.closest && iframe.closest('.mes');
+              if (msgBlock && myBlock && msgBlock === myBlock) {
+                if (f.parentNode) f.parentNode.removeChild(f);
+              } else {
+                f.style.setProperty('display', 'none', 'important');
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
       function applyEmbedStyle() {
+        iframe.setAttribute('data-fp-frame', '1');
+        cleanDuplicateTavernFrames();
         if (doc) {
           var oldStyle = doc.getElementById(styleId);
           if (oldStyle && oldStyle.parentNode) oldStyle.parentNode.removeChild(oldStyle);

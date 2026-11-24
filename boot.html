@@ -198,6 +198,7 @@
       function fitBootFrame() {
         var iframe = window.frameElement;
         if (!iframe || iframe.getAttribute('data-fp-pinned') === '1') return;
+        iframe.setAttribute('data-fp-frame', '1');
         var h = Math.ceil(Math.max(
           document.documentElement.scrollHeight,
           document.body.scrollHeight,
@@ -314,9 +315,43 @@
         return out;
       }
 
+      function cleanDuplicateTavernFrames() {
+        var iframe = window.frameElement;
+        if (!iframe) return;
+        try {
+          var doc = window.parent && window.parent.document;
+          if (!doc) return;
+          var frames = doc.querySelectorAll('iframe');
+          for (var i = 0; i < frames.length; i++) {
+            var f = frames[i];
+            if (f === iframe) continue;
+            var isFp = f.getAttribute('data-fp-frame') === '1';
+            if (!isFp) {
+              try {
+                var cw = f.contentWindow;
+                var cd = f.contentDocument || (cw && cw.document);
+                if (cw && cw.__FP_TAVERN_BOOT__) isFp = true;
+                else if (cd && cd.title && cd.title.indexOf('妹神官') !== -1) isFp = true;
+              } catch (e) {}
+            }
+            if (isFp) {
+              var msgBlock = f.closest && f.closest('.mes');
+              var myBlock = iframe.closest && iframe.closest('.mes');
+              if (msgBlock && myBlock && msgBlock === myBlock) {
+                if (f.parentNode) f.parentNode.removeChild(f);
+              } else {
+                f.style.setProperty('display', 'none', 'important');
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
       function setEmbedTavernFrame() {
         var iframe = window.frameElement;
         if (!iframe) return;
+        iframe.setAttribute('data-fp-frame', '1');
+        cleanDuplicateTavernFrames();
         document.documentElement.classList.add('is-filled');
         iframe.removeAttribute('data-fp-pinned');
         iframe.style.setProperty('position', 'relative', 'important');
