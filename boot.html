@@ -539,15 +539,19 @@
         msg.classList.remove('is-bad');
         msg.textContent = '正在载入游戏…';
 
+        var nowBust = 't=' + Date.now();
+        function withBust(u) {
+          return u + (u.indexOf('?') === -1 ? '?' : '&') + nowBust;
+        }
         var sources = [];
         try {
           if (/^https?:/i.test(location.protocol) && !window.frameElement) {
-            sources.push({ url: new URL('index.html', location.href).href, base: new URL('./', location.href).href });
+            sources.push({ url: withBust(new URL('index.html', location.href).href), base: new URL('./', location.href).href });
           }
         } catch (e) {}
         sources.push(
-          { url: GAME_INDEX, base: GAME_BASE },
-          { url: GAME_INDEX_CDN, base: 'https://cdn.jsdelivr.net/gh/SatoriZeppelin/fallen-priestess@main/' }
+          { url: withBust(GAME_INDEX), base: GAME_BASE },
+          { url: withBust(GAME_INDEX_CDN), base: 'https://cdn.jsdelivr.net/gh/SatoriZeppelin/fallen-priestess@main/' }
         );
 
         var next = Promise.reject();
