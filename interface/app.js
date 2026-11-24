@@ -1185,13 +1185,7 @@
       }
       if (nextTab === 'system') {
         const cur = document.querySelector('#pane-system .settings-subtab.active');
-        switchSystemSub((cur && cur.getAttribute('data-sub')) || 'api');
-        if (window.妹神官_settings_api && typeof window.妹神官_settings_api.init === 'function') {
-          window.妹神官_settings_api.init();
-        }
-        if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.init === 'function') {
-          window.妹神官_settings_preset.init();
-        }
+        switchSystemSub((cur && cur.getAttribute('data-sub')) || 'prompt');
         if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.init === 'function') {
           window.妹神官_settings_worldbook.init();
         }
@@ -1201,7 +1195,7 @@
       }
       if (nextTab === 'routes') {
         const cur = document.querySelector('#pane-routes .settings-subtab.active');
-        switchRoutesSub((cur && cur.getAttribute('data-sub')) || 'default');
+        switchRoutesSub((cur && cur.getAttribute('data-sub')) || 'api');
         if (window.妹神官_settings_api && typeof window.妹神官_settings_api.init === 'function') {
           window.妹神官_settings_api.init();
         }
@@ -1711,6 +1705,35 @@
     if (dataStorageBtn) {
       dataStorageBtn.addEventListener('click', () => {
         switchSettingsTab('data-storage');
+        refreshLocalStorageUsageLabel();
+      });
+    }
+
+    function refreshLocalStorageUsageLabel() {
+      const label = document.getElementById('data-storage-usage-label');
+      if (!label) return;
+      try {
+        let totalBytes = 0;
+        let keyCount = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          const v = localStorage.getItem(k) || '';
+          totalBytes += (k.length + v.length) * 2;
+          keyCount++;
+        }
+        const kb = (totalBytes / 1024).toFixed(1);
+        const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+        label.textContent = `本地配置缓存共 ${keyCount} 项，约占 ${kb} KB (${mb} MB / 5.00 MB)`;
+      } catch (e) {
+        label.textContent = '无法读取本地存储占用';
+      }
+    }
+
+    const dataStorageRefreshBtn = document.getElementById('data-storage-refresh-btn');
+    if (dataStorageRefreshBtn) {
+      dataStorageRefreshBtn.addEventListener('click', () => {
+        refreshLocalStorageUsageLabel();
+        showArchiveNotification('存储占用统计已刷新', 'info');
       });
     }
 
@@ -1755,7 +1778,11 @@
       systemSubnav.addEventListener('click', (e) => {
         const btn = e.target.closest('.settings-subtab');
         if (!btn) return;
-        switchSystemSub(btn.getAttribute('data-sub'));
+        const sub = btn.getAttribute('data-sub');
+        switchSystemSub(sub);
+        if (sub === 'variable' && window.妹神官_settings_variable && typeof window.妹神官_settings_variable.render === 'function') {
+          window.妹神官_settings_variable.render();
+        }
       });
     }
 
@@ -1775,6 +1802,155 @@
         showArchiveNotification('该功能稍后接入', 'info');
       });
     });
+
+    // 导入存档数据
+    const dataStorageImportBtn = document.getElementById('data-storage-import-btn');
+    const dataStorageImportFile = document.getElementById('data-storage-import-file');
+    if (dataStorageImportBtn && dataStorageImportFile) {
+      dataStorageImportBtn.addEventListener('click', () => {
+        dataStorageImportFile.value = '';
+        dataStorageImportFile.click();
+      });
+      dataStorageImportFile.addEventListener('change', async () => {
+        const file = dataStorageImportFile.files && dataStorageImportFile.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          const list = Array.isArray(parsed)
+            ? parsed
+            : (parsed && Array.isArray(parsed.archives) ? parsed.archives : (parsed && parsed.name && parsed.data ? [parsed] : []));
+          if (!list.length) {
+            showArchiveNotification('未识别到有效的存档数据', 'error');
+            return;
+          }
+          let count = 0;
+          for (const item of list) {
+            if (!item || !item.name || !item.data) continue;
+            await storageUtils.archivesDB.saveArchive(item.name, item.data);
+            count++;
+          }
+          await renderSaveArchiveList();
+          showArchiveNotification(`成功导入 ${count} 个存档数据`, 'success');
+        } catch (err) {
+          errorWithTag('IMPORT', '导入存档失败', err);
+          showArchiveNotification('导入存档文件解析失败', 'error');
+        }
+      });
+    }
+
+    const CONFIG_BACKUP_KEYS = [
+      'meishinkan_api_store',
+      'meishinkan_preset_store',
+      'meishinkan_worldbook',
+      'meishinkan_worldbook_scan',
+      'meishinkan_variables',
+      'textFormatSettings'
+    ];
+
+    const dataConfigExportBtn = document.getElementById('data-config-export-btn');
+    if (dataConfigExportBtn) {
+      dataConfigExportBtn.addEventListener('click', () => {
+        try {
+          const payload = {
+            __fp_config_backup: 1,
+            exportDate: new Date().toISOString(),
+            stores: {}
+          };
+          CONFIG_BACKUP_KEYS.forEach((k) => {
+            const raw = localStorage.getItem(k);
+            if (raw != null) {
+              try {
+                payload.stores[k] = JSON.parse(raw);
+              } catch (_) {
+                payload.stores[k] = raw;
+              }
+            }
+          });
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `全局设置备份_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showArchiveNotification('已导出全局设置备份', 'success');
+        } catch (err) {
+          showArchiveNotification('导出全局配置失败', 'error');
+        }
+      });
+    }
+
+    const dataConfigImportBtn = document.getElementById('data-config-import-btn');
+    const dataConfigImportFile = document.getElementById('data-config-import-file');
+    if (dataConfigImportBtn && dataConfigImportFile) {
+      dataConfigImportBtn.addEventListener('click', () => {
+        dataConfigImportFile.value = '';
+        dataConfigImportFile.click();
+      });
+      dataConfigImportFile.addEventListener('change', async () => {
+        const file = dataConfigImportFile.files && dataConfigImportFile.files[0];
+        if (!file) return;
+        try {
+          const parsed = JSON.parse(await file.text());
+          const stores = (parsed && parsed.stores && typeof parsed.stores === 'object') ? parsed.stores : parsed;
+          if (!stores || typeof stores !== 'object') {
+            showArchiveNotification('无效的全局配置文件', 'error');
+            return;
+          }
+          let restored = 0;
+          CONFIG_BACKUP_KEYS.forEach((k) => {
+            if (Object.prototype.hasOwnProperty.call(stores, k) && stores[k] != null) {
+              const val = typeof stores[k] === 'string' ? stores[k] : JSON.stringify(stores[k]);
+              localStorage.setItem(k, val);
+              restored++;
+            }
+          });
+          if (!restored) {
+            showArchiveNotification('配置文件中未包含可识别的设置项', 'error');
+            return;
+          }
+          loadTextFormatSettings();
+          initTextFormatControls();
+          applyTextFormatSettings();
+          if (window.妹神官_settings_api && typeof window.妹神官_settings_api.render === 'function') window.妹神官_settings_api.render();
+          if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.render === 'function') window.妹神官_settings_preset.render();
+          if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.render === 'function') window.妹神官_settings_worldbook.render();
+          if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') window.妹神官_settings_variable.init();
+          refreshLocalStorageUsageLabel();
+          showArchiveNotification(`已成功导入并恢复 ${restored} 项全局配置`, 'success');
+        } catch (err) {
+          showArchiveNotification('配置文件解析失败', 'error');
+        }
+      });
+    }
+
+    const dataConfigResetBtn = document.getElementById('data-config-reset-btn');
+    if (dataConfigResetBtn) {
+      dataConfigResetBtn.addEventListener('click', () => {
+        showConfirmDialog(
+          '确定将所有全局设置（接口、路由、预设、世界书、初始变量、正文格式）恢复出厂状态？\n（注意：游戏存档不会被删除）',
+          () => {
+            CONFIG_BACKUP_KEYS.forEach((k) => localStorage.removeItem(k));
+            localStorage.removeItem('meishinkan_variables_seed');
+            localStorage.removeItem('meishinkan_worldbook_cg_off_v1');
+            localStorage.removeItem('meishinkan_worldbook_before_to_d2_v1');
+            loadTextFormatSettings();
+            initTextFormatControls();
+            applyTextFormatSettings();
+            if (window.妹神官_settings_api && typeof window.妹神官_settings_api.render === 'function') window.妹神官_settings_api.render();
+            if (window.妹神官_settings_preset && typeof window.妹神官_settings_preset.render === 'function') window.妹神官_settings_preset.render();
+            if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.render === 'function') window.妹神官_settings_worldbook.render();
+            if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') window.妹神官_settings_variable.init();
+            refreshLocalStorageUsageLabel();
+            showArchiveNotification('已恢复出厂设置', 'success');
+          },
+          { yesText: '恢复出厂', noText: '取消' }
+        );
+      });
+    }
 
     // 导出所有存档数据
     const dataStorageExportBtn = document.getElementById('data-storage-export-btn');
@@ -3576,6 +3752,13 @@
             if (typeof pendingBranchesText !== 'undefined' && pendingBranchesText && pendingBranchesText.trim()) {
               branchesText = pendingBranchesText;
             }
+          }
+
+          if ((!branchesText || !branchesText.trim()) && activeBackgroundTasksPromise) {
+            const loadingHint = document.createElement('div');
+            loadingHint.className = 'quest-empty-msg';
+            loadingHint.textContent = '正在后台生成本轮选项与状态结算，也可直接在下方输入行动...';
+            contentContainer.appendChild(loadingHint);
           }
 
           mountBranchActionUI(contentContainer, branchesText || '', sendChoiceToAI);
@@ -7627,7 +7810,7 @@ _.set('stat_data.系统.模式', '${mode}')
           if (!window._isLoadingArchive && !window._debugRivalMaleSprites && !window._debugHstatusInnerHead) {
             setTimeout(async () => {
               try {
-                await processMessage(buildOpeningPresetDialogues(getGameMode()));
+                await processMessage(buildOpeningPresetDialogues(getGameMode()), { skipBackgroundRoutes: true });
               } catch (e) {
                 errorWithTag('GAME', '处理开局预设对话失败', e);
               }
@@ -10731,6 +10914,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         galToast('已经是最早一轮');
         return;
       }
+      await waitForBackgroundTasks(true);
       await jumpToDialogueLayer(layers[layers.length - 2]);
       galToast('已回到上一轮开头');
     }
@@ -10748,6 +10932,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         galToast('开局剧情无法重新生成');
         return;
       }
+      await waitForBackgroundTasks(true);
       dialogueLayers = dialogueLayers.filter(l => l.layer <= lastPlayer.layer);
       currentDialogueLayer = Math.max(0, lastPlayer.layer - 1);
       await sendBranchChoiceAndGenerate(lastPlayer.playerInput);
@@ -10783,6 +10968,24 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       setDefaultVars: function (next) {
         if (!next || typeof next !== 'object') return;
         ERA.defaultVars = JSON.parse(JSON.stringify(next));
+      },
+      getRuntimeVars: function () {
+        if (!ERA.currentVars) {
+          ERA.currentVars = JSON.parse(JSON.stringify(ERA.defaultVars || {}));
+        }
+        return ERA.currentVars;
+      },
+      setRuntimeVars: function (next) {
+        if (!next || typeof next !== 'object') return;
+        ERA.currentVars = next;
+        ERA.cache.vars = ERA.currentVars;
+        const lastDialog = dialogueLayers.filter(l => l && l.type === 'dialogue').pop();
+        if (lastDialog) {
+          lastDialog.varsSnapshot = ERA.currentVars;
+        }
+        if (typeof updateFallValueProgress === 'function') updateFallValueProgress(ERA.currentVars);
+        if (typeof updateLustValueHeart === 'function') updateLustValueHeart(ERA.currentVars);
+        if (typeof updateClothingSprite === 'function') updateClothingSprite(ERA.currentVars);
       },
       toggleAuto: toggleGalAuto,
       stopAuto: stopGalAuto,
@@ -11665,8 +11868,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           logWithTag('HIST', '已更新 ERA.currentVars 指向新对话层快照（当前运行时值 = 最后对话层快照）');
         }
         logWithTag('HIST', `记录对话层 ${currentDialogueLayer}:`, dialogueLayer);
+        return dialogueLayer;
       } catch (error) {
         errorWithTag('HIST', '记录对话层失败', error);
+        return null;
       }
     }
 
@@ -11827,8 +12032,29 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       return lastLayer;
     }
 
+    // 后台异步生成任务锁：正文+额外视角展示后，数据变化/世界状态/总结/选项在后台继续生成，下一轮生成前若未完成则排队等待
+    let activeBackgroundTasksPromise = null;
+
+    async function waitForBackgroundTasks(showBusy = true) {
+      if (!activeBackgroundTasksPromise) return;
+      logWithTag('QUEUE', '检测到上一轮后台生成尚未完成，正在排队等待...');
+      if (showBusy) {
+        setGalBusy(true, '排队等待上一轮状态结算');
+      }
+      try {
+        await activeBackgroundTasksPromise;
+      } catch (e) {
+        warnWithTag('QUEUE', '等待上一轮后台任务时捕获异常:', e);
+      } finally {
+        if (showBusy) {
+          setGalBusy(false);
+        }
+      }
+    }
+
     // 处理接收到的消息内容
-    async function processMessage(content) {
+    async function processMessage(content, options = {}) {
+      const skipBackgroundRoutes = !!options.skipBackgroundRoutes;
       logWithTag('OUTPUT', '📥 AI 返回的文本:\n' + String(content || ''));
 
       const parsed = parseTags(content);
@@ -11842,11 +12068,10 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         parsed.variables = '';
         pendingBranchesText = null;
       }
-      // 额外视角独立路由：hook 中有 <额外视角|...> 引子时，发起独立请求
+      // 阶段 1（前台视觉层）：正文已生成，若 hook 中有 <额外视角|...> 引子，立即发起额外视角生成
       if (APPLY_STORY_HOOKS && parsed.hook) {
         const otherpovLead = extractHookLead(parsed.hook, '额外视角');
         if (otherpovLead) {
-          // 主输出违规内嵌的 otherpov 一律丢弃，以独立生成为准（避免与正文重复）
           if (parsed.otherpov) {
             warnWithTag('MSG', '主输出违规内嵌 otherpov，已丢弃并改用独立生成');
             parsed.otherpov = '';
@@ -11886,36 +12111,20 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         logWithTag('DEBUG', '⚠️ 没有对话文本 (maintext)');
       }
 
-      if (parsed.branches) {
-        logWithTag('DEBUG', '✅ 分支选项:', parsed.branches);
-      }
-
-      if (parsed.variables) {
-        logWithTag('DEBUG', '✅ 变量更新:', parsed.variables);
-      }
-
-      if (parsed.snapshots) {
-        logWithTag('DEBUG', '✅ 快照:', parsed.snapshots);
-      }
-
       logWithTag('DEBUG', '═══════════════════════════════════════════════════════');
 
       // 捕获到AI回复后，检测并控制 UID
       await checkAndControlUIDs();
 
-      // 更新正文
+      // 立即展示正文与额外视角切换按钮，让玩家可以开始阅读
       if (parsed.maintext) {
-        // 解析对话并处理CG
         const dialogues = parseTolinaDialogues(parsed.maintext);
-        // 处理最后一个对话的CG（如果有）
         if (dialogues.length > 0) {
           const lastDialogue = dialogues[dialogues.length - 1];
           if (lastDialogue.cg) {
             if (lastDialogue.cg.isStop) {
-              // 停止显示该CG组的CG
               hideCG(lastDialogue.cg.groupName);
             } else {
-              // 显示指定CG组的CG
               showCG(lastDialogue.cg.groupName, lastDialogue.cg.cgName);
             }
           }
@@ -11923,14 +12132,13 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         await updateMainText(parsed.maintext);
       }
 
-      // 更新分支选项
+      // 先清空上一轮残留的待显示分支选项，若主输出已自带则先应用
       if (parsed.branches) {
         updateBranches(parsed.branches);
       } else {
         updateBranches('');
       }
 
-      // 更新快照（添加时间信息）；支持竖线分隔格式（天数|星期几|小时:分钟|总结），会先规范为逗号分隔
       const normalizedSnapshots = normalizeSnapshotsText(parsed.snapshots || '');
       let snapshotsWithTime = normalizedSnapshots || '';
       if (normalizedSnapshots) {
@@ -11939,32 +12147,38 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         await updateSnapshots('', true);
       }
 
-      // 更新变量
       if (parsed.variables) {
         await updateVariables(parsed.variables);
       } else {
         await updateVariables('');
       }
 
-      // 记录对话层（用于存档，使用带时间的snapshots）
+      // 立即记录当前对话层（包含正文+额外视角），使玩家能立刻切换额外视角与阅读对话
       const parsedWithTime = {
         ...parsed,
         snapshots: snapshotsWithTime
       };
-      await recordDialogueLayer(parsedWithTime);
-
-      // 自动存档（保存最后一个对话）
-      try {
-        await autoSaveCurrentDialogue();
-      } catch (e) {
-        errorWithTag('AUTOSAVE', '自动存档失败', e);
-      }
-
-      // 变量更新后的体力条/时间天气刷新，已由 refreshUIByVariablePath 批量合并统一处理，无需在此重复直调
-
+      const recordedLayer = await recordDialogueLayer(parsedWithTime);
       updateOtherPovToggleVisibility();
 
-      logWithTag('MSG', '✅ 消息处理完成');
+      // 阶段 2（后台状态结算层）：玩家阅读正文+额外视角的同时，在后台并行生成 数据变化(stats)、世界状态(world)、总结(snapshot)、选项(branches)
+      if (!skipBackgroundRoutes && APPLY_STORY_HOOKS && parsed.maintext) {
+        const bgTask = runBackgroundAuxiliaryRoutes(parsed, recordedLayer);
+        activeBackgroundTasksPromise = bgTask;
+        bgTask.finally(() => {
+          if (activeBackgroundTasksPromise === bgTask) {
+            activeBackgroundTasksPromise = null;
+          }
+        });
+      } else {
+        try {
+          await autoSaveCurrentDialogue();
+        } catch (e) {
+          errorWithTag('AUTOSAVE', '自动存档失败', e);
+        }
+      }
+
+      logWithTag('MSG', '✅ 正文与额外视角已展示（后台状态同步进行中）');
     }
 
     // 构建变量说明文本（包含所有变量及其含义、当前值）
@@ -12356,6 +12570,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     }
 
     async function generateStoryRound(userInput) {
+      await waitForBackgroundTasks(true);
       await checkAndControlUIDs();
       const built = buildPromptMessages(userInput);
       logPromptBuild(built);
@@ -12521,12 +12736,16 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       const api = window.妹神官_settings_api;
       if (!llm || typeof llm.chat !== 'function') return '';
       if (!api || typeof api.resolveProfile !== 'function') return '';
+      const params = typeof api.getRouteParams === 'function' ? api.getRouteParams('otherpov') : null;
+      if (params && params.enabled === false) {
+        logWithTag('MSG', '额外视角路由已被手动关闭，跳过独立生成');
+        return '';
+      }
       const profile = api.resolveProfile('otherpov');
       if (!profile) {
         warnWithTag('MSG', '额外视角：未配置可用接口，跳过独立生成');
         return '';
       }
-      const params = typeof api.getRouteParams === 'function' ? api.getRouteParams('otherpov') : null;
       const built = buildOtherpovMessages(lead, maintext);
       const messages =
         built && Array.isArray(built.messages) && built.messages.length
@@ -12559,6 +12778,330 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       } finally {
         setGalBusy(false);
       }
+    }
+
+    /** 获取最新一轮的玩家输入文本 */
+    function getLatestPlayerInputText() {
+      const players = dialogueLayers.filter(l => l && l.type === 'player' && l.playerInput);
+      return players.length ? String(players[players.length - 1].playerInput || '').trim() : '';
+    }
+
+    /** 构建当前时间字符串（天数|星期几|HH:MM） */
+    function buildCurrentClockString() {
+      const vars = ERA.currentVars || ERA.defaultVars || {};
+      const day = getNestedValue(vars, '系统.时间.已经过天数') ?? 1;
+      const week = getNestedValue(vars, '系统.时间.星期') || '星期一';
+      const hour = String(parseInt(getNestedValue(vars, '系统.时间.小时') ?? 8, 10) || 0).padStart(2, '0');
+      const min = String(parseInt(getNestedValue(vars, '系统.时间.分钟') ?? 0, 10) || 0).padStart(2, '0');
+      return `${day}|${week}|${hour}:${min}`;
+    }
+
+    /** 通用辅助路由请求构建与调用（不阻塞主界面阅读，不在前台弹出全屏 busy 遮罩） */
+    async function invokeSubRouteLLM(route, userContent) {
+      const llm = window.妹神官_llm;
+      const api = window.妹神官_settings_api;
+      const builder = window.妹神官_prompt_builder;
+      if (!llm || typeof llm.chat !== 'function') return '';
+      if (!api || typeof api.resolveProfile !== 'function') return '';
+      const params = typeof api.getRouteParams === 'function' ? api.getRouteParams(route) : null;
+      if (params && params.enabled === false) {
+        logWithTag('BG', `后台辅助路由 [${route}] 已在路由设置中关闭，跳过生成`);
+        return '';
+      }
+      const profile = api.resolveProfile(route);
+      if (!profile) return '';
+      const sysPrompt = String((params && params.prompt) || '').trim();
+      const torinaLoc = readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || '未知';
+      const userLoc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '未知';
+
+      let messages = null;
+      let builtText = userContent;
+      if (builder && typeof builder.build === 'function') {
+        const built = builder.build({
+          route: route,
+          userInput: userContent,
+          userName: '{{user}}',
+          history: [],
+          scanMessages: [],
+          storyPrompt: sysPrompt,
+          targetChars: 0,
+          extras: {
+            scenario: userLoc,
+            torinaLocation: torinaLoc,
+          },
+          trigger: 'normal',
+        });
+        if (built && Array.isArray(built.messages) && built.messages.length) {
+          messages = built.messages;
+          builtText = built.text || userContent;
+        }
+      }
+      if (!messages) {
+        messages = sysPrompt
+          ? [
+              { role: 'system', content: sysPrompt },
+              { role: 'user', content: userContent },
+            ]
+          : [{ role: 'user', content: userContent }];
+      }
+
+      logWithTag('OUTPUT', `📤 后台发送提示词（${route}）:\n` + builtText);
+      try {
+        const text = await llm.chat(profile, {
+          messages: messages,
+          maxTokens: (params && params.maxTokens) || 1024,
+          temperature: params ? params.temperature : 0.5,
+          topP: params ? params.topP : 0.95,
+          topK: params ? params.topK : 0,
+          stream: false,
+        });
+        logWithTag('OUTPUT', `📥 后台返回文本（${route}）:\n` + String(text || ''));
+        return stripAiHtmlComments(stripThinkingBlocks(String(text || ''))).trim();
+      } catch (e) {
+        errorWithTag('MSG', `后台路由 [${route}] 生成失败`, e);
+        return '';
+      }
+    }
+
+    /** 从任意模型返回中提取 _.set / _.add 变量语句（支持直接指令、标签包裹或 JSON {set, add}） */
+    function extractVariableStatements(rawText) {
+      if (!rawText) return '';
+      let text = String(rawText).trim();
+      const tagMatch = text.match(/<imotoshinkan_variables>([\s\S]*?)<\/imotoshinkan_variables>/i);
+      if (tagMatch && tagMatch[1]) {
+        text = tagMatch[1].trim();
+      }
+      const lines = [];
+      const stmtRe = /_\.(set|add)\s*\([^)]+\)\s*;?/g;
+      let m;
+      while ((m = stmtRe.exec(text)) !== null) {
+        lines.push(m[0].replace(/;\s*$/, '').trim());
+      }
+      if (lines.length) return lines.join('\n');
+
+      // 兼容 JSON 格式 { set: {...}, add: {...} } 或 { playerLocation, torinaLocation, companion }
+      const llm = window.妹神官_llm;
+      if (llm && typeof llm.extractJsonObject === 'function') {
+        const obj = llm.extractJsonObject(text);
+        if (obj && typeof obj === 'object') {
+          if (obj.set && typeof obj.set === 'object') {
+            Object.keys(obj.set).forEach(k => {
+              const v = obj.set[k];
+              if (v !== undefined && v !== null && v !== '') {
+                lines.push(`_.set('${k}', ${JSON.stringify(v)})`);
+              }
+            });
+          }
+          if (obj.add && typeof obj.add === 'object') {
+            Object.keys(obj.add).forEach(k => {
+              const n = Number(obj.add[k]);
+              if (Number.isFinite(n) && n !== 0) {
+                lines.push(`_.add('${k}', ${n})`);
+              }
+            });
+          }
+          if (obj.playerLocation) {
+            lines.push(`_.set('stat_data.系统.地点.当前地点', ${JSON.stringify(String(obj.playerLocation).trim())})`);
+          }
+          if (obj.torinaLocation) {
+            lines.push(`_.set('stat_data.系统.地点.托莉娜地点', ${JSON.stringify(String(obj.torinaLocation).trim())})`);
+          }
+          if (obj.companion) {
+            lines.push(`_.set('stat_data.托莉娜.行程.同行状态', ${JSON.stringify(String(obj.companion).trim())})`);
+          }
+        }
+      }
+      return lines.join('\n');
+    }
+
+    /** 后台生成：地点与世界状态变化 (world) */
+    async function generateWorldRound(parsed, playerInput) {
+      const llm = window.妹神官_llm;
+      const locations =
+        llm && typeof llm.getLocationNames === 'function'
+          ? llm.getLocationNames()
+          : ['家', '镇中心', '教会', '商业街', '冒险者公会', '酒馆', '森林入口'];
+      const userLoc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '家';
+      const torinaLoc = readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || userLoc;
+      const companion = readCompanionState();
+      const locHook = parsed.hook ? extractHookLead(parsed.hook, '地点变化') : '';
+
+      const userContent = [
+        `## 地图白名单\n${locations.join('、')}`,
+        `## 本回合前状态\n- {{user}}所在地点：${userLoc}\n- 托莉娜所在地点：${torinaLoc}\n- 同行状态：${companion}`,
+        locHook ? `## 正文地点变化引子\n<地点变化|${locHook}>` : '',
+        `## 玩家本回合行动\n${playerInput || '（无）'}`,
+        `## 本回合正文（{{user}}视角）\n${truncateChars(parsed.maintext || '', 2500)}`,
+        parsed.otherpov ? `## 本回合额外视角（托莉娜视角）\n${truncateChars(parsed.otherpov, 1500)}` : '',
+        '请根据以上内容，输出本回合结束时的地点与同行状态 _.set 更新指令。',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const raw = await invokeSubRouteLLM('world', userContent);
+      return extractVariableStatements(raw);
+    }
+
+    /** 后台生成：数据变化 (stats) */
+    async function generateStatsRound(parsed, playerInput) {
+      const varDesc = buildVariablesDescription();
+      const userContent = [
+        varDesc,
+        `## 玩家本回合行动\n${playerInput || '（无）'}`,
+        `## 本回合正文（{{user}}视角）\n${truncateChars(parsed.maintext || '', 3000)}`,
+        parsed.otherpov ? `## 本回合额外视角（托莉娜视角）\n${truncateChars(parsed.otherpov, 2000)}` : '',
+        '请根据本回合实际发生的剧情事件与时间推进，输出需要执行的 _.set / _.add 变量更新语句。',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const raw = await invokeSubRouteLLM('stats', userContent);
+      return extractVariableStatements(raw);
+    }
+
+    /** 后台生成：回合快照总结 (snapshot) */
+    async function generateSnapshotRound(parsed, playerInput) {
+      const clock = buildCurrentClockString();
+      const userContent = [
+        `## 当前时间基准\n${clock}`,
+        `## 玩家本回合行动\n${playerInput || '（无）'}`,
+        `## 本回合正文（{{user}}视角）\n${truncateChars(parsed.maintext || '', 2500)}`,
+        parsed.otherpov ? `## 本回合额外视角（托莉娜视角）\n${truncateChars(parsed.otherpov, 1500)}` : '',
+        '请输出一行本回合快照总结（格式：天数|星期几|HH:MM|剧情总结）。',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const raw = await invokeSubRouteLLM('snapshot', userContent);
+      if (!raw) return '';
+      const tagMatch = raw.match(/<imotoshinkan_snapshots>([\s\S]*?)<\/imotoshinkan_snapshots>/i);
+      const body = (tagMatch && tagMatch[1] ? tagMatch[1] : raw).trim();
+      const firstLine = body
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .find(Boolean);
+      return firstLine || '';
+    }
+
+    /** 后台生成：行动分支选项 (branches) */
+    async function generateBranchesRound(parsed, playerInput) {
+      const userLoc = readStatFromPaths(['系统.地点.当前地点', '地点.当前地点']) || '家';
+      const torinaLoc = readStatFromPaths(['系统.地点.托莉娜地点', '地点.托莉娜地点']) || userLoc;
+      const companion = readCompanionState();
+      const userContent = [
+        `## 当前场域状态\n- {{user}}地点：${userLoc}\n- 托莉娜地点：${torinaLoc}\n- 同行状态：${companion}`,
+        `## 玩家本回合行动\n${playerInput || '（无）'}`,
+        `## 本回合正文结尾局面\n${truncateChars(parsed.maintext || '', 2500)}`,
+        '请为 {{user}} 生成 4~6 条下一回合可执行的行动选项（每行一条，格式：分类|行动文案）。',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const raw = await invokeSubRouteLLM('branches', userContent);
+      if (!raw) return '';
+      const tagMatch = raw.match(/<imotoshinkan_branches>([\s\S]*?)<\/imotoshinkan_branches>/i);
+      const body = (tagMatch && tagMatch[1] ? tagMatch[1] : raw).trim();
+      const validLines = body
+        .split(/\r?\n/)
+        .map(l => l.replace(/^[-*•\d.)\s]+/, '').trim())
+        .filter(l => l && (l.includes('|') || l.includes('｜')))
+        .map(l => l.replace('｜', '|'));
+      return validLines.length ? validLines.join('\n') : body;
+    }
+
+    /**
+     * 阶段 2 后台流水线：
+     * 在玩家阅读已展示的「正文 + 额外视角」期间，后台并行生成 数据变化(stats)、世界状态(world)、总结(snapshot)、选项(branches)，
+     * 每项完成后即时增量更新到当前对话层与 ERA 变量树。
+     */
+    async function runBackgroundAuxiliaryRoutes(parsed, targetLayer) {
+      const playerInput = getLatestPlayerInputText();
+      logWithTag('BG', '🚀 开始后台生成辅助路由（数据变化 / 世界状态 / 总结 / 选项）...');
+
+      const tasks = [];
+
+      // 1. 世界状态 / 地点变化 (world)
+      tasks.push(
+        (async () => {
+          const worldVars = await generateWorldRound(parsed, playerInput);
+          if (worldVars) {
+            logWithTag('BG', '✅ [world] 地点与同行状态生成完成:\n' + worldVars);
+            await updateVariables(worldVars);
+            if (targetLayer) {
+              targetLayer.variables = [targetLayer.variables, worldVars].filter(Boolean).join('\n');
+            }
+            if (typeof MeishinkanWorldMap?.refreshActorMarkers === 'function') {
+              await MeishinkanWorldMap.refreshActorMarkers();
+            }
+          }
+        })(),
+      );
+
+      // 2. 数据变化 (stats)
+      if (!parsed.variables || !parsed.variables.trim()) {
+        tasks.push(
+          (async () => {
+            const statsVars = await generateStatsRound(parsed, playerInput);
+            if (statsVars) {
+              logWithTag('BG', '✅ [stats] 数据变化生成完成:\n' + statsVars);
+              await updateVariables(statsVars);
+              if (targetLayer) {
+                targetLayer.variables = [targetLayer.variables, statsVars].filter(Boolean).join('\n');
+              }
+            }
+          })(),
+        );
+      }
+
+      // 3. 回合总结 (snapshot)
+      if (!parsed.snapshots || !parsed.snapshots.trim()) {
+        tasks.push(
+          (async () => {
+            const snapRaw = await generateSnapshotRound(parsed, playerInput);
+            if (snapRaw) {
+              const normalized = normalizeSnapshotsText(snapRaw);
+              const snapWithTime = await updateSnapshots(normalized, true);
+              logWithTag('BG', '✅ [snapshot] 总结生成完成:', snapWithTime);
+              if (targetLayer) {
+                targetLayer.snapshots = snapWithTime;
+              }
+            }
+          })(),
+        );
+      }
+
+      // 4. 行动选项 (branches)
+      if (!parsed.branches || !parsed.branches.trim()) {
+        tasks.push(
+          (async () => {
+            const branchesText = await generateBranchesRound(parsed, playerInput);
+            if (branchesText) {
+              logWithTag('BG', '✅ [branches] 选项生成完成:\n' + branchesText);
+              if (targetLayer) {
+                targetLayer.branches = branchesText;
+              }
+              pendingBranchesText = branchesText;
+              // 若此时玩家已经读完对话并打开了选项面板（current-dialogue-overlay），动态刷新选项列表
+              const questOverlay = document.getElementById('current-dialogue-overlay');
+              const questDialog = questOverlay && questOverlay.querySelector('.quest-panel-branches');
+              const questContainer = document.getElementById('quest-content-container');
+              if (questDialog && questContainer) {
+                showCurrentDialogueLayer('branches');
+              }
+            }
+          })(),
+        );
+      }
+
+      await Promise.allSettled(tasks);
+
+      // 全部后台任务结算完毕后，执行一次自动存档
+      try {
+        await autoSaveCurrentDialogue();
+      } catch (e) {
+        errorWithTag('AUTOSAVE', '后台结算后自动存档失败', e);
+      }
+      logWithTag('BG', '🎉 本回合所有后台生成与状态结算已全部完成');
     }
 
     // 设置对话点击区域监听器
@@ -12673,6 +13216,7 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
 
     // 地图：选中地点后写变量并自动 generate
     async function travelToMapLocation(loc) {
+      await waitForBackgroundTasks(true);
       const companion = readCompanionState();
       await setvar('stat_data.系统.地点.当前地点', loc.name);
 

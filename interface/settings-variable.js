@@ -10,6 +10,8 @@
   let data = {};
   let meta = {};
   let view = 'tree';
+  let targetMode = 'runtime'; // 'runtime' | 'default'
+  let searchQuery = '';
   let bound = false;
 
   function $(id) {
@@ -135,8 +137,25 @@
     }
   }
 
+  function getActiveTree() {
+    if (targetMode === 'runtime' && window.妹神官_gal && typeof window.妹神官_gal.getRuntimeVars === 'function') {
+      const rt = window.妹神官_gal.getRuntimeVars();
+      if (isObj(rt)) return rt;
+    }
+    return data;
+  }
+
+  function persistActiveTree(nextTree) {
+    if (targetMode === 'runtime' && window.妹神官_gal && typeof window.妹神官_gal.setRuntimeVars === 'function') {
+      window.妹神官_gal.setRuntimeVars(nextTree || getActiveTree());
+      return;
+    }
+    if (nextTree) data = nextTree;
+    saveStore();
+  }
+
   function getAt(path) {
-    let cur = data;
+    let cur = getActiveTree();
     for (let i = 0; i < path.length; i++) {
       if (!isObj(cur) && !Array.isArray(cur)) return undefined;
       cur = cur[path[i]];
@@ -146,7 +165,7 @@
 
   function setAt(path, value) {
     if (!path.length) return;
-    let cur = data;
+    let cur = getActiveTree();
     for (let i = 0; i < path.length - 1; i++) {
       const k = path[i];
       if (!isObj(cur[k])) cur[k] = {};
@@ -168,13 +187,36 @@
     return s;
   }
 
-  function nodeHtml(path, value, depth) {
+  function nodeMatchesQuery(path, value, q) {
+    if (!q) return true;
+    const key = String(path[path.length - 1] || '').toLowerCase();
+    const dot = dotted(path).toLowerCase();
+    const info = getMeta(path);
+    const comment = String(info.comment || '').toLowerCase();
+    if (key.indexOf(q) >= 0 || dot.indexOf(q) >= 0 || comment.indexOf(q) >= 0) return true;
+    if (isObj(value)) {
+      return Object.keys(value).some(function (k) {
+        return nodeMatchesQuery(path.concat([k]), value[k], q);
+      });
+    }
+    return String(value == null ? '' : value).toLowerCase().indexOf(q) >= 0;
+  }
+
+  function nodeHtml(path, value, depth, q) {
+    if (q && !nodeMatchesQuery(path, value, q)) return '';
     const key = path[path.length - 1];
     const id = pathKey(path);
     if (isObj(value)) {
       if (!(id in expanded)) expanded[id] = depth < 2;
-      const open = !!expanded[id];
+      const open = q ? true : !!expanded[id];
       const keys = Object.keys(value);
+      const childHtml = open
+        ? keys
+            .map(function (k) {
+              return nodeHtml(path.concat([k]), value[k], depth + 1, q);
+            })
+            .join('')
+        : '';
       return (
         '<div class="sys-var-node" data-path="' +
         esc(dotted(path)) +
@@ -191,15 +233,7 @@
         '<span class="sys-var-count">' +
         keys.length +
         '</span></button>' +
-        (open
-          ? '<div class="sys-var-children">' +
-            keys
-              .map(function (k) {
-                return nodeHtml(path.concat([k]), value[k], depth + 1);
-              })
-              .join('') +
-            '</div>'
-          : '') +
+        (open ? '<div class="sys-var-children">' + childHtml + '</div>' : '') +
         '</div>'
       );
     }
@@ -228,18 +262,21 @@
   function renderTree() {
     const tree = $('var-tree');
     if (!tree) return;
-    const keys = Object.keys(data);
-    tree.innerHTML = keys
+    const active = getActiveTree();
+    const keys = Object.keys(active);
+    const q = String(searchQuery || '').trim().toLowerCase();
+    const html = keys
       .map(function (k) {
-        return nodeHtml([k], data[k], 0);
+        return nodeHtml([k], active[k], 0, q);
       })
       .join('');
+    tree.innerHTML = html || '<div class="sys-api-card-sub" style="padding:12px;">未找到匹配的变量</div>';
   }
 
   function renderJson() {
     const ta = $('cfg-var-json');
     if (!ta) return;
-    ta.value = JSON.stringify(data, null, 2);
+    ta.value = JSON.stringify(getActiveTree(), null, 2);
   }
 
   function applyView() {
@@ -247,11 +284,15 @@
     const json = $('cfg-var-json');
     const btnTree = $('btn-var-view-tree');
     const btnJson = $('btn-var-view-json');
+    const btnRuntime = $('btn-var-target-runtime');
+    const btnDefault = $('btn-var-target-default');
     const isTree = view === 'tree';
     if (tree) tree.hidden = !isTree;
     if (json) json.hidden = isTree;
     if (btnTree) btnTree.classList.toggle('active', isTree);
     if (btnJson) btnJson.classList.toggle('active', !isTree);
+    if (btnRuntime) btnRuntime.classList.toggle('active', targetMode === 'runtime');
+    if (btnDefault) btnDefault.classList.toggle('active', targetMode === 'default');
     if (isTree) renderTree();
     else renderJson();
   }
@@ -269,9 +310,8 @@
         toast('变量 JSON 必须是对象');
         return;
       }
-      data = next;
-      saveStore();
-      toast('变量已更新');
+      persistActiveTree(next);
+      toast(targetMode === 'runtime' ? '当前局内变量已实时更新' : '默认初始变量已更新');
     } catch (e) {
       toast('变量 JSON 无法解析');
     }
@@ -283,6 +323,86 @@
 
     const btnTree = $('btn-var-view-tree');
     const btnJson = $('btn-var-view-json');
+    const btnRuntime = $('btn-var-target-runtime');
+    const btnDefault = $('btn-var-target-default');
+    const searchInput = $('cfg-var-search');
+    const btnImport = $('btn-var-import');
+    const btnExport = $('btn-var-export');
+    const btnReset = $('btn-var-reset');
+    const fileInput = $('cfg-var-file');
+
+    if (btnRuntime) {
+      btnRuntime.addEventListener('click', function () {
+        targetMode = 'runtime';
+        render();
+      });
+    }
+    if (btnDefault) {
+      btnDefault.addEventListener('click', function () {
+        targetMode = 'default';
+        render();
+      });
+    }
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value || '';
+        if (view === 'tree') renderTree();
+      });
+    }
+    if (btnExport) {
+      btnExport.addEventListener('click', function () {
+        const blob = new Blob([JSON.stringify(getActiveTree(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = (targetMode === 'runtime' ? '局内变量_' : '默认初始变量_') + new Date().toISOString().slice(0, 10) + '.json';
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 800);
+      });
+    }
+    if (btnImport && fileInput) {
+      btnImport.addEventListener('click', function () {
+        fileInput.value = '';
+        fileInput.click();
+      });
+      fileInput.addEventListener('change', function () {
+        const f = fileInput.files && fileInput.files[0];
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const parsed = JSON.parse(String(reader.result || '{}'));
+            const incoming = parsed && isObj(parsed.data) ? parsed.data : parsed;
+            if (!isObj(incoming)) {
+              toast('变量文件格式无效');
+              return;
+            }
+            persistActiveTree(incoming);
+            render();
+            toast('变量已成功导入');
+          } catch (err) {
+            toast('变量文件解析失败');
+          }
+        };
+        reader.readAsText(f, 'utf-8');
+      });
+    }
+    if (btnReset) {
+      btnReset.addEventListener('click', function () {
+        const seed = packDefault();
+        if (targetMode === 'runtime') {
+          persistActiveTree(clone(data));
+          render();
+          toast('当前局内变量已重置为初始默认状态');
+        } else {
+          data = seed.data;
+          meta = seed.meta;
+          saveStore();
+          render();
+          toast('默认初始变量已恢复出厂值');
+        }
+      });
+    }
+
     if (btnTree) {
       btnTree.addEventListener('click', function () {
         view = 'tree';
@@ -316,8 +436,9 @@
         const path = (leaf.getAttribute('data-path') || '').split('.');
         const prev = getAt(path);
         setAt(path, parseValue(input.value, prev));
-        saveStore();
+        persistActiveTree();
         input.value = String(getAt(path));
+        toast(targetMode === 'runtime' ? '局内变量已修改' : '默认初始变量已保存');
       });
     }
 

@@ -233,12 +233,155 @@
         detailEl.hidden = !detail;
       }
 
+      function formatVersion(v) {
+        if (!v) return '';
+        var s = String(v).trim();
+        if (!s) return '';
+        return /^v/i.test(s) ? s : 'v' + s;
+      }
+
+      function getScopes() {
+        var scopes = [window];
+        try { if (window.parent && window.parent !== window) scopes.push(window.parent); } catch (e) {}
+        try { if (window.top && window.top !== window && scopes.indexOf(window.top) === -1) scopes.push(window.top); } catch (e) {}
+        return scopes;
+      }
+
+      function readExtVersionFromDom(keywords) {
+        var scopes = getScopes();
+        for (var i = 0; i < scopes.length; i++) {
+          try {
+            var doc = scopes[i].document;
+            if (!doc) continue;
+            var els = doc.querySelectorAll('#extensions_settings [id], #extensions_settings2 [id], .extension_block, [data-extension-name]');
+            for (var j = 0; j < els.length; j++) {
+              var text = (els[j].textContent || '') + ' ' + (els[j].id || '');
+              var hit = false;
+              for (var m = 0; m < keywords.length; m++) {
+                if (text.toLowerCase().indexOf(keywords[m].toLowerCase()) !== -1) { hit = true; break; }
+              }
+              if (hit) {
+                var match = text.match(/\bv?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\b/);
+                if (match) return formatVersion(match[0]);
+              }
+            }
+          } catch (e) {}
+        }
+        return '';
+      }
+
+      function fetchExtManifestVersion(folderNames, onVersion) {
+        var prefixes = [
+          '/scripts/extensions/third-party/',
+          '/scripts/extensions/'
+        ];
+        var urls = [];
+        for (var i = 0; i < folderNames.length; i++) {
+          for (var j = 0; j < prefixes.length; j++) {
+            urls.push(prefixes[j] + folderNames[i] + '/manifest.json');
+          }
+        }
+        var idx = 0;
+        function tryNext() {
+          if (idx >= urls.length) return;
+          var url = urls[idx++];
+          fetch(url, { method: 'GET', cache: 'no-store' })
+            .then(function (r) { return r && r.ok ? r.json() : null; })
+            .then(function (data) {
+              if (data && data.version) {
+                onVersion(formatVersion(data.version));
+              } else {
+                tryNext();
+              }
+            })
+            .catch(function () { tryNext(); });
+        }
+        tryNext();
+      }
+
+      function readExtManifestVersion(keywords) {
+        var scopes = getScopes();
+        for (var i = 0; i < scopes.length; i++) {
+          try {
+            var st = scopes[i].SillyTavern;
+            var ctx = st && typeof st.getContext === 'function' ? st.getContext() : null;
+            var manifests = (ctx && (ctx.extensionManifests || (ctx.extensionSettings && ctx.extensionSettings.manifests))) || scopes[i].extension_manifests || scopes[i].manifests || null;
+            if (manifests && typeof manifests === 'object') {
+              var keys = Object.keys(manifests);
+              for (var j = 0; j < keys.length; j++) {
+                var k = keys[j];
+                for (var m = 0; m < keywords.length; m++) {
+                  if (k.toLowerCase().indexOf(keywords[m].toLowerCase()) !== -1) {
+                    var ver = manifests[k] && manifests[k].version;
+                    if (ver) return formatVersion(ver);
+                  }
+                }
+              }
+            }
+          } catch (e) {}
+        }
+        return readExtVersionFromDom(keywords);
+      }
+
+      function resolveTavernHelperVersion(th) {
+        try {
+          if (typeof th.getTavernHelperVersion === 'function') {
+            var v0 = th.getTavernHelperVersion();
+            if (v0 && typeof v0 === 'string') return formatVersion(v0);
+          }
+          if (typeof th.getVersion === 'function') {
+            var v = th.getVersion();
+            if (v && typeof v === 'string') return formatVersion(v);
+          }
+          if (typeof th.version === 'string' && th.version) return formatVersion(th.version);
+          if (typeof th.VERSION === 'string' && th.VERSION) return formatVersion(th.VERSION);
+        } catch (e) {}
+        var scopes = getScopes();
+        for (var i = 0; i < scopes.length; i++) {
+          try {
+            if (typeof scopes[i].getTavernHelperVersion === 'function') {
+              var sv = scopes[i].getTavernHelperVersion();
+              if (sv && typeof sv === 'string') return formatVersion(sv);
+            }
+          } catch (e) {}
+        }
+        return readExtManifestVersion(['JS-Slash-Runner', 'TavernHelper', '酒馆助手', 'slash-runner']);
+      }
+
+      function resolvePromptHelperVersion(ejs) {
+        try {
+          if (typeof ejs.getVersion === 'function') {
+            var v = ejs.getVersion();
+            if (v && typeof v === 'string') return formatVersion(v);
+          }
+          if (typeof ejs.version === 'string' && ejs.version) return formatVersion(ejs.version);
+          if (typeof ejs.VERSION === 'string' && ejs.VERSION) return formatVersion(ejs.VERSION);
+        } catch (e) {}
+        return readExtManifestVersion(['ST-Prompt-Template', 'Prompt-Template', '提示词模板', 'EjsTemplate']);
+      }
+
       function checkTavernHelper() {
         var th = readGlobal('TavernHelper', function (api) {
           return typeof api.generate === 'function';
         });
         if (th) {
-          setCheck('chk-th', true, '已安装', '');
+          var ver = resolveTavernHelperVersion(th);
+          setCheck('chk-th', true, ver || '已安装', '');
+          var asyncFn = (typeof th.getTavernHelperVersion === 'function' && th.getTavernHelperVersion) ||
+                        (typeof th.getVersion === 'function' && th.getVersion);
+          if (asyncFn) {
+            try {
+              Promise.resolve(asyncFn.call(th)).then(function (v) {
+                var fv = formatVersion(v);
+                if (fv) setCheck('chk-th', true, fv, '');
+              }).catch(function () {});
+            } catch (e) {}
+          }
+          if (!ver) {
+            fetchExtManifestVersion(['JS-Slash-Runner', 'TavernHelper'], function (fv) {
+              if (fv) setCheck('chk-th', true, fv, '');
+            });
+          }
           return true;
         }
         setCheck(
@@ -255,7 +398,21 @@
           return typeof api.evalTemplate === 'function' || typeof api.prepareContext === 'function';
         });
         if (ejs) {
-          setCheck('chk-prompt', true, '已安装', '');
+          var ver = resolvePromptHelperVersion(ejs);
+          setCheck('chk-prompt', true, ver || '已安装', '');
+          if (ejs && typeof ejs.getVersion === 'function') {
+            try {
+              Promise.resolve(ejs.getVersion()).then(function (v) {
+                var fv = formatVersion(v);
+                if (fv) setCheck('chk-prompt', true, fv, '');
+              }).catch(function () {});
+            } catch (e) {}
+          }
+          if (!ver) {
+            fetchExtManifestVersion(['ST-Prompt-Template', 'Prompt-Template'], function (fv) {
+              if (fv) setCheck('chk-prompt', true, fv, '');
+            });
+          }
           return true;
         }
         setCheck(
@@ -281,16 +438,15 @@
           .then(function (res) {
             var ms = Date.now() - started;
             if (!res || !res.ok) throw new Error(res ? String(res.status) : '网络失败');
-            var quality = ms < 1500 ? '良好' : ms < 4000 ? '一般' : '较慢';
-            setCheck('chk-hf', true, '合格 · ' + quality, '');
+            setCheck('chk-hf', true, ms + ' ms', '');
             return true;
           })
-          .catch(function (err) {
+          .catch(function () {
             setCheck(
               'chk-hf',
               false,
               '不合格',
-              '连不上 Hugging Face' + (err && err.name === 'AbortError' ? '（超时）' : '') + '。请检查网络或梯子后再试。'
+              '与Hugging Face的连接已断开，请检查网络设置。'
             );
             return false;
           });

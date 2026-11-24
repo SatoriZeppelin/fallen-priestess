@@ -139,11 +139,13 @@
       '        - 生成钩子标签: <imotoshinkan_hook></imotoshinkan_hook>',
       '',
       '',
-      '    正文定位（{{user}}镜头）:',
-      '        正文的镜头永远跟着{{user}}：只写{{user}}所在地点发生的、{{user}}亲眼所见/亲耳所闻的内容',
-      '        托莉娜在场时：写她在{{user}}面前的言行、表情、可被察觉的异样（如脸红、喘息、声音发颤），但不得写她的内心独白和{{user}}看不到的细节',
+      '    正文定位（{{user}}视角）:',
+      '        正文将只以{{user}}为视角展开，只描写{{user}}在当前位置亲眼所见、亲耳所闻的内容',
+      '        {{user}}无法看见或听见感知范围外的东西（如隔门、远处、视线死角、背对或分头行动时发生的事）',
+      '        正文绝不能体现出托莉娜的心声、内心独白、心理活动或真实想法（禁止在托莉娜标签中使用（）写心声）',
+      '        托莉娜在场时：只写她在{{user}}面前的言行、表情与{{user}}可感知到的外在反应（如脸红、喘息、声音发颤）',
       '        托莉娜不在场时：正文中不得出现托莉娜的台词与行动描写；她那一侧的遭遇只能写进<额外视角|...>引子，由系统另行生成',
-      '        禁止：在正文中切换镜头到托莉娜身边，或使用「与此同时，托莉娜……」之类的旁白',
+      '        禁止：上帝视角描写、在正文中切换镜头到托莉娜身边，或使用「与此同时，托莉娜……」之类的旁白',
       '    正文格式:',
       '        仅限以下格式：',
       '            - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>（仅限托莉娜在{{user}}身边时）',
@@ -214,6 +216,87 @@
     };
   }
 
+  function defaultStatsPrompt() {
+    return [
+      '你是「数据变化」评估器。根据本回合玩家行动、正文（及额外视角）与当前变量状态，输出本回合需要更新的变量指令。',
+      '规则:',
+      '    - 只输出 _.set(\'变量路径\', 值) 或 _.add(\'变量路径\', 增量) 语句，每行一条',
+      '    - 时间推进请使用 _.set 更新 系统.时间.小时 / 系统.时间.分钟 / 系统.时间.当前时间 / 系统.时间.已经过天数 / 系统.时间.星期',
+      '    - 属性与H统计增减请使用 _.add（如 托莉娜.基础.性欲值、系统.体力.当前体力值 及 Hstate 相关次数与注入量）',
+      '    - 严禁修改由引擎自动计算的锁定字段（现时魔力、现时魔力需求、堕落阶段、系统.模式、总吸取魔力次数/总量、与你高潮次数）',
+      '    - 若本回合无任何变量变化，仅输出空内容',
+      '输出: 直接输出 _.set / _.add 指令行（或包裹在 <imotoshinkan_variables>...</imotoshinkan_variables> 内），不要输出解释。',
+    ].join('\n');
+  }
+
+  function defaultWorldPrompt() {
+    return [
+      '你是「世界状态与地点」判定器。根据本回合玩家行动、正文（及额外视角）与地图白名单，判定本回合结束时 {{user}} 与托莉娜各自的所在地点与同行状态。',
+      '规则:',
+      '    - 地点必须严格取自地图白名单中的地点名称，一字不差',
+      '    - 同行状态只能是：同行 | 分开 | 待定',
+      '    - 当同行状态为「同行」时，托莉娜地点必须与 {{user}} 当前地点一致',
+      '    - 只输出以下三条以内的 _.set 指令（无变化的项可省略）：',
+      '        _.set(\'stat_data.系统.地点.当前地点\', \'地点名\')',
+      '        _.set(\'stat_data.系统.地点.托莉娜地点\', \'地点名\')',
+      '        _.set(\'stat_data.托莉娜.行程.同行状态\', \'同行|分开|待定\')',
+      '输出: 直接输出 _.set 指令行，不要输出任何解释。',
+    ].join('\n');
+  }
+
+  function defaultSnapshotPrompt() {
+    return [
+      '你是「回合快照总结」生成器。根据本回合玩家行动与正文（及额外视角）以及当前时间，生成一行简明扼要的本回合剧情快照。',
+      '规则:',
+      '    - 严格使用单行格式：天数|星期几|HH:MM|本回合剧情总结',
+      '    - 总结字数控制在 40~100 字以内，客观概括本回合发生的关键事件与角色状态变化',
+      '    - 示例：1|星期一|08:30|托莉娜与{{user}}在客厅重逢并整理行李，聊起教会见习神官的工作安排',
+      '输出: 直接输出该行快照文本（或包裹在 <imotoshinkan_snapshots>...</imotoshinkan_snapshots> 内），不要输出解释。',
+    ].join('\n');
+  }
+
+  function defaultBranchesPrompt() {
+    return [
+      '你是「行动选项」生成器。根据本回合正文结尾的局面、角色状态与同行状态，为 {{user}} 生成下一回合可执行的行动分支选项。',
+      '规则:',
+      '    - 每行一条选项，格式严格为：分类|行动文案',
+      '    - 分类仅限以下六种：亲密、日常、移动、推荐、观察或被动、快进时间',
+      '    - 生成 4~6 条符合当前情境的行动选项，至少覆盖 3 个不同分类',
+      '    - 当托莉娜与 {{user}} 分开（不在同一地点）时，禁止提供当场对托莉娜做亲密接触的选项',
+      '输出: 直接输出多行「分类|行动文案」（或包裹在 <imotoshinkan_branches>...</imotoshinkan_branches> 内），不要输出解释。',
+    ].join('\n');
+  }
+
+  function defaultSubRouteParams(route) {
+    if (route === 'stats') {
+      return { enabled: true, maxTokens: 1024, temperature: 0.4, topK: 0, topP: 0.95, rpm: 0, prompt: defaultStatsPrompt() };
+    }
+    if (route === 'world') {
+      return { enabled: true, maxTokens: 512, temperature: 0.3, topK: 0, topP: 0.95, rpm: 0, prompt: defaultWorldPrompt() };
+    }
+    if (route === 'snapshot') {
+      return { enabled: true, maxTokens: 512, temperature: 0.5, topK: 0, topP: 0.95, rpm: 0, prompt: defaultSnapshotPrompt() };
+    }
+    if (route === 'branches') {
+      return { enabled: true, maxTokens: 1024, temperature: 0.8, topK: 0, topP: 0.95, rpm: 0, prompt: defaultBranchesPrompt() };
+    }
+    return { enabled: true, maxTokens: 1024, temperature: 0.7, topK: 0, topP: 0.95, rpm: 0, prompt: '' };
+  }
+
+  function normalizeSubRouteParams(route, src) {
+    const d = defaultSubRouteParams(route);
+    const s = src && typeof src === 'object' ? src : {};
+    return {
+      enabled: s.enabled !== false,
+      maxTokens: clampNum(s.maxTokens, 16, 8192, d.maxTokens),
+      temperature: clampNum(s.temperature, 0, 2, d.temperature),
+      topK: Math.round(clampNum(s.topK, 0, 200, d.topK)),
+      topP: clampNum(s.topP, 0, 1, d.topP),
+      rpm: Math.round(clampNum(s.rpm, 0, 1000, d.rpm)),
+      prompt: typeof s.prompt === 'string' && s.prompt.trim() ? s.prompt : d.prompt,
+    };
+  }
+
   function clampNum(n, min, max, fallback) {
     const v = Number(n);
     if (!Number.isFinite(v)) return fallback;
@@ -234,7 +317,7 @@
       rpm: Math.round(clampNum(s.rpm, 0, 1000, d.rpm)),
       summaryAfter: Math.round(clampNum(migratingOldDefaults ? d.summaryAfter : s.summaryAfter, 1, 100, d.summaryAfter)),
       targetChars: Math.max(0, Math.round(Number(migratingOldDefaults ? d.targetChars : s.targetChars) || d.targetChars)),
-      prompt: typeof s.prompt === 'string' ? s.prompt : d.prompt,
+      prompt: (typeof s.prompt === 'string' && !s.prompt.includes('正文的镜头永远跟着{{user}}')) ? s.prompt : d.prompt,
     };
   }
 
@@ -242,6 +325,7 @@
     const d = defaultOtherpovParams();
     const s = src && typeof src === 'object' ? src : {};
     return {
+      enabled: s.enabled !== false,
       maxTokens: clampNum(s.maxTokens, 16, 8192, d.maxTokens),
       temperature: clampNum(s.temperature, 0, 2, d.temperature),
       topK: Math.round(clampNum(s.topK, 0, 200, d.topK)),
@@ -253,10 +337,16 @@
     };
   }
 
+  const SUB_ROUTES = ['stats', 'world', 'snapshot', 'branches'];
+
   function emptyRouteParams() {
     return {
       story: defaultStoryParams(),
       otherpov: defaultOtherpovParams(),
+      stats: defaultSubRouteParams('stats'),
+      world: defaultSubRouteParams('world'),
+      snapshot: defaultSubRouteParams('snapshot'),
+      branches: defaultSubRouteParams('branches'),
     };
   }
 
@@ -265,6 +355,10 @@
     return {
       story: normalizeStoryParams(s.story),
       otherpov: normalizeOtherpovParams(s.otherpov),
+      stats: normalizeSubRouteParams('stats', s.stats),
+      world: normalizeSubRouteParams('world', s.world),
+      snapshot: normalizeSubRouteParams('snapshot', s.snapshot),
+      branches: normalizeSubRouteParams('branches', s.branches),
     };
   }
 
@@ -398,6 +492,56 @@
     return 'https://api.openai.com/v1';
   }
 
+  const ROUTE_LABELS = {
+    story: '主输出',
+    otherpov: '额外视角',
+    stats: '数据变化',
+    world: '地点变化',
+    snapshot: '总结',
+    branches: '选项',
+  };
+
+  function renderRoutesOverviewMatrix(st, apiOptions) {
+    const box = $('routes-overview-matrix');
+    if (!box) return;
+    const presetMod = window.妹神官_settings_preset;
+    const presetSt = presetMod && typeof presetMod.loadStore === 'function' ? presetMod.loadStore() : { profiles: [], routes: {} };
+    const presetOptions = (presetSt.profiles || [])
+      .map((p) => '<option value="' + esc(p.id) + '">' + esc(p.name) + (p.enabled === false ? '（已禁用）' : '') + '</option>')
+      .join('');
+
+    box.innerHTML = ROUTES.map((route) => {
+      const label = ROUTE_LABELS[route] || route;
+      const rp = st.routeParams && st.routeParams[route];
+      const isStory = route === 'story';
+      const isOn = isStory ? true : (!rp || rp.enabled !== false);
+      return (
+        '<div class="sys-api-card" style="padding: 10px 14px;" data-overview-route="' + esc(route) + '">' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">' +
+            '<div style="display:flex; align-items:center; gap:10px; min-width: 150px;">' +
+              '<span class="sys-api-card-title" style="font-size:14px;">' + esc(label) + '</span>' +
+              (isStory
+                ? '<span class="sys-api-badge is-on">核心必选</span>'
+                : '<label class="sys-check" style="margin:0; font-size:12px;"><input type="checkbox" data-ov-enabled="' + esc(route) + '"' + (isOn ? ' checked' : '') + ' /><span class="sys-check-box" aria-hidden="true"></span><span>' + (isOn ? '已启用' : '已跳过') + '</span></label>') +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; flex:1; min-width:260px; justify-content:flex-end;">' +
+              '<select class="sys-select" data-ov-api="' + esc(route) + '" style="max-width:200px;"><option value="">接口：使用默认</option>' + apiOptions + '</select>' +
+              '<select class="sys-select" data-ov-preset="' + esc(route) + '" style="max-width:200px;"><option value="">预设：使用默认</option>' + presetOptions + '</select>' +
+              '<button type="button" class="settings-control-btn" data-ov-jump="' + esc(route) + '">详情</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    ROUTES.forEach((route) => {
+      const apiSel = box.querySelector('[data-ov-api="' + route + '"]');
+      const preSel = box.querySelector('[data-ov-preset="' + route + '"]');
+      if (apiSel) apiSel.value = (st.routes && st.routes[route]) || '';
+      if (preSel) preSel.value = (presetSt.routes && presetSt.routes[route]) || '';
+    });
+  }
+
   function fillRouteSelects() {
     const st = loadStore();
     const profiles = st.profiles || [];
@@ -429,6 +573,17 @@
     });
     fillStorySampler(st.routeParams && st.routeParams.story);
     fillOtherpovSampler(st.routeParams && st.routeParams.otherpov);
+    SUB_ROUTES.forEach((route) => {
+      fillSubRouteSampler(route, st.routeParams && st.routeParams[route]);
+    });
+    ['otherpov'].concat(SUB_ROUTES).forEach((route) => {
+      const chk = document.querySelector('[data-route-enabled="' + route + '"]');
+      if (chk) {
+        const rp = st.routeParams && st.routeParams[route];
+        chk.checked = !rp || rp.enabled !== false;
+      }
+    });
+    renderRoutesOverviewMatrix(st, options);
   }
 
   function storySamplerRoot() {
@@ -542,7 +697,9 @@
       const el = root.querySelector('[data-op="' + key + '"]');
       return el ? el.value : d[key];
     };
+    const chk = document.querySelector('[data-route-enabled="otherpov"]');
     return normalizeOtherpovParams({
+      enabled: chk ? chk.checked : true,
       maxTokens: num('maxTokens'),
       temperature: num('temperature'),
       topK: num('topK'),
@@ -600,10 +757,98 @@
     });
   }
 
+  function subRouteSamplerRoot(route) {
+    return $(route + '-sampler');
+  }
+
+  function fillSubRouteSampler(route, src) {
+    const root = subRouteSamplerRoot(route);
+    if (!root) return;
+    const p = normalizeSubRouteParams(route, src);
+    Object.keys(p).forEach((key) => {
+      const range = root.querySelector('[data-rt="' + key + '"]');
+      const num = root.querySelector('[data-rt-num="' + key + '"]');
+      if (range) {
+        range.value = String(p[key] == null ? '' : p[key]);
+        if (range.type === 'range') setRangePct(range);
+      }
+      if (num) num.value = fmtStoryVal(key, p[key]);
+    });
+  }
+
+  function readSubRouteSampler(route) {
+    const root = subRouteSamplerRoot(route);
+    const d = defaultSubRouteParams(route);
+    if (!root) return d;
+    const val = (key) => {
+      const el = root.querySelector('[data-rt="' + key + '"]');
+      return el ? el.value : d[key];
+    };
+    const chk = document.querySelector('[data-route-enabled="' + route + '"]');
+    return normalizeSubRouteParams(route, {
+      enabled: chk ? chk.checked : true,
+      maxTokens: val('maxTokens'),
+      temperature: val('temperature'),
+      topK: val('topK'),
+      topP: val('topP'),
+      rpm: d.rpm,
+      prompt: val('prompt'),
+    });
+  }
+
+  function saveSubRouteSampler(route, opts) {
+    const st = loadStore();
+    st.routeParams = st.routeParams || {};
+    st.routeParams[route] = readSubRouteSampler(route);
+    saveStore(st);
+    if (!(opts && opts.silent)) fillSubRouteSampler(route, st.routeParams[route]);
+  }
+
+  const subRouteSamplerBound = {};
+  function bindSubRouteSamplers() {
+    SUB_ROUTES.forEach((route) => {
+      const root = subRouteSamplerRoot(route);
+      if (!root || subRouteSamplerBound[route]) return;
+      subRouteSamplerBound[route] = true;
+      root.addEventListener('input', (e) => {
+        const t = e.target;
+        if (!t) return;
+        if (t.matches('[data-rt]') && t.type === 'range') {
+          const key = t.getAttribute('data-rt');
+          const num = root.querySelector('[data-rt-num="' + key + '"]');
+          if (num) num.value = fmtStoryVal(key, parseFloat(t.value));
+          setRangePct(t);
+          saveSubRouteSampler(route);
+          return;
+        }
+        if (t.matches('[data-rt-num]')) {
+          const key = t.getAttribute('data-rt-num');
+          const range = root.querySelector('[data-rt="' + key + '"]');
+          const n = parseFloat(t.value);
+          if (range && Number.isFinite(n)) {
+            range.value = String(n);
+            setRangePct(range);
+          }
+          saveSubRouteSampler(route);
+          return;
+        }
+        if (t.matches('textarea[data-rt]')) {
+          saveSubRouteSampler(route, { silent: true });
+        }
+      });
+      root.addEventListener('change', (e) => {
+        const t = e.target;
+        if (!t) return;
+        if (t.matches('[data-rt], [data-rt-num]')) saveSubRouteSampler(route);
+      });
+    });
+  }
+
   function getRouteParams(route) {
     const st = loadStore();
     if (route === 'story') return normalizeStoryParams(st.routeParams && st.routeParams.story);
     if (route === 'otherpov') return normalizeOtherpovParams(st.routeParams && st.routeParams.otherpov);
+    if (SUB_ROUTES.indexOf(route) >= 0) return normalizeSubRouteParams(route, st.routeParams && st.routeParams[route]);
     return null;
   }
 
@@ -612,6 +857,7 @@
     st.routeParams = st.routeParams || {};
     if (route === 'story') st.routeParams.story = normalizeStoryParams(params);
     else if (route === 'otherpov') st.routeParams.otherpov = normalizeOtherpovParams(params);
+    else if (SUB_ROUTES.indexOf(route) >= 0) st.routeParams[route] = normalizeSubRouteParams(route, params);
     else return;
     saveStore(st);
   }
@@ -1055,11 +1301,135 @@
         st.routes = st.routes || {};
         st.routes[route] = sel.value;
         saveStore(st);
+        fillRouteSelects(st);
       });
     });
 
+    const paneRoutes = $('pane-routes');
+    if (paneRoutes) {
+      paneRoutes.addEventListener('click', (e) => {
+        const resetBtn = e.target.closest('[data-reset-prompt]');
+        if (resetBtn) {
+          const route = resetBtn.getAttribute('data-reset-prompt');
+          const st = loadStore();
+          st.routeParams = st.routeParams || {};
+          if (route === 'story') {
+            st.routeParams.story = normalizeStoryParams(st.routeParams.story);
+            st.routeParams.story.prompt = defaultStoryPrompt();
+            saveStore(st);
+            fillStorySampler(st.routeParams.story);
+          } else if (route === 'otherpov') {
+            st.routeParams.otherpov = normalizeOtherpovParams(st.routeParams.otherpov);
+            st.routeParams.otherpov.prompt = defaultOtherpovPrompt();
+            saveStore(st);
+            fillOtherpovSampler(st.routeParams.otherpov);
+          } else if (SUB_ROUTES.indexOf(route) >= 0) {
+            st.routeParams[route] = normalizeSubRouteParams(route, st.routeParams[route]);
+            st.routeParams[route].prompt = defaultSubRouteParams(route).prompt;
+            saveStore(st);
+            fillSubRouteSampler(route, st.routeParams[route]);
+          }
+          toast('已恢复默认提示词');
+          return;
+        }
+
+        const applyBgBtn = e.target.closest('[data-apply-bg-route]');
+        if (applyBgBtn) {
+          const route = applyBgBtn.getAttribute('data-apply-bg-route');
+          const sel = $('cfg-api-route-' + route);
+          const val = sel ? sel.value : '';
+          const st = loadStore();
+          st.routes = st.routes || {};
+          SUB_ROUTES.forEach((r) => {
+            st.routes[r] = val;
+          });
+          saveStore(st);
+          fillRouteSelects(st);
+          toast('已将该接口套用到全部后台辅助路由');
+          return;
+        }
+
+        const jumpBtn = e.target.closest('[data-ov-jump]');
+        if (jumpBtn) {
+          const targetRoute = jumpBtn.getAttribute('data-ov-jump');
+          const subBtn = paneRoutes.querySelector('.settings-subtab[data-sub="' + targetRoute + '"]');
+          if (subBtn) subBtn.click();
+          return;
+        }
+      });
+
+      paneRoutes.addEventListener('change', (e) => {
+        const enChk = e.target.closest('[data-route-enabled]');
+        if (enChk) {
+          const route = enChk.getAttribute('data-route-enabled');
+          if (route === 'otherpov') saveOtherpovSampler();
+          else if (SUB_ROUTES.indexOf(route) >= 0) saveSubRouteSampler(route);
+          fillRouteSelects(loadStore());
+          toast((enChk.checked ? '已启用 ' : '已关闭 ') + (ROUTE_LABELS[route] || route) + ' 独立生成');
+          return;
+        }
+
+        const ovEn = e.target.closest('[data-ov-enabled]');
+        if (ovEn) {
+          const route = ovEn.getAttribute('data-ov-enabled');
+          const subChk = document.querySelector('[data-route-enabled="' + route + '"]');
+          if (subChk) subChk.checked = ovEn.checked;
+          if (route === 'otherpov') saveOtherpovSampler();
+          else if (SUB_ROUTES.indexOf(route) >= 0) saveSubRouteSampler(route);
+          fillRouteSelects(loadStore());
+          toast((ovEn.checked ? '已启用 ' : '已关闭 ') + (ROUTE_LABELS[route] || route) + ' 独立生成');
+          return;
+        }
+
+        const ovApi = e.target.closest('[data-ov-api]');
+        if (ovApi) {
+          const route = ovApi.getAttribute('data-ov-api');
+          const st = loadStore();
+          st.routes = st.routes || {};
+          st.routes[route] = ovApi.value;
+          saveStore(st);
+          fillRouteSelects(st);
+          return;
+        }
+
+        const ovPre = e.target.closest('[data-ov-preset]');
+        if (ovPre) {
+          const route = ovPre.getAttribute('data-ov-preset');
+          const presetMod = window.妹神官_settings_preset;
+          if (presetMod && typeof presetMod.loadStore === 'function') {
+            const pst = presetMod.loadStore();
+            pst.routes = pst.routes || {};
+            pst.routes[route] = ovPre.value;
+            presetMod.saveStore(pst);
+            if (typeof presetMod.fillRouteSelects === 'function') presetMod.fillRouteSelects(pst);
+            fillRouteSelects(loadStore());
+          }
+        }
+      });
+    }
+
+    const resetAllDefaultBtn = $('btn-routes-apply-all-default');
+    if (resetAllDefaultBtn) {
+      resetAllDefaultBtn.addEventListener('click', () => {
+        const st = loadStore();
+        st.routes = emptyRoutes();
+        saveStore(st);
+        fillRouteSelects(st);
+        const presetMod = window.妹神官_settings_preset;
+        if (presetMod && typeof presetMod.loadStore === 'function') {
+          const pst = presetMod.loadStore();
+          pst.routes = {};
+          presetMod.saveStore(pst);
+          if (typeof presetMod.fillRouteSelects === 'function') presetMod.fillRouteSelects(pst);
+        }
+        fillRouteSelects(loadStore());
+        toast('所有路由已重置为使用默认接口与预设');
+      });
+    }
+
     bindStorySampler();
     bindOtherpovSampler();
+    bindSubRouteSamplers();
   }
 
   let busyId = '';

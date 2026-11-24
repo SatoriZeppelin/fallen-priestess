@@ -1082,6 +1082,56 @@
     const exportBtn = $('btn-wb-export');
     if (exportBtn) exportBtn.addEventListener('click', exportStore);
 
+    const resetBtn = $('btn-wb-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        const st = normalize(cloneDefault());
+        migrateBeforeCharToDepth2(st);
+        disableCgEntries(st);
+        saveStore(st);
+        render();
+        toast('已恢复内置默认世界书');
+      });
+    }
+
+    const tavBtn = $('btn-wb-import-tavern');
+    if (tavBtn) {
+      const hasTavernWb =
+        typeof window.getWorldbook === 'function' ||
+        typeof window.getCharWorldbookNames === 'function' ||
+        (window.parent && window.parent !== window && (typeof window.parent.getWorldbook === 'function' || typeof window.parent.getCharWorldbookNames === 'function'));
+      if (hasTavernWb) tavBtn.removeAttribute('hidden');
+      tavBtn.addEventListener('click', async function () {
+        try {
+          const w = typeof window.getWorldbook === 'function' ? window : (window.parent && typeof window.parent.getWorldbook === 'function' ? window.parent : null);
+          if (!w) {
+            toast('当前未检测到酒馆世界书接口');
+            return;
+          }
+          let bookName = '';
+          if (typeof w.getCharWorldbookNames === 'function') {
+            const names = await w.getCharWorldbookNames('current');
+            if (names && names.primary) bookName = names.primary;
+          }
+          if (!bookName && typeof w.getCurrentCharPrimaryWorldbook === 'function') {
+            bookName = await w.getCurrentCharPrimaryWorldbook();
+          }
+          if (!bookName) {
+            toast('当前角色未绑定酒馆主世界书');
+            return;
+          }
+          const entries = await w.getWorldbook(bookName);
+          if (!entries || !entries.length) {
+            toast('酒馆世界书为空');
+            return;
+          }
+          importData({ name: bookName, entries: entries });
+        } catch (err) {
+          toast('导入酒馆世界书失败');
+        }
+      });
+    }
+
     const scanBox = $('wb-scan-settings');
     if (scanBox) {
       scanBox.addEventListener('change', readScanForm);

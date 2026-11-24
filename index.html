@@ -1007,8 +1007,8 @@
             </div>
             <div class="settings-actions" id="settings-actions">
               <button class="settings-action-btn" id="settings-reload-once-btn">重载一次选中资源</button>
-              <button class="settings-action-btn delete" id="settings-delete-btn">删除选中资源</button>
               <button class="settings-action-btn" id="settings-reload-until-btn">重载选中直到载入完毕</button>
+              <button class="settings-action-btn delete" id="settings-delete-btn">删除选中资源</button>
             </div>
           </div>
 
@@ -1018,10 +1018,35 @@
                 <div class="text-format-section">
                   <h3 class="text-format-section-title">存档数据</h3>
                   <div class="text-format-item text-format-item-inline">
-                    <label class="text-format-label">存档数据</label>
+                    <label class="text-format-label">所有游戏存档</label>
                     <div class="settings-data-actions">
-                      <button type="button" class="settings-control-btn" id="data-storage-export-btn">导出</button>
-                      <button type="button" class="settings-action-btn delete" id="data-storage-delete-btn">删除</button>
+                      <button type="button" class="settings-control-btn" id="data-storage-import-btn">导入存档</button>
+                      <button type="button" class="settings-control-btn" id="data-storage-export-btn">导出存档</button>
+                      <button type="button" class="settings-action-btn delete" id="data-storage-delete-btn">清空存档</button>
+                    </div>
+                  </div>
+                  <input type="file" id="data-storage-import-file" accept=".json,application/json" hidden />
+                </div>
+
+                <div class="text-format-section">
+                  <h3 class="text-format-section-title">全局配置备份</h3>
+                  <div class="text-format-item text-format-item-inline">
+                    <label class="text-format-label">设置与知识库（API / 预设 / 路由 / 世界书 / 界面）</label>
+                    <div class="settings-data-actions">
+                      <button type="button" class="settings-control-btn" id="data-config-import-btn">导入配置</button>
+                      <button type="button" class="settings-control-btn" id="data-config-export-btn">导出配置</button>
+                      <button type="button" class="settings-action-btn delete" id="data-config-reset-btn">恢复出厂设置</button>
+                    </div>
+                  </div>
+                  <input type="file" id="data-config-import-file" accept=".json,application/json" hidden />
+                </div>
+
+                <div class="text-format-section">
+                  <h3 class="text-format-section-title">本地存储占用</h3>
+                  <div class="text-format-item text-format-item-inline">
+                    <label class="text-format-label" id="data-storage-usage-label">正在统计本地存储占用...</label>
+                    <div class="settings-data-actions">
+                      <button type="button" class="settings-control-btn" id="data-storage-refresh-btn">刷新统计</button>
                     </div>
                   </div>
                 </div>
@@ -1136,22 +1161,6 @@
               </div>
             </div>
 
-            <!-- 历史正文 -->
-            <div class="text-format-section">
-              <h3 class="text-format-section-title">历史正文</h3>
-
-              <!-- 最低总结楼层 -->
-              <div class="text-format-item">
-                <label class="text-format-label">最低总结楼层:</label>
-                <div class="text-format-control-group">
-                  <input type="number" id="min-summary-floor-input" class="text-format-input" min="1" value="10" step="1">
-                </div>
-                <div class="text-format-description" style="margin-top: 8px; font-size: clamp(12px, 1.5vw, 14px); color: rgba(255, 255, 255, 0.8);">
-                  从这层开始往上数10个奇数楼层，以上的奇数楼层的快照信息给AI，而不是正文
-                </div>
-              </div>
-            </div>
-
             <!-- UI格式 -->
             <div class="text-format-section">
               <h3 class="text-format-section-title">UI格式</h3>
@@ -1192,43 +1201,12 @@
 
           <div class="settings-pane settings-l2-shell" id="pane-system" data-pane="system">
             <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
-              <button type="button" class="settings-subtab active" data-sub="api"><span class="sub-label">API</span></button>
-              <button type="button" class="settings-subtab" data-sub="preset"><span class="sub-label">预设</span></button>
-              <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
-              <button type="button" class="settings-subtab" data-sub="prompt"><span class="sub-label">提示词</span></button>
+              <button type="button" class="settings-subtab active" data-sub="prompt"><span class="sub-label">提示词</span></button>
               <button type="button" class="settings-subtab" data-sub="variable"><span class="sub-label">变量</span></button>
+              <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
               <button type="button" class="settings-subtab" data-sub="misc"><span class="sub-label">杂项</span></button>
             </nav>
             <div class="settings-subcontent" id="settings-system-subcontent">
-              <div class="settings-subpane active" data-subpane="api">
-                <section class="sys-l3 sys-api">
-                  <div class="sys-toolbar">
-                    <h3 class="sys-section-title">API 接口</h3>
-                    <div class="sys-toolbar-actions">
-                      <button type="button" class="settings-control-btn" id="btn-api-import-tavern" hidden>导入酒馆API</button>
-                      <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
-                    </div>
-                  </div>
-                  <div class="sys-api-profiles" id="api-profiles-list"></div>
-                </section>
-              </div>
-
-              <div class="settings-subpane" data-subpane="preset">
-                <section class="sys-l3 sys-api">
-                  <div class="sys-toolbar">
-                    <h3 class="sys-section-title">预设</h3>
-                    <div class="sys-toolbar-actions">
-                      <button type="button" class="settings-control-btn" id="btn-preset-import-tavern" hidden>导入酒馆预设</button>
-                      <button type="button" class="settings-control-btn" id="btn-preset-import">导入预设</button>
-                      <button type="button" class="settings-control-btn" id="btn-preset-export">导出预设</button>
-                    </div>
-                  </div>
-                  <input type="file" id="cfg-preset-file" accept=".json,application/json" hidden />
-                  <div class="sys-api-profiles" id="preset-profiles-list"></div>
-                  <p class="sys-empty" id="preset-empty" hidden>暂无预设</p>
-                </section>
-              </div>
-
               <div class="settings-subpane" data-subpane="regex">
                 <section class="sys-l3">
                   <div class="sys-toolbar">
@@ -1239,14 +1217,16 @@
                 </section>
               </div>
 
-              <div class="settings-subpane" data-subpane="prompt">
+              <div class="settings-subpane active" data-subpane="prompt">
                 <section class="sys-l3 sys-wb">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">世界书</h3>
                     <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-wb-import-tavern" hidden>导入酒馆世界书</button>
                       <button type="button" class="settings-control-btn" id="btn-wb-add">新增条目</button>
                       <button type="button" class="settings-control-btn" id="btn-wb-import">导入</button>
                       <button type="button" class="settings-control-btn" id="btn-wb-export">导出</button>
+                      <button type="button" class="settings-control-btn" id="btn-wb-reset">恢复内置世界书</button>
                     </div>
                   </div>
                   <input type="file" id="cfg-wb-file" accept=".json,application/json" hidden />
@@ -1312,9 +1292,18 @@
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">变量</h3>
                     <div class="sys-toolbar-actions">
+                      <button type="button" class="sys-foldertab active" id="btn-var-target-runtime" title="直接查看并实时修改当前局内变量">当前局内</button>
+                      <button type="button" class="sys-foldertab" id="btn-var-target-default" title="编辑新开局的默认初始变量">初始默认</button>
                       <button type="button" class="sys-foldertab active" id="btn-var-view-tree">变量树</button>
                       <button type="button" class="sys-foldertab" id="btn-var-view-json">JSON</button>
+                      <button type="button" class="settings-control-btn" id="btn-var-import">导入</button>
+                      <button type="button" class="settings-control-btn" id="btn-var-export">导出</button>
+                      <button type="button" class="settings-control-btn" id="btn-var-reset">重置初始值</button>
                     </div>
+                  </div>
+                  <input type="file" id="cfg-var-file" accept=".json,application/json" hidden />
+                  <div class="sys-l4" style="margin-bottom: 10px;">
+                    <input type="text" class="sys-input" id="cfg-var-search" placeholder="搜索变量名称、路径或注释（如：性欲值、当前地点、接吻）..." autocomplete="off" spellcheck="false" />
                   </div>
                   <div class="sys-var-tree" id="var-tree"></div>
                   <textarea class="sys-textarea sys-var-json" id="cfg-var-json" hidden spellcheck="false" autocomplete="off"></textarea>
@@ -1337,7 +1326,9 @@
 
           <div class="settings-pane settings-l2-shell" id="pane-routes" data-pane="routes">
             <nav class="settings-subnav" id="settings-routes-subnav" aria-label="路由设置二级目录">
-              <button type="button" class="settings-subtab active" data-sub="default"><span class="sub-label">默认接口</span></button>
+              <button type="button" class="settings-subtab active" data-sub="api"><span class="sub-label">API</span></button>
+              <button type="button" class="settings-subtab" data-sub="preset"><span class="sub-label">预设</span></button>
+              <button type="button" class="settings-subtab" data-sub="default"><span class="sub-label">路由总览</span></button>
               <button type="button" class="settings-subtab" data-sub="story"><span class="sub-label">主输出</span></button>
               <button type="button" class="settings-subtab" data-sub="otherpov"><span class="sub-label">额外视角</span></button>
               <button type="button" class="settings-subtab" data-sub="stats"><span class="sub-label">数据变化</span></button>
@@ -1346,10 +1337,42 @@
               <button type="button" class="settings-subtab" data-sub="branches"><span class="sub-label">选项</span></button>
             </nav>
             <div class="settings-subcontent" id="settings-routes-subcontent">
-              <div class="settings-subpane active" data-subpane="default">
+              <div class="settings-subpane active" data-subpane="api">
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
-                    <h3 class="sys-section-title">默认接口</h3>
+                    <h3 class="sys-section-title">API 接口</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-api-import-tavern" hidden>导入酒馆API</button>
+                      <button type="button" class="settings-control-btn" id="btn-api-add">添加接口</button>
+                    </div>
+                  </div>
+                  <div class="sys-api-profiles" id="api-profiles-list"></div>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="preset">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">预设</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-preset-import-tavern" hidden>导入酒馆预设</button>
+                      <button type="button" class="settings-control-btn" id="btn-preset-import">导入预设</button>
+                      <button type="button" class="settings-control-btn" id="btn-preset-export">导出预设</button>
+                    </div>
+                  </div>
+                  <input type="file" id="cfg-preset-file" accept=".json,application/json" hidden />
+                  <div class="sys-api-profiles" id="preset-profiles-list"></div>
+                  <p class="sys-empty" id="preset-empty" hidden>暂无预设</p>
+                </section>
+              </div>
+
+              <div class="settings-subpane" data-subpane="default">
+                <section class="sys-l3 sys-api">
+                  <div class="sys-toolbar">
+                    <h3 class="sys-section-title">默认接口与路由总览</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" id="btn-routes-apply-all-default">全路由重置为使用默认</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1361,12 +1384,19 @@
                       <select class="sys-select" id="cfg-preset-default"></select>
                     </div>
                   </div>
+                  <div class="sys-l4" style="margin-top: 16px;">
+                    <h4 class="sys-l4-title">各模块路由快速总览（保留原独立子页，也可在此一键分配）</h4>
+                    <div class="sys-api-profiles" id="routes-overview-matrix"></div>
+                  </div>
                 </section>
               </div>
               <div class="settings-subpane" data-subpane="story">
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">主输出</h3>
+                    <div class="sys-toolbar-actions">
+                      <button type="button" class="settings-control-btn" data-reset-prompt="story">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1437,6 +1467,14 @@
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">额外视角</h3>
+                    <div class="sys-toolbar-actions">
+                      <label class="sys-check" style="margin:0;">
+                        <input type="checkbox" data-route-enabled="otherpov" checked />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>启用独立生成</span>
+                      </label>
+                      <button type="button" class="settings-control-btn" data-reset-prompt="otherpov">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1496,6 +1534,15 @@
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">数据变化</h3>
+                    <div class="sys-toolbar-actions">
+                      <label class="sys-check" style="margin:0;">
+                        <input type="checkbox" data-route-enabled="stats" checked />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>启用后台生成</span>
+                      </label>
+                      <button type="button" class="settings-control-btn" data-apply-bg-route="stats" title="将当前所选接口套用到所有后台辅助路由">接口套用到全部后台路由</button>
+                      <button type="button" class="settings-control-btn" data-reset-prompt="stats">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1507,12 +1554,51 @@
                       <select class="sys-select" id="cfg-preset-route-stats" data-preset-route="stats"></select>
                     </div>
                   </div>
+                  <div class="sys-sampler" id="stats-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-rt="maxTokens" min="16" max="8192" step="16" value="1024" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="maxTokens" inputmode="numeric" value="1024" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-rt="temperature" min="0" max="2" step="0.01" value="0.4" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="temperature" inputmode="decimal" value="0.40" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">数据变化提示词</h4>
+                      <textarea class="sys-textarea" data-rt="prompt" spellcheck="false" autocomplete="off"></textarea>
+                    </div>
+                  </div>
                 </section>
               </div>
               <div class="settings-subpane" data-subpane="world">
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">地点变化</h3>
+                    <div class="sys-toolbar-actions">
+                      <label class="sys-check" style="margin:0;">
+                        <input type="checkbox" data-route-enabled="world" checked />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>启用后台生成</span>
+                      </label>
+                      <button type="button" class="settings-control-btn" data-apply-bg-route="world" title="将当前所选接口套用到所有后台辅助路由">接口套用到全部后台路由</button>
+                      <button type="button" class="settings-control-btn" data-reset-prompt="world">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1524,12 +1610,51 @@
                       <select class="sys-select" id="cfg-preset-route-world" data-preset-route="world"></select>
                     </div>
                   </div>
+                  <div class="sys-sampler" id="world-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-rt="maxTokens" min="16" max="8192" step="16" value="512" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="maxTokens" inputmode="numeric" value="512" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-rt="temperature" min="0" max="2" step="0.01" value="0.3" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="temperature" inputmode="decimal" value="0.30" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">地点变化提示词</h4>
+                      <textarea class="sys-textarea" data-rt="prompt" spellcheck="false" autocomplete="off"></textarea>
+                    </div>
+                  </div>
                 </section>
               </div>
               <div class="settings-subpane" data-subpane="snapshot">
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">总结</h3>
+                    <div class="sys-toolbar-actions">
+                      <label class="sys-check" style="margin:0;">
+                        <input type="checkbox" data-route-enabled="snapshot" checked />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>启用后台生成</span>
+                      </label>
+                      <button type="button" class="settings-control-btn" data-apply-bg-route="snapshot" title="将当前所选接口套用到所有后台辅助路由">接口套用到全部后台路由</button>
+                      <button type="button" class="settings-control-btn" data-reset-prompt="snapshot">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1541,12 +1666,51 @@
                       <select class="sys-select" id="cfg-preset-route-snapshot" data-preset-route="snapshot"></select>
                     </div>
                   </div>
+                  <div class="sys-sampler" id="snapshot-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-rt="maxTokens" min="16" max="8192" step="16" value="512" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="maxTokens" inputmode="numeric" value="512" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-rt="temperature" min="0" max="2" step="0.01" value="0.5" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="temperature" inputmode="decimal" value="0.50" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">总结提示词</h4>
+                      <textarea class="sys-textarea" data-rt="prompt" spellcheck="false" autocomplete="off"></textarea>
+                    </div>
+                  </div>
                 </section>
               </div>
               <div class="settings-subpane" data-subpane="branches">
                 <section class="sys-l3 sys-api">
                   <div class="sys-toolbar">
                     <h3 class="sys-section-title">选项</h3>
+                    <div class="sys-toolbar-actions">
+                      <label class="sys-check" style="margin:0;">
+                        <input type="checkbox" data-route-enabled="branches" checked />
+                        <span class="sys-check-box" aria-hidden="true"></span>
+                        <span>启用后台生成</span>
+                      </label>
+                      <button type="button" class="settings-control-btn" data-apply-bg-route="branches" title="将当前所选接口套用到所有后台辅助路由">接口套用到全部后台路由</button>
+                      <button type="button" class="settings-control-btn" data-reset-prompt="branches">恢复默认提示词</button>
+                    </div>
                   </div>
                   <div class="sys-route-binds">
                     <div class="sys-l4">
@@ -1556,6 +1720,36 @@
                     <div class="sys-l4">
                       <h4 class="sys-l4-title">预设</h4>
                       <select class="sys-select" id="cfg-preset-route-branches" data-preset-route="branches"></select>
+                    </div>
+                  </div>
+                  <div class="sys-sampler" id="branches-sampler">
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">回复长度(Token)</span>
+                        <input type="range" class="sys-sampler-range" data-rt="maxTokens" min="16" max="8192" step="16" value="1024" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="maxTokens" inputmode="numeric" value="1024" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">温度</span>
+                        <input type="range" class="sys-sampler-range" data-rt="temperature" min="0" max="2" step="0.01" value="0.8" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="temperature" inputmode="decimal" value="0.80" />
+                      </label>
+                    </div>
+                    <div class="sys-sampler-row sys-sampler-row-2">
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top K</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topK" min="0" max="200" step="1" value="0" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topK" inputmode="numeric" value="0" />
+                      </label>
+                      <label class="sys-sampler-item">
+                        <span class="sys-sampler-label">Top P</span>
+                        <input type="range" class="sys-sampler-range" data-rt="topP" min="0" max="1" step="0.01" value="0.95" />
+                        <input type="text" class="sys-sampler-val" data-rt-num="topP" inputmode="decimal" value="0.95" />
+                      </label>
+                    </div>
+                    <div class="sys-l4 sys-story-prompt">
+                      <h4 class="sys-l4-title">选项提示词</h4>
+                      <textarea class="sys-textarea" data-rt="prompt" spellcheck="false" autocomplete="off"></textarea>
                     </div>
                   </div>
                 </section>
@@ -1649,14 +1843,14 @@
   <script src="resource/default-worldbook.js?v=20261124"></script>
   <script src="resource/default-variables.js?v=20261124"></script>
   <script src="interface/map.js?v=20261124"></script>
-  <script src="interface/llm-client.js?v=20261124"></script>
-  <script src="interface/settings-api.js?v=20261124"></script>
-  <script src="interface/settings-preset.js?v=20261124"></script>
-  <script src="interface/settings-worldbook.js?v=20261124"></script>
-  <script src="interface/settings-variable.js?v=20261124"></script>
-  <script src="interface/prompt-builder.js?v=20261124"></script>
-  <script src="interface/toolbar.js?v=20261124"></script>
-  <script src="interface/opening-select.js?v=20261124"></script>
-  <script src="interface/app.js?v=20261124"></script>
+  <script src="interface/llm-client.js?v=20261124e"></script>
+  <script src="interface/settings-api.js?v=20261124e"></script>
+  <script src="interface/settings-preset.js?v=20261124e"></script>
+  <script src="interface/settings-worldbook.js?v=20261124e"></script>
+  <script src="interface/settings-variable.js?v=20261124e"></script>
+  <script src="interface/prompt-builder.js?v=20261124e"></script>
+  <script src="interface/toolbar.js?v=20261124e"></script>
+  <script src="interface/opening-select.js?v=20261124e"></script>
+  <script src="interface/app.js?v=20261124e"></script>
 </body>
 </html>
