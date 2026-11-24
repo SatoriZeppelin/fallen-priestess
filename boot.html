@@ -199,6 +199,7 @@
         var iframe = window.frameElement;
         if (!iframe || iframe.getAttribute('data-fp-pinned') === '1') return;
         iframe.setAttribute('data-fp-frame', '1');
+        cleanDuplicateTavernFrames();
         var h = Math.ceil(Math.max(
           document.documentElement.scrollHeight,
           document.body.scrollHeight,
