@@ -487,6 +487,9 @@
     } catch (e) {
       toast('世界书保存失败');
     }
+    try {
+      global.dispatchEvent(new CustomEvent('meishinkan:worldbook-updated'));
+    } catch (e) {}
     return st;
   }
 

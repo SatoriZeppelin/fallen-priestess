@@ -1189,9 +1189,6 @@
         if (window.妹神官_settings_worldbook && typeof window.妹神官_settings_worldbook.init === 'function') {
           window.妹神官_settings_worldbook.init();
         }
-        if (window.妹神官_settings_user && typeof window.妹神官_settings_user.init === 'function') {
-          window.妹神官_settings_user.init();
-        }
         if (window.妹神官_settings_variable && typeof window.妹神官_settings_variable.init === 'function') {
           window.妹神官_settings_variable.init();
         }
@@ -1207,7 +1204,13 @@
         }
       }
       if (nextTab === 'text-format') {
+        const cur = document.querySelector('#pane-text-format .settings-subtab.active');
+        switchGameSub((cur && cur.getAttribute('data-sub')) || 'text-format');
         initTextFormatControls();
+        if (window.妹神官_settings_user && typeof window.妹神官_settings_user.init === 'function') {
+          window.妹神官_settings_user.init();
+        }
+        syncScriptModeToggleUI();
         const typewriterEffectCheckbox = document.getElementById('typewriter-effect-checkbox');
         if (typewriterEffectCheckbox && typewriterEffectCheckbox.checked) {
           startTypewriterTest();
@@ -1740,6 +1743,67 @@
       });
     }
 
+    function switchGameSub(subId) {
+      const pane = document.getElementById('pane-text-format');
+      if (!pane || !subId) return;
+      pane.querySelectorAll('.settings-subtab').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-sub') === subId);
+      });
+      pane.querySelectorAll('.settings-subpane').forEach((sub) => {
+        sub.classList.toggle('active', sub.getAttribute('data-subpane') === subId);
+      });
+    }
+
+    function isScriptModeUid5Enabled() {
+      const wb = window.妹神官_settings_worldbook;
+      if (!wb || typeof wb.getAllEntries !== 'function') return true;
+      const entries = wb.getAllEntries();
+      const target = entries.find((e) => String(e.uid) === '5');
+      if (!target) return true;
+      return target.enabled !== false;
+    }
+
+    function syncScriptModeToggleUI() {
+      const btn = document.getElementById('btn-script-mode-toggle');
+      if (!btn) return;
+      const enabled = isScriptModeUid5Enabled();
+      btn.classList.toggle('is-enabled', enabled);
+      btn.classList.toggle('is-disabled', !enabled);
+      btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+      btn.textContent = enabled ? '启用' : '不启用';
+    }
+
+    const scriptModeToggleBtn = document.getElementById('btn-script-mode-toggle');
+    if (scriptModeToggleBtn) {
+      scriptModeToggleBtn.addEventListener('click', () => {
+        const wb = window.妹神官_settings_worldbook;
+        if (!wb || typeof wb.applyEnabled !== 'function') return;
+        const nextEnabled = !isScriptModeUid5Enabled();
+        wb.applyEnabled([{ uid: 5, enabled: nextEnabled }]);
+        syncScriptModeToggleUI();
+      });
+    }
+
+    window.addEventListener('meishinkan:worldbook-updated', () => {
+      syncScriptModeToggleUI();
+    });
+
+    const gameSubnav = document.getElementById('settings-game-subnav');
+    if (gameSubnav) {
+      gameSubnav.addEventListener('click', (e) => {
+        const btn = e.target.closest('.settings-subtab');
+        if (!btn) return;
+        const sub = btn.getAttribute('data-sub');
+        switchGameSub(sub);
+        if (sub === 'user' && window.妹神官_settings_user && typeof window.妹神官_settings_user.render === 'function') {
+          window.妹神官_settings_user.render();
+        }
+        if (sub === 'body-format') {
+          syncScriptModeToggleUI();
+        }
+      });
+    }
+
     function switchSystemSub(subId) {
       const pane = document.getElementById('pane-system');
       if (!pane || !subId) return;
@@ -1783,9 +1847,6 @@
         if (!btn) return;
         const sub = btn.getAttribute('data-sub');
         switchSystemSub(sub);
-        if (sub === 'user' && window.妹神官_settings_user && typeof window.妹神官_settings_user.render === 'function') {
-          window.妹神官_settings_user.render();
-        }
         if (sub === 'variable' && window.妹神官_settings_variable && typeof window.妹神官_settings_variable.render === 'function') {
           window.妹神官_settings_variable.render();
         }

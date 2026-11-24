@@ -2172,6 +2172,22 @@
   color: #ffe999;
 }
 
+#settings-overlay .body-format-toggle-btn {
+  min-width: 84px;
+}
+
+#settings-overlay .body-format-toggle-btn.is-disabled {
+  border-color: rgba(160, 160, 160, 0.4) !important;
+  background: rgba(120, 120, 120, 0.16) !important;
+  color: rgba(200, 200, 200, 0.65) !important;
+}
+
+#settings-overlay .body-format-toggle-btn.is-disabled:hover {
+  border-color: rgba(190, 190, 190, 0.6) !important;
+  background: rgba(140, 140, 140, 0.24) !important;
+  color: rgba(230, 230, 230, 0.85) !important;
+}
+
 #settings-overlay .settings-l2-shell .sys-input::placeholder {
   color: rgba(243, 234, 212, 0.4);
 }

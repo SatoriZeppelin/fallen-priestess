@@ -962,7 +962,7 @@
               <span class="tab-inner"><span class="tab-label">资源列表</span></span>
             </button>
             <button type="button" class="settings-tab" id="settings-text-format-btn" data-tab="text-format">
-              <span class="tab-inner"><span class="tab-label">正文格式</span></span>
+              <span class="tab-inner"><span class="tab-label">游戏设置</span></span>
             </button>
             <button type="button" class="settings-tab" id="settings-data-storage-btn" data-tab="data-storage">
               <span class="tab-inner"><span class="tab-label">数据存储</span></span>
@@ -1054,14 +1054,19 @@
             </div>
           </div>
 
-          <div class="settings-pane" id="pane-text-format" data-pane="text-format">
-            <div class="settings-menu" id="text-format-menu">
-              <div class="text-format-content">
-            <!-- 显示设置 -->
+          <div class="settings-pane settings-l2-shell" id="pane-text-format" data-pane="text-format">
+            <nav class="settings-subnav" id="settings-game-subnav" aria-label="游戏设置二级目录">
+              <button type="button" class="settings-subtab active" data-sub="text-format"><span class="sub-label">文本格式</span></button>
+              <button type="button" class="settings-subtab" data-sub="user"><span class="sub-label">用户设置</span></button>
+              <button type="button" class="settings-subtab" data-sub="body-format"><span class="sub-label">正文格式</span></button>
+            </nav>
+            <div class="settings-subcontent" id="settings-game-subcontent">
+              <div class="settings-subpane active" data-subpane="text-format">
+                <div class="settings-menu" id="text-format-menu">
+                  <div class="text-format-content">
             <div class="text-format-section">
               <h3 class="text-format-section-title">显示设置</h3>
 
-              <!-- AI字体大小 -->
               <div class="text-format-item">
                 <label class="text-format-label">AI字体大小:</label>
                 <div class="text-format-control-group">
@@ -1071,13 +1076,11 @@
                 </div>
               </div>
 
-              <!-- AI字体颜色 -->
               <div class="text-format-item text-format-item-inline">
                 <label class="text-format-label">AI字体颜色:</label>
                 <input type="color" id="ai-font-color-picker" class="text-format-color-picker" value="#ffffff">
               </div>
 
-              <!-- 聊天字体 -->
               <div class="text-format-item">
                 <label class="text-format-label">聊天字体:</label>
                 <select id="chat-font-select" class="text-format-select">
@@ -1091,7 +1094,6 @@
                 </select>
               </div>
 
-              <!-- 打印机效果 -->
               <div class="text-format-item">
                 <label class="text-format-label">
                   <input type="checkbox" id="typewriter-effect-checkbox" class="text-format-checkbox">
@@ -1099,7 +1101,6 @@
                 </label>
               </div>
 
-              <!-- 打印机效果速度（仅在勾选时显示） -->
               <div class="text-format-item text-format-conditional" id="typewriter-speed-item" style="display: none;">
                 <label class="text-format-label">打印机效果速度:</label>
                 <div class="text-format-control-group">
@@ -1109,7 +1110,6 @@
                 </div>
               </div>
 
-              <!-- 测试文字显示（仅在勾选时显示） -->
               <div class="text-format-item text-format-conditional" id="typewriter-test-item" style="display: none;">
                 <label class="text-format-label">测试文字:</label>
                 <div class="text-format-test-box" id="typewriter-test-box">
@@ -1118,11 +1118,9 @@
               </div>
             </div>
 
-            <!-- 其他建议设置 -->
             <div class="text-format-section">
               <h3 class="text-format-section-title">其他设置</h3>
 
-              <!-- 行间距 -->
               <div class="text-format-item">
                 <label class="text-format-label">行间距:</label>
                 <div class="text-format-control-group">
@@ -1131,7 +1129,6 @@
                 </div>
               </div>
 
-              <!-- 字间距 -->
               <div class="text-format-item">
                 <label class="text-format-label">字间距:</label>
                 <div class="text-format-control-group">
@@ -1141,7 +1138,6 @@
                 </div>
               </div>
 
-              <!-- 文本阴影 -->
               <div class="text-format-item">
                 <label class="text-format-label">
                   <input type="checkbox" id="text-shadow-checkbox" class="text-format-checkbox" checked>
@@ -1149,7 +1145,6 @@
                 </label>
               </div>
 
-              <!-- 文本对齐 -->
               <div class="text-format-item">
                 <label class="text-format-label">文本对齐:</label>
                 <select id="text-align-select" class="text-format-select">
@@ -1161,11 +1156,9 @@
               </div>
             </div>
 
-            <!-- UI格式 -->
             <div class="text-format-section">
               <h3 class="text-format-section-title">UI格式</h3>
 
-              <!-- 快捷按钮大小 -->
               <div class="text-format-item">
                 <label class="text-format-label">快捷按钮大小:</label>
                 <div class="text-format-control-group">
@@ -1195,19 +1188,10 @@
                 </label>
               </div>
             </div>
-          </div>
-            </div>
-          </div>
+                  </div>
+                </div>
+              </div>
 
-          <div class="settings-pane settings-l2-shell" id="pane-system" data-pane="system">
-            <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
-              <button type="button" class="settings-subtab active" data-sub="prompt"><span class="sub-label">提示词</span></button>
-              <button type="button" class="settings-subtab" data-sub="user"><span class="sub-label">用户</span></button>
-              <button type="button" class="settings-subtab" data-sub="variable"><span class="sub-label">变量</span></button>
-              <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
-              <button type="button" class="settings-subtab" data-sub="misc"><span class="sub-label">杂项</span></button>
-            </nav>
-            <div class="settings-subcontent" id="settings-system-subcontent">
               <div class="settings-subpane" data-subpane="user">
                 <section class="sys-l3 sys-user">
                   <div class="sys-toolbar">
@@ -1264,6 +1248,28 @@
                 </section>
               </div>
 
+              <div class="settings-subpane" data-subpane="body-format">
+                <section class="sys-l3">
+                  <div class="text-format-section">
+                    <h3 class="text-format-section-title">正文格式</h3>
+                    <div class="text-format-item text-format-item-inline">
+                      <label class="text-format-label">台本化</label>
+                      <button type="button" class="settings-control-btn body-format-toggle-btn is-enabled" id="btn-script-mode-toggle" aria-pressed="true">启用</button>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-pane settings-l2-shell" id="pane-system" data-pane="system">
+            <nav class="settings-subnav" id="settings-system-subnav" aria-label="系统设置二级目录">
+              <button type="button" class="settings-subtab active" data-sub="prompt"><span class="sub-label">提示词</span></button>
+              <button type="button" class="settings-subtab" data-sub="variable"><span class="sub-label">变量</span></button>
+              <button type="button" class="settings-subtab" data-sub="regex"><span class="sub-label">正则</span></button>
+              <button type="button" class="settings-subtab" data-sub="misc"><span class="sub-label">杂项</span></button>
+            </nav>
+            <div class="settings-subcontent" id="settings-system-subcontent">
               <div class="settings-subpane" data-subpane="regex">
                 <section class="sys-l3">
                   <div class="sys-toolbar">
