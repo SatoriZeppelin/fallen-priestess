@@ -55,7 +55,13 @@
   const TAVERN_PROFILE_ID = 'api_tavern_builtin';
 
   function isTavernEnv() {
-    return !!(window.妹神官_llm && typeof window.妹神官_llm.isTavernEnv === 'function' && window.妹神官_llm.isTavernEnv());
+    if (window.__FP_TAVERN_BOOT__) return true;
+    if (window.妹神官_llm && typeof window.妹神官_llm.isTavernEnv === 'function' && window.妹神官_llm.isTavernEnv()) return true;
+    try {
+      if (window.TavernHelper || (window.parent && window.parent.TavernHelper) || (window.top && window.top.TavernHelper)) return true;
+      if (window.SillyTavern || (window.parent && window.parent.SillyTavern) || (window.top && window.top.SillyTavern)) return true;
+    } catch (e) {}
+    return false;
   }
 
   function buildTavernProfile(existing) {

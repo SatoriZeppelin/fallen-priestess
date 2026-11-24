@@ -298,12 +298,20 @@
         var b = baseHref || GAME_BASE;
         var closeScr = '</scr' + 'ipt>';
         var tag = '<base href="' + b + '">\n  <script>window.__FP_TAVERN_BOOT__ = true;' + closeScr;
-        if (/<base\s/i.test(html)) {
-          return html.replace(/<base\b[^>]*>/i, tag);
+        var out = html;
+        if (/<base\s/i.test(out)) {
+          out = out.replace(/<base\b[^>]*>/i, tag);
+        } else {
+          out = out.replace(/<head[^>]*>/i, function (open) {
+            return open + '\n  ' + tag;
+          });
         }
-        return html.replace(/<head[^>]*>/i, function (open) {
-          return open + '\n  ' + tag;
+        var bust = 'v=' + Date.now();
+        out = out.replace(/(<(?:script|link)\b[^>]+(?:src|href)=")(?:interface|resource)\/[^"?]+(\?[^"]*)?(")/gi, function (_m, p1, _q, p3) {
+          var clean = _m.slice(p1.length, _m.length - p3.length).split('?')[0];
+          return p1 + clean + '?' + bust + p3;
         });
+        return out;
       }
 
       function setEmbedTavernFrame() {
