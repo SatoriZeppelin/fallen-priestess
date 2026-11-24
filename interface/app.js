@@ -8165,6 +8165,14 @@ _.set('stat_data.系统.模式', '${mode}')
       return text.replace(/<!--[\s\S]*?-->/g, '').replace(/\n{3,}/g, '\n\n').trim();
     }
 
+    function stripThinkingBlocks(text) {
+      if (!text || typeof text !== 'string') return '';
+      return text
+        .replace(/<think(?:_[^>\s]*)?>[\s\S]*?<\/think(?:_[^>\s]*)?>/gi, '')
+        .replace(/<thinking>[\s\S]*?<\/thinking>/gi, '')
+        .replace(/<thought>[\s\S]*?<\/thought>/gi, '');
+    }
+
     // 捕获并解析标签内容（仅解析 <imotoshinkan>...</imotoshinkan> 内内容，忽略标签外一切）
     function parseTags(content) {
       const result = {
@@ -8176,16 +8184,19 @@ _.set('stat_data.系统.模式', '${mode}')
         hook: ''
       };
 
-      const wrapMatch = content.match(/<imotoshinkan>([\s\S]*?)<\/imotoshinkan>/i);
-      if (wrapMatch && wrapMatch[1]) {
-        content = wrapMatch[1].trim();
+      const cleanedContent = stripThinkingBlocks(content);
+      const wrapMatches = Array.from(cleanedContent.matchAll(/<imotoshinkan>([\s\S]*?)<\/imotoshinkan>/gi));
+      if (wrapMatches.length) {
+        content = wrapMatches[wrapMatches.length - 1][1].trim();
       } else {
         content = ''; // 无外层 imotoshinkan 则忽略整段，不解析
       }
 
       // 捕获 maintext：原格式 + 全大写、全大写无下划线变体
-      const maintextMatch = content.match(/<imotoshinkan_maintext>([\s\S]*?)<\/imotoshinkan_maintext>/);
-      if (maintextMatch && maintextMatch[1].trim()) result.maintext = maintextMatch[1].trim();
+      const maintextMatches = Array.from(content.matchAll(/<imotoshinkan_maintext>([\s\S]*?)<\/imotoshinkan_maintext>/gi));
+      if (maintextMatches.length && maintextMatches[maintextMatches.length - 1][1].trim()) {
+        result.maintext = maintextMatches[maintextMatches.length - 1][1].trim();
+      }
       if (!result.maintext) {
         const m1 = content.match(/<IMOTOSHINKAN_MAINTEXT>([\s\S]*?)<\/IMOTOSHINKAN_MAINTEXT>/);
         if (m1 && m1[1].trim()) result.maintext = m1[1].trim();
@@ -9891,11 +9902,20 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
     // 解析其他人对话标签（人名显示在名字位，已知间男显示左侧立绘）
     // 格式：<人名|对话内容> 仅本体；<人名-阴影|对话内容> 本体+阴影叠加
     function parseOtherPersonTag(tagText) {
-      const m = tagText.match(/^<([^|]+)\|([\s\S]*)>$/);
+      const m = tagText.match(/^<([^|<>\r\n]+)\|([^<>]*)>$/);
       if (!m) return null;
       const rawName = m[1].trim();
       const content = (m[2] || '').trim();
-      if (rawName === '背景' || rawName === 'CG' || rawName === '托莉娜') return null; // 交给原有解析
+      if (
+        rawName === '背景' ||
+        rawName === 'CG' ||
+        rawName === '托莉娜' ||
+        rawName === '额外视角' ||
+        rawName === '地点变化' ||
+        rawName.length > 24
+      ) {
+        return null; // 交给原有解析或忽略非对话标签
+      }
       const withShadow = /-阴影$/.test(rawName);
       const character = withShadow ? rawName.replace(/-阴影$/, '') : rawName;
       return { character, dialogue: content, isOtherSpeaker: true, withShadow };
@@ -10526,8 +10546,8 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
       const dialogues = [];
       let currentBackground = null;
       let currentCG = null; // 存储当前CG信息 { groupName, cgName, isStop }
-      // 匹配：背景/CG/托莉娜 标签，或 其他人标签 <人名|对话内容>（人名不为 背景/CG/托莉娜）
-      const allTagsRegex = /<(?:背景|CG|托莉娜)\|[^>]+>|<(?!(?:背景|CG|托莉娜)\|)([^|]+)\|([^>]*)>/g;
+      // 匹配：背景/CG/托莉娜 标签，或 其他人标签 <人名|对话内容>（人名不为 背景/CG/托莉娜，且不跨标签/不跨行）
+      const allTagsRegex = /<(?:背景|CG|托莉娜)\|[^<>]+>|<(?!(?:背景|CG|托莉娜)\|)([^|<>\r\n]+)\|([^<>]*)>/g;
       let match;
 
       while ((match = allTagsRegex.exec(text)) !== null) {
@@ -12527,7 +12547,15 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
           stream: false,
         });
         logWithTag('OUTPUT', '📥 AI 返回的文本（额外视角）:\n' + String(text || ''));
-        return String(text || '').trim();
+        let cleaned = stripThinkingBlocks(String(text || '')).trim();
+        const opParsed = parseTags(cleaned);
+        if (opParsed && (opParsed.otherpov || opParsed.maintext)) {
+          cleaned = (opParsed.otherpov || opParsed.maintext).trim();
+        } else {
+          const innerOp = cleaned.match(/<imotoshinkan_otherpov>([\s\S]*?)<\/imotoshinkan_otherpov>/i);
+          if (innerOp && innerOp[1].trim()) cleaned = innerOp[1].trim();
+        }
+        return cleaned;
           } catch (e) {
         errorWithTag('MSG', '额外视角独立生成失败', e);
         return '';
