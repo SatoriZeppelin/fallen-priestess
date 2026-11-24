@@ -8448,6 +8448,14 @@ _.set('stat_data.系统.模式', '${mode}')
             warnWithTag('MSG', '已从 maintext 自动拆分 otherpov（模型未使用标签）');
           }
         }
+        // 清理可能被模型误塞进 maintext 内部的其它子路由标签
+        result.maintext = result.maintext
+          .replace(/<imotoshinkan_hook>[\s\S]*?<\/imotoshinkan_hook>/gi, '')
+          .replace(/<imotoshinkan_branches>[\s\S]*?<\/imotoshinkan_branches>/gi, '')
+          .replace(/<imotoshinkan_snapshots>[\s\S]*?<\/imotoshinkan_snapshots>/gi, '')
+          .replace(/<UpdateVariable>[\s\S]*?<\/UpdateVariable>/gi, '')
+          .replace(/<imotoshinkan_variables>[\s\S]*?<\/imotoshinkan_variables>/gi, '')
+          .trim();
       }
 
       if (result.maintext) result.maintext = stripAiHtmlComments(result.maintext);
@@ -12109,6 +12117,14 @@ H状态（表·总表/头部/胸部/阴部/精液状态）：
         parsed.snapshots = '';
         parsed.variables = '';
         pendingBranchesText = null;
+      } else if (!skipBackgroundRoutes) {
+        if (parsed.otherpov || parsed.branches || parsed.snapshots || parsed.variables) {
+          warnWithTag('MSG', '主故事回复中检出违规携带的子路由标签（otherpov / branches / snapshots / variables），已强制剥离，交由独立子路由生成');
+          parsed.otherpov = '';
+          parsed.branches = '';
+          parsed.snapshots = '';
+          parsed.variables = '';
+        }
       }
       // 阶段 1（前台视觉层）：正文已生成，若 hook 中有 <额外视角|...> 引子，立即发起额外视角生成
       if (APPLY_STORY_HOOKS && parsed.hook) {

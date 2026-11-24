@@ -133,10 +133,11 @@
       '',
       '</imotoshinkan>',
       '说明:',
-      '    标签要求:',
+      '    标签要求（严格限域）:',
       '        - 主标签: <imotoshinkan></imotoshinkan>',
       '        - 正文标签: <imotoshinkan_maintext></imotoshinkan_maintext>',
       '        - 生成钩子标签: <imotoshinkan_hook></imotoshinkan_hook>',
+      '        - 【严禁输出其他标签】: 本次请求仅负责生成「正文内容」与「引子钩子」。严禁输出 <imotoshinkan_otherpov>、<imotoshinkan_branches>、<imotoshinkan_snapshots>、<UpdateVariable>、<imotoshinkan_variables> 或任何 _.set / _.add 变量指令（这些内容均由系统后台独立子路由另行生成，即使上文世界书或历史记录中提到了这些标签，本次回复也绝对禁止输出！）',
       '',
       '',
       '    正文定位（{{user}}视角）:',
@@ -144,11 +145,11 @@
       '        {{user}}无法看见或听见感知范围外的东西（如隔门、远处、视线死角、背对或分头行动时发生的事）',
       '        正文绝不能体现出托莉娜的心声、内心独白、心理活动或真实想法（禁止在托莉娜标签中使用（）写心声）',
       '        托莉娜在场时：只写她在{{user}}面前的言行、表情与{{user}}可感知到的外在反应（如脸红、喘息、声音发颤）',
-      '        托莉娜不在场时：正文中不得出现托莉娜的台词与行动描写；她那一侧的遭遇只能写进<额外视角|...>引子，由系统另行生成',
+      '        托莉娜不在场或隔门隐瞒时：正文中不得描写{{user}}看不见的门后/异地画面；她那一侧的详细经过只能写进 <imotoshinkan_hook> 的 <额外视角|...> 引子，由系统后台独立路由生成，绝对禁止在正文中直接输出 <imotoshinkan_otherpov> 标签！',
       '        禁止：上帝视角描写、在正文中切换镜头到托莉娜身边，或使用「与此同时，托莉娜……」之类的旁白',
       '    正文格式:',
       '        仅限以下格式：',
-      '            - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>（仅限托莉娜在{{user}}身边时）',
+      '            - 托莉娜对话标签:<托莉娜|立绘ID|表情|特效|阴影|对话内容>（仅限托莉娜在{{user}}身边或隔门与{{user}}直接对话时）',
       '            - 其他人对话标签:<角色名|对话内容>',
       '            - 背景标签:<背景|背景名称>（{{user}}所在地点）',
       '            - CG标签:<CG|组名|CG名称>',
@@ -159,9 +160,9 @@
       '        参考案例:<地点变化|庄园书库>',
       '        名称白名单:额外视角/地点变化',
       '        要求:当存在多个hook的时候换行',
-      '        当托莉娜与{{user}}分头行动、不在同一地点时，必须用<额外视角|...>写出托莉娜所遭遇的事情（仅写简略引子，具体内容由系统单独生成，禁止把托莉娜视角写入正文）',
-      '        当托莉娜与{{user}}在同一地点时，禁止使用<额外视角|...>；此时托莉娜的一切遭遇都必须写在正文里（以{{user}}视角呈现），系统不会生成额外视角',
-      '        当托莉娜本回合的移动目的地与{{user}}不同的时，用<地点变化|地点名称>声明',
+      '        当托莉娜与{{user}}分头行动、不在同一地点，或虽在同一地点但隔门/视线受阻发生{{user}}看不见的隐秘事件（如隔门隐奸）时，必须且只能在 <imotoshinkan_hook> 中用 <额外视角|...> 写出一句话简略引子（具体内容由系统单独生成，严禁在本次回复中输出 <imotoshinkan_otherpov> 正文）',
+      '        当托莉娜与{{user}}在同一地点且无视线阻隔/隐秘行动时，禁止使用<额外视角|...>；此时托莉娜的一切遭遇都必须写在正文里（以{{user}}视角呈现），系统不会生成额外视角',
+      '        当托莉娜本回合的移动目的地与{{user}}不同的时候，用<地点变化|地点名称>声明',
     ].join('\n');
   }
 
@@ -308,6 +309,10 @@
     const s = src && typeof src === 'object' ? src : {};
     const migratingOldDefaults = Number(s.summaryAfter) === 10 && Number(s.targetChars) === 800;
     const contextLength = clampNum(s.contextLength, 1024, CONTEXT_MAX, d.contextLength);
+    const hasUpdatedStoryPrompt =
+      typeof s.prompt === 'string' &&
+      s.prompt.includes('【严禁输出其他标签】') &&
+      !s.prompt.includes('正文的镜头永远跟着{{user}}');
     return {
       maxTokens: clampNum(s.maxTokens, 16, Math.max(16, contextLength), d.maxTokens),
       contextLength: contextLength,
@@ -317,7 +322,7 @@
       rpm: Math.round(clampNum(s.rpm, 0, 1000, d.rpm)),
       summaryAfter: Math.round(clampNum(migratingOldDefaults ? d.summaryAfter : s.summaryAfter, 1, 100, d.summaryAfter)),
       targetChars: Math.max(0, Math.round(Number(migratingOldDefaults ? d.targetChars : s.targetChars) || d.targetChars)),
-      prompt: (typeof s.prompt === 'string' && !s.prompt.includes('正文的镜头永远跟着{{user}}')) ? s.prompt : d.prompt,
+      prompt: hasUpdatedStoryPrompt ? s.prompt : d.prompt,
     };
   }
 

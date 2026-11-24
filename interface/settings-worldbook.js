@@ -7,6 +7,7 @@
   const STORE_KEY = 'meishinkan_worldbook';
   const CG_OFF_KEY = 'meishinkan_worldbook_cg_off_v1';
   const BEFORE_TO_D2_KEY = 'meishinkan_wb_before_to_d2_v1';
+  const ROUTE_SPLIT_WB_KEY = 'meishinkan_wb_route_split_v1';
   const SCAN_KEY = 'meishinkan_worldbook_scan';
   const TIMED_KEY = 'meishinkan_worldbook_timed';
   const FOLDERS = ['托莉娜', '其他角色', '主要地点', '核心设定'];
@@ -41,6 +42,32 @@
         e.depth = 2;
         syncExtensions(e);
         changed = true;
+      });
+    });
+    return changed;
+  }
+
+  function migrateWorldbookForRouteSplit(st) {
+    if (!st || !Array.isArray(st.folders)) return false;
+    const src = global.妹神官_default_worldbook;
+    if (!src || !Array.isArray(src.folders)) return false;
+    const defaultByComment = Object.create(null);
+    src.folders.forEach(function (f) {
+      (f.entries || []).forEach(function (e) {
+        if (e && e.comment) defaultByComment[e.comment] = e.content;
+      });
+    });
+    const targetComments = ['更新规则', '变量更新规则', '正常-随机事件'];
+    let changed = false;
+    st.folders.forEach(function (folder) {
+      (folder.entries || []).forEach(function (e) {
+        if (!e || targetComments.indexOf(e.comment) < 0) return;
+        const nextContent = defaultByComment[e.comment];
+        if (typeof nextContent === 'string' && e.content !== nextContent) {
+          e.content = nextContent;
+          syncExtensions(e);
+          changed = true;
+        }
       });
     });
     return changed;
@@ -436,6 +463,10 @@
       if (raw) st = normalize(JSON.parse(raw));
     } catch (e) {}
     if (!st) st = normalize(cloneDefault());
+    if (!localStorage.getItem(ROUTE_SPLIT_WB_KEY)) {
+      if (migrateWorldbookForRouteSplit(st)) saveStore(st);
+      localStorage.setItem(ROUTE_SPLIT_WB_KEY, '1');
+    }
     if (!localStorage.getItem(BEFORE_TO_D2_KEY)) {
       if (migrateBeforeCharToDepth2(st)) saveStore(st);
       localStorage.setItem(BEFORE_TO_D2_KEY, '1');
