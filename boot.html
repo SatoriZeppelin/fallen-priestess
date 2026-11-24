@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>妹神官 · 启动检查</title>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(new URL('sw.js', document.baseURI || location.href).href).catch(function () {});
-    }
+    try {
+      if ('serviceWorker' in navigator && /^https?:/i.test(location.protocol) && !window.frameElement) {
+        navigator.serviceWorker.register(new URL('sw.js', document.baseURI || location.href).href).catch(function () {});
+      }
+    } catch (e) {}
   </script>
-  <link rel="icon" type="image/png" href="icon.png" />
-  <link rel="shortcut icon" href="icon.png" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" type="image/png" href="https://satorizeppelin.github.io/fallen-priestess/icon.png" />
+  <link rel="shortcut icon" href="https://satorizeppelin.github.io/fallen-priestess/icon.png" />
+  <link rel="apple-touch-icon" href="https://satorizeppelin.github.io/fallen-priestess/icon.png" />
   <style>
     :root {
       --frame: #d6b068;
@@ -294,7 +296,8 @@
 
       function injectBase(html, baseHref) {
         var b = baseHref || GAME_BASE;
-        var tag = '<base href="' + b + '">\n  <script>window.__FP_TAVERN_BOOT__ = true;</script>';
+        var closeScr = '</scr' + 'ipt>';
+        var tag = '<base href="' + b + '">\n  <script>window.__FP_TAVERN_BOOT__ = true;' + closeScr;
         if (/<base\s/i.test(html)) {
           return html.replace(/<base\b[^>]*>/i, tag);
         }
@@ -363,6 +366,7 @@
           var html = payload && payload.html;
           if (!html || html.indexOf('妹神官') === -1) throw new Error('页面内容异常');
           setEmbedTavernFrame();
+          window.__FP_TAVERN_BOOT__ = true;
           document.open();
           document.write(injectBase(html, payload.base));
           document.close();
