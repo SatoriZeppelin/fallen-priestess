@@ -8168,9 +8168,8 @@ _.set('stat_data.系统.模式', '${mode}')
     function stripThinkingBlocks(text) {
       if (!text || typeof text !== 'string') return '';
       return text
-        .replace(/<think(?:_[^>\s]*)?>[\s\S]*?<\/think(?:_[^>\s]*)?>/gi, '')
-        .replace(/<thinking>[\s\S]*?<\/thinking>/gi, '')
-        .replace(/<thought>[\s\S]*?<\/thought>/gi, '');
+        .replace(/<[^>]*think[^>]*>[\s\S]*?<\/[^>]*think[^>]*>/gi, '')
+        .replace(/^[\s\S]*?<\/[^>]*think[^>]*>\s*/i, '');
     }
 
     // 捕获并解析标签内容（仅解析 <imotoshinkan>...</imotoshinkan> 内内容，忽略标签外一切）
@@ -8184,19 +8183,17 @@ _.set('stat_data.系统.模式', '${mode}')
         hook: ''
       };
 
-      const cleanedContent = stripThinkingBlocks(content);
-      const wrapMatches = Array.from(cleanedContent.matchAll(/<imotoshinkan>([\s\S]*?)<\/imotoshinkan>/gi));
-      if (wrapMatches.length) {
-        content = wrapMatches[wrapMatches.length - 1][1].trim();
+      content = stripThinkingBlocks(content);
+      const wrapMatch = content.match(/<imotoshinkan>([\s\S]*?)<\/imotoshinkan>/i);
+      if (wrapMatch && wrapMatch[1]) {
+        content = wrapMatch[1].trim();
       } else {
         content = ''; // 无外层 imotoshinkan 则忽略整段，不解析
       }
 
       // 捕获 maintext：原格式 + 全大写、全大写无下划线变体
-      const maintextMatches = Array.from(content.matchAll(/<imotoshinkan_maintext>([\s\S]*?)<\/imotoshinkan_maintext>/gi));
-      if (maintextMatches.length && maintextMatches[maintextMatches.length - 1][1].trim()) {
-        result.maintext = maintextMatches[maintextMatches.length - 1][1].trim();
-      }
+      const maintextMatch = content.match(/<imotoshinkan_maintext>([\s\S]*?)<\/imotoshinkan_maintext>/);
+      if (maintextMatch && maintextMatch[1].trim()) result.maintext = maintextMatch[1].trim();
       if (!result.maintext) {
         const m1 = content.match(/<IMOTOSHINKAN_MAINTEXT>([\s\S]*?)<\/IMOTOSHINKAN_MAINTEXT>/);
         if (m1 && m1[1].trim()) result.maintext = m1[1].trim();
