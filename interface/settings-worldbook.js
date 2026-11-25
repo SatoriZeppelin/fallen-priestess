@@ -1130,11 +1130,14 @@
 
     const tavBtn = $('btn-wb-import-tavern');
     if (tavBtn) {
+      const inTavern =
+        !!(window.妹神官_llm && typeof window.妹神官_llm.isTavernEnv === 'function' && window.妹神官_llm.isTavernEnv());
       const hasTavernWb =
-        typeof window.getWorldbook === 'function' ||
-        typeof window.getCharWorldbookNames === 'function' ||
-        (window.parent && window.parent !== window && (typeof window.parent.getWorldbook === 'function' || typeof window.parent.getCharWorldbookNames === 'function'));
-      if (hasTavernWb) tavBtn.removeAttribute('hidden');
+        inTavern &&
+        (typeof window.getWorldbook === 'function' ||
+          typeof window.getCharWorldbookNames === 'function' ||
+          (window.parent && window.parent !== window && (typeof window.parent.getWorldbook === 'function' || typeof window.parent.getCharWorldbookNames === 'function')));
+      tavBtn.hidden = !hasTavernWb;
       tavBtn.addEventListener('click', async function () {
         try {
           const w = typeof window.getWorldbook === 'function' ? window : (window.parent && typeof window.parent.getWorldbook === 'function' ? window.parent : null);

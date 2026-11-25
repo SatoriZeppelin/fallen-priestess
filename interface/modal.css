@@ -1203,6 +1203,13 @@
   flex-wrap: wrap;
 }
 
+#settings-overlay .settings-control-btn[hidden],
+#settings-overlay .settings-action-btn[hidden],
+#settings-overlay .settings-stats-btn[hidden],
+#settings-overlay .data-storage-wood-btn[hidden] {
+  display: none !important;
+}
+
 #settings-overlay .settings-control-btn,
 #settings-overlay .settings-action-btn,
 #settings-overlay .settings-stats-btn,
